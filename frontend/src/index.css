@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg-primary text-slate-100 font-sans antialiased selection:bg-emerald-500/30 selection:text-white;
+  }
+}
+
+/* Glassmorphism components */
+.glass-panel {
+  @apply bg-bg-secondary/60 backdrop-blur-md border border-white/5 shadow-xl;
+}
+
+.glass-card {
+  @apply bg-bg-card/40 backdrop-blur-sm border border-white/5 hover:border-emerald-500/20 transition-all duration-300 rounded-xl;
+}
+
+/* Custom Chessboard Styling */
+.chessboard-container {
+  @apply aspect-square relative select-none rounded-lg overflow-hidden border border-white/10 shadow-2xl shadow-emerald-500/5;
+}
+
+/* Subtle glow effects */
+.glow-emerald {
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+}
+
+.glow-amber {
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-bg-primary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-emerald-500/30 transition-all;
+}

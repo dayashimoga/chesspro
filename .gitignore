@@ -32,3 +32,11 @@ pnpm-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+
+# Databases & Prisma
+*.db
+*.db-journal
+dev.db
+dev.db-journal
+/backend/prisma/dev.db
+
