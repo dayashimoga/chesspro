@@ -1547,3 +1547,262 @@ input:focus, select:focus, textarea:focus {
     padding: 2px;
   }
 }
+
+/* ============================================
+   ChessOS Redesign — Custom Dynamic Components
+   ============================================ */
+
+/* Visual Overlay Animations */
+@keyframes laser-flow {
+  to { stroke-dashoffset: -20; }
+}
+.pin-laser {
+  stroke-dasharray: 8, 4;
+  animation: laser-flow 1s linear infinite;
+}
+
+@keyframes pulse-fork {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+.fork-target-pulse {
+  animation: pulse-fork 1.2s infinite;
+  transform-origin: center;
+}
+
+@keyframes pulse-weak {
+  0% { fill: rgba(239, 68, 68, 0.25); }
+  50% { fill: rgba(239, 68, 68, 0.65); }
+  100% { fill: rgba(239, 68, 68, 0.25); }
+}
+.weak-square-pulse {
+  animation: pulse-weak 1.5s infinite;
+}
+
+@keyframes pulse-sacrifice {
+  0% { fill: rgba(245, 158, 11, 0.3); }
+  50% { fill: rgba(245, 158, 11, 0.7); }
+  100% { fill: rgba(245, 158, 11, 0.3); }
+}
+.sacrifice-pulse {
+  animation: pulse-sacrifice 1.3s infinite;
+}
+
+/* Replay System & Move Replays */
+.replay-moves-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  max-height: 250px;
+  overflow-y: auto;
+}
+.replay-move-num {
+  color: var(--text-tertiary);
+  margin-right: 2px;
+}
+.replay-move-item {
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+.replay-move-item:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+.replay-move-item.active {
+  background: var(--emerald-600);
+  color: white;
+  font-weight: 700;
+}
+
+/* Variation Explorer Tree */
+.variation-tree {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  max-height: 250px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+.variation-node {
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+.variation-node:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+.variation-node.active {
+  color: var(--emerald-400);
+  font-weight: 700;
+}
+.variation-branch {
+  margin-left: 12px;
+  border-left: 1px dashed var(--border-color);
+  padding-left: 8px;
+}
+
+/* Guided Solving Panels */
+.guided-steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+.guided-step-indicator {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-tertiary);
+  margin: 0 4px;
+  border-radius: var(--radius-full);
+  transition: background var(--transition-base);
+}
+.guided-step-indicator.active {
+  background: var(--emerald-500);
+}
+.guided-step-indicator.complete {
+  background: var(--emerald-600);
+}
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+.option-button {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+.option-button:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--emerald-500);
+}
+.option-button.correct {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--emerald-500);
+  color: var(--emerald-400);
+}
+.option-button.incorrect {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--red-500);
+  color: var(--red-400);
+}
+
+/* Gamification Elements */
+.xp-gained-popup {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--emerald-600), var(--emerald-500));
+  color: white;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  box-shadow: var(--shadow-lg);
+  animation: float-up-fade 2s ease forwards;
+  z-index: 1000;
+}
+@keyframes float-up-fade {
+  0% { transform: translate(-50%, 0); opacity: 0; }
+  20% { transform: translate(-50%, -10px); opacity: 1; }
+  80% { transform: translate(-50%, -10px); opacity: 1; }
+  100% { transform: translate(-50%, -30px); opacity: 0; }
+}
+
+.skill-tree-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xl);
+  padding: var(--space-xl);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+.skill-node {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-xl);
+  width: 250px;
+  text-align: center;
+  position: relative;
+  transition: all var(--transition-base);
+}
+.skill-node.unlocked {
+  border-color: var(--emerald-500);
+  box-shadow: var(--shadow-glow);
+}
+.skill-node.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.skill-node-connector {
+  width: 2px;
+  height: 32px;
+  background: var(--border-color);
+}
+.skill-node.unlocked + .skill-node-connector {
+  background: var(--emerald-500);
+}
+
+/* Achievement Grid Card */
+.achievement-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  transition: all var(--transition-fast);
+}
+.achievement-card.unlocked {
+  border-color: var(--amber-500);
+  box-shadow: var(--shadow-glow-amber);
+}
+.achievement-icon-container {
+  font-size: 2.5rem;
+  opacity: 0.4;
+}
+.achievement-card.unlocked .achievement-icon-container {
+  opacity: 1;
+}
+
+/* Specialized Training Panels */
+.blindfold-input-container {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+.blindfold-input {
+  flex: 1;
+  text-transform: uppercase;
+}
+.calc-option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+

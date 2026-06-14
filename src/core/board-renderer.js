@@ -108,8 +108,7 @@ export class BoardRenderer {
   }
 
   _createSVG() {
-    const totalSize = this.size + (this.showCoords ? 24 : 0);
-    const offset = this.showCoords ? 20 : 0;
+    const totalSize = this.size;
 
     this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     this.svg.setAttribute('width', totalSize);
@@ -123,7 +122,7 @@ export class BoardRenderer {
     this.svg.appendChild(bg);
 
     // Board group
-    this.boardGroup = this._el('g', { transform: `translate(${offset}, 4)` });
+    this.boardGroup = this._el('g');
     this.svg.appendChild(this.boardGroup);
 
     // Layers
@@ -144,11 +143,6 @@ export class BoardRenderer {
     // Draw squares
     this._drawSquares();
 
-    // Coordinates
-    if (this.showCoords) {
-      this._drawCoords(offset, totalSize);
-    }
-
     this.container.innerHTML = '';
     this.container.appendChild(this.svg);
   }
@@ -164,6 +158,8 @@ export class BoardRenderer {
   _drawSquares() {
     this.squaresLayer.innerHTML = '';
     const sq = this.squareSize;
+    const files = this.flipped ? [...FILES].reverse() : FILES;
+    const ranks = this.flipped ? [...RANKS].reverse() : RANKS;
 
     for (let r = 0; r < 8; r++) {
       for (let f = 0; f < 8; f++) {
@@ -178,45 +174,45 @@ export class BoardRenderer {
           'data-rank': r
         });
         this.squaresLayer.appendChild(rect);
+
+        // Internal coordinates coordinates within the board
+        if (this.showCoords) {
+          // Bottom row shows file letters
+          if (r === 7) {
+            const text = this._el('text', {
+              x: f * sq + sq - 10,
+              y: r * sq + sq - 4,
+              'font-size': '10',
+              'font-family': "'JetBrains Mono', monospace",
+              'font-weight': '700',
+              fill: isLight ? this.darkColor : this.lightColor,
+              opacity: '0.8',
+              'pointer-events': 'none'
+            });
+            text.textContent = files[f];
+            this.squaresLayer.appendChild(text);
+          }
+          // Rightmost column shows rank numbers
+          if (f === 7) {
+            const text = this._el('text', {
+              x: f * sq + sq - 10,
+              y: r * sq + 12,
+              'font-size': '10',
+              'font-family': "'JetBrains Mono', monospace",
+              'font-weight': '700',
+              fill: isLight ? this.darkColor : this.lightColor,
+              opacity: '0.8',
+              'pointer-events': 'none'
+            });
+            text.textContent = ranks[r];
+            this.squaresLayer.appendChild(text);
+          }
+        }
       }
     }
   }
 
-  _drawCoords(offset, totalSize) {
-    const sq = this.squareSize;
-    const files = this.flipped ? [...FILES].reverse() : FILES;
-    const ranks = this.flipped ? [...RANKS].reverse() : RANKS;
 
-    for (let f = 0; f < 8; f++) {
-      const text = this._el('text', {
-        x: offset + f * sq + sq / 2,
-        y: totalSize - 2,
-        'text-anchor': 'middle',
-        'font-size': '10',
-        'font-family': "'JetBrains Mono', monospace",
-        'font-weight': '600',
-        fill: '#6b7280',
-        class: 'board-coords-file'
-      });
-      text.textContent = files[f];
-      this.svg.appendChild(text);
-    }
-
-    for (let r = 0; r < 8; r++) {
-      const text = this._el('text', {
-        x: 8,
-        y: 4 + r * sq + sq / 2 + 4,
-        'text-anchor': 'middle',
-        'font-size': '10',
-        'font-family': "'JetBrains Mono', monospace",
-        'font-weight': '600',
-        fill: '#6b7280',
-        class: 'board-coords-rank'
-      });
-      text.textContent = ranks[r];
-      this.svg.appendChild(text);
-    }
-  }
 
   // Convert board coordinates to SVG coordinates
   _toSVG(file, rank) {
@@ -328,10 +324,14 @@ export class BoardRenderer {
       const f = FILES.indexOf(hl.square[0]);
       const r = RANKS.indexOf(hl.square[1]);
       const pos = this._toSVG(f, r);
-      const rect = this._el('rect', {
+      const attrs = {
         x: pos.x, y: pos.y, width: sq, height: sq,
         fill: hl.color || 'rgba(16, 185, 129, 0.3)'
-      });
+      };
+      if (hl.class) {
+        attrs.class = hl.class;
+      }
+      const rect = this._el('rect', attrs);
       this.highlightLayer.appendChild(rect);
     }
   }
@@ -439,14 +439,22 @@ export class BoardRenderer {
       defs.appendChild(marker);
       this.arrowsLayer.appendChild(defs);
 
-      const line = this._el('line', {
+      const attrs = {
         x1, y1, x2, y2,
         stroke: arrow.color || 'rgba(245, 158, 11, 0.8)',
-        'stroke-width': 8,
+        'stroke-width': arrow.width || 8,
         'stroke-linecap': 'round',
         'marker-end': `url(#${markerId})`,
-        opacity: 0.8
-      });
+        opacity: arrow.opacity || 0.8
+      };
+      if (arrow.class) {
+        attrs.class = arrow.class;
+      }
+      if (arrow.dashed) {
+        attrs['stroke-dasharray'] = '8, 4';
+      }
+
+      const line = this._el('line', attrs);
       this.arrowsLayer.appendChild(line);
     }
   }
@@ -457,9 +465,8 @@ export class BoardRenderer {
 
     const getSquare = (e) => {
       const rect = this.svg.getBoundingClientRect();
-      const offset = this.showCoords ? 20 : 0;
-      const x = e.clientX - rect.left - offset;
-      const y = e.clientY - rect.top - 4;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
       return this._toSquare(x, y);
     };
 
