@@ -2,62 +2,14 @@ import React, { useState } from 'react';
 import { Board } from '../components/Board';
 import { ReplayPanel } from '../components/ReplayPanel';
 import { Chess } from 'chess.js';
-
-interface MoveDetails {
-  move: string;
-  eval: string;
-  idea?: string;
-  motif?: string;
-  comment?: string;
-  threat?: string;
-  alternatives?: string[];
-}
-
-interface MasterGame {
-  id: string;
-  white: string;
-  black: string;
-  event: string;
-  date: string;
-  result: string;
-  description: string;
-  initialFen: string;
-  moves: MoveDetails[];
-}
+import { MASTER_GAMES, MasterGame, MoveDetails } from '../content/master-games-db';
 
 export const MasterGames: React.FC = () => {
   const [selectedGameIdx, setSelectedGameIdx] = useState<number>(0);
   const [currentMoveIdx, setCurrentMoveIdx] = useState<number>(-1);
   const [flipped, setFlipped] = useState<boolean>(false);
 
-  const games: MasterGame[] = [
-    {
-      id: 'morphy_opera',
-      white: 'Paul Morphy',
-      black: 'Duke Karl / Count Isouard',
-      event: 'Paris Opera House',
-      date: '1858',
-      result: '1-0',
-      description: 'The most famous game in chess history. Morphy demonstrates the power of rapid development, open lines, and a spectacular mating sacrifice.',
-      initialFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-      moves: [
-        { move: 'e4', eval: '+0.3', idea: 'Control Center', motif: 'Open Lines', comment: 'Morphy opens the game by claiming space in the center.' },
-        { move: 'e5', eval: '+0.3', idea: 'Defend Center', comment: 'Black responds symmetrically, staking their own claim to the center.' },
-        { move: 'Nf3', eval: '+0.4', idea: 'Develop & Attack', motif: 'Tempo', comment: 'Developing the knight to its most active square, attacking the e5 pawn.' },
-        { move: 'd6', eval: '+0.6', idea: 'Philidor Defense', comment: 'The Philidor Defense. It defends the e5 pawn but restricts the dark-squared bishop.' },
-        { move: 'd4', eval: '+0.7', idea: 'Center Challenge', comment: 'Morphy immediately challenges Black\'s central pawn.' },
-        { move: 'Bg4', eval: '+1.1', idea: 'Pin Knight', comment: 'Black pins the f3 knight, but this is considered slightly passive.' },
-        { move: 'dxe5', eval: '+1.2', idea: 'Exchange Pawns', comment: 'Morphy exchanges pawns. Black cannot recapture immediately.' },
-        { move: 'Bxf3', eval: '+1.3', idea: 'Eliminate Knight', comment: 'Forced to trade the bishop to avoid losing material.' },
-        { move: 'Qxf3', eval: '+1.3', idea: 'Recapture Queen', comment: 'Recaptures with the queen, keeping active development lead.' },
-        { move: 'dxe5', eval: '+1.4', idea: 'Recapture Pawn', comment: 'Black recaptures the pawn, keeping material balance but lagging behind.' },
-        { move: 'Bc4', eval: '+1.8', idea: 'Mating Threat', motif: 'Weak f7', comment: 'Morphy develops the bishop with a direct threat of mate on f7.' },
-        { move: 'Nf6', eval: '+1.8', idea: 'Block Mate', comment: 'Black blocks the mating line with the knight, developing a piece.' },
-        { move: 'Qb3', eval: '+2.3', idea: 'Double Attack', motif: 'Weak b7 & f7', comment: 'Morphy creates a double attack on b7 and f7. A classic tactical concept.' },
-        { move: 'Qe7', eval: '+2.3', idea: 'Defend f7', comment: 'Black defends the f7 pawn, but now the b7 pawn is undefended.' }
-      ]
-    }
-  ];
+  const games: MasterGame[] = MASTER_GAMES;
 
   const currentGame = games[selectedGameIdx];
 

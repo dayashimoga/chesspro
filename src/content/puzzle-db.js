@@ -23,7 +23,7 @@ export const PUZZLES = [
   // Forks
   { id: 'fork_01', FEN: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', solution: 'Ng5', category: 'forks', difficulty: 'beginner', motif: 'Knight Fork' },
   { id: 'fork_02', FEN: 'r2qkb1r/ppp2ppp/2n1bn2/3pp3/4P3/1BN2N2/PPPP1PPP/R1BQK2R w KQkq - 0 5', solution: 'Nxd5', category: 'forks', difficulty: 'intermediate', motif: 'Knight Fork' },
-  { id: 'fork_03', FEN: '8/8/4k3/8/3N4/8/1K6/4r3 w - - 0 1', solution: 'Nc6', category: 'forks', difficulty: 'beginner', motif: 'Knight Fork' },
+  { id: 'fork_03', FEN: '8/3k4/8/3N4/8/8/1K6/4r3 w - - 0 1', solution: 'Nf6+', category: 'forks', difficulty: 'intermediate', motif: 'Knight Fork' },
   { id: 'fork_04', FEN: '2r3k1/pp3pp1/4p2p/8/1b2q3/1B2B1P1/PP3P1P/3QR1K1 w - - 0 1', solution: 'Qd7', category: 'forks', difficulty: 'intermediate', motif: 'Queen Fork' },
   { id: 'fork_05', FEN: 'r3k2r/ppp1nppp/3q1n2/3pN3/3P4/2N5/PPP2PPP/R2QR1K1 w kq - 0 10', solution: 'Nxf7', category: 'forks', difficulty: 'advanced', motif: 'Knight Fork' },
 
@@ -33,9 +33,9 @@ export const PUZZLES = [
   { id: 'pin_03', FEN: 'r2qk2r/ppp1bppp/2n1pn2/3p2B1/3P4/2N2N2/PPP1PPPP/R2QKB1R w KQkq - 0 6', solution: 'Bxf6', category: 'pins', difficulty: 'intermediate', motif: 'Exploiting Pin' },
 
   // Skewers
-  { id: 'skewer_01', FEN: '8/8/4k3/8/8/4K3/8/4R3 w - - 0 1', solution: 'Re1+', category: 'skewers', difficulty: 'beginner', motif: 'Rook Skewer' },
-  { id: 'skewer_02', FEN: '8/8/8/8/2k5/8/K7/1B6 w - - 0 1', solution: 'Ba2+', category: 'skewers', difficulty: 'intermediate', motif: 'Bishop Skewer' },
-  { id: 'skewer_03', FEN: '6k1/8/8/1q6/8/8/1R6/6K1 w - - 0 1', solution: 'Rb8+', category: 'skewers', difficulty: 'beginner', motif: 'Rook Skewer' },
+  { id: 'skewer_01', FEN: '8/8/2k5/8/8/r7/8/7R w - - 0 1', solution: 'Rh6+', category: 'skewers', difficulty: 'beginner', motif: 'Rook Skewer' },
+  { id: 'skewer_02', FEN: 'q7/8/2k5/8/5B2/8/8/3K4 w - - 0 1', solution: 'Be4+', category: 'skewers', difficulty: 'intermediate', motif: 'Bishop Skewer' },
+  { id: 'skewer_03', FEN: '8/8/2k5/8/8/r7/8/7R w - - 0 1', solution: 'Rh6+', category: 'skewers', difficulty: 'beginner', motif: 'Rook Skewer' },
 
   // Deflection & Decoy
   { id: 'defl_01', FEN: '6k1/5ppp/8/8/8/8/r4PPP/1R3RK1 w - - 0 1', solution: 'Rb8+', category: 'deflection', difficulty: 'beginner', motif: 'Deflection' },

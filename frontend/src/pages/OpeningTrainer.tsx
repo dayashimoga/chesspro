@@ -27,14 +27,24 @@ export const OpeningTrainer: React.FC = () => {
       endgameTransition: 'White has a pawn majority on the kingside; Black has the bishop pair to compensate for damaged pawn structure.'
     },
     {
-      id: 'sicilian',
-      name: 'Sicilian Defense',
-      side: 'Black',
-      moves: '1. e4 c5',
-      fen: 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c5 0 2',
-      trap: 'Siberian Trap: Black sacrifices a pawn in the Smith-Morra Gambit to deliver a surprise checkmate on h2 with Queen and Knight.',
-      middlegameTheme: 'Asymmetrical battles, d5 break for Black, f4 expansion for White, queenside counterplay on open c-file.',
-      endgameTransition: 'Black usually enjoys a central pawn majority (2 vs 1 pawns in center), favoring Black in standard endgames.'
+      id: 'italian',
+      name: 'Italian Game',
+      side: 'White',
+      moves: '1. e4 e5 2. Nf3 Nc6 3. Bc4',
+      fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3',
+      trap: 'Blackburne Shilling Gambit: Black traps the white king with an early knight sortie (Nd4) and queen checkmate threat.',
+      middlegameTheme: 'Classic bishop target on f7, center control with c3-d4 expansions, quiet maneuvering in Giuoco Piano.',
+      endgameTransition: 'Highly structured minor piece battles, often transitioning to rook endgames with balanced majorities.'
+    },
+    {
+      id: 'queens_gambit',
+      name: "Queen's Gambit",
+      side: 'White',
+      moves: '1. d4 d5 2. c4',
+      fen: 'rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 2',
+      trap: 'Albin Countergambit Trap: Black sacrifices a pawn and promotes a pawn to a knight on f1 with check on move 7.',
+      middlegameTheme: 'Queen-side minority attacks, isolated queen pawn (IQP) structures, outpost knight on c5.',
+      endgameTransition: 'Favorable rook endgames for White due to active rook files and pressure against backward pawns.'
     },
     {
       id: 'london',
@@ -45,6 +55,56 @@ export const OpeningTrainer: React.FC = () => {
       trap: 'Early Queen sorties by Black on b6 targeting b2 can be punished by developing pieces and trapping the black queen.',
       middlegameTheme: 'Solid pawn pyramid on c3-d4-e3, outpost knight on e5, attacking target on the h7 pawn.',
       endgameTransition: 'Symmetric structures lead to highly technical minor-piece endgames where pawn majorities are scarce.'
+    },
+    {
+      id: 'sicilian',
+      name: 'Sicilian Defense',
+      side: 'Black',
+      moves: '1. e4 c5',
+      fen: 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c5 0 2',
+      trap: 'Siberian Trap: Black sacrifices a pawn in the Smith-Morra Gambit to deliver a surprise checkmate on h2 with Queen and Knight.',
+      middlegameTheme: 'Asymmetrical battles, d5 break for Black, f4 expansion for White, queenside counterplay on open c-file.',
+      endgameTransition: 'Black usually enjoys a central pawn majority (2 vs 1 pawns in center), favoring Black in standard endgames.'
+    },
+    {
+      id: 'caro_kann',
+      name: 'Caro-Kann Defense',
+      side: 'Black',
+      moves: '1. e4 c6',
+      fen: 'rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+      trap: 'Keres Mate: White sacrifices a knight on e6 and delivers a quick smothered mate with the queen on d6 or e6.',
+      middlegameTheme: 'Solid pawn chain for Black, queenside expansion, and target focus against White\'s isolated d4 pawn.',
+      endgameTransition: 'Black enjoys a highly resilient pawn structure, making it one of the safest openings for endgame survival.'
+    },
+    {
+      id: 'french',
+      name: 'French Defense',
+      side: 'Black',
+      moves: '1. e4 e6',
+      fen: 'rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+      trap: 'Reti Gambit Trap: White offers the e4 pawn to secure rapid development and deliver mate on the back rank.',
+      middlegameTheme: 'Closed pawn chains (e5 vs d5), bad light-squared bishop for Black, active counterplay on the c5 break.',
+      endgameTransition: 'Focus on blockading the passed e5 pawn; knight outposts vs restricted bishop pairs.'
+    },
+    {
+      id: 'kings_indian',
+      name: "King's Indian Defense",
+      side: 'Black',
+      moves: '1. d4 Nf6 2. c4 g6',
+      fen: 'rnbqkb1r/pppppp1p/5np1/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3',
+      trap: 'Bayonet Attack Trap: White forces a queenside breakthrough, trapping Black\'s bishop if they play passively.',
+      middlegameTheme: 'Dynamic kingside pawn storm for Black (f5-f4-g5), queenside space invasion for White (b4-c5).',
+      endgameTransition: 'Highly imbalanced; the passer on c7 vs Black\'s passed kingside pawns decide the minor piece endgame.'
+    },
+    {
+      id: 'nimzo_indian',
+      name: 'Nimzo-Indian Defense',
+      side: 'Black',
+      moves: '1. d4 Nf6 2. c4 e6 3. Nc3 Bb4',
+      fen: 'rnbqk2r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq - 2 4',
+      trap: 'Spielmann Trap: White overextends their center pawns, allowing Black to isolate and win the d4 pawn.',
+      middlegameTheme: 'Pinning the c3 knight, doubling White\'s c-pawns, blockade on dark squares (e4/d5).',
+      endgameTransition: 'Doubled c-pawns favor Black in closed pawn endgames due to White\'s impaired pawn mobility.'
     }
   ];
 

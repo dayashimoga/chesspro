@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Chess } from 'chess.js';
 import { useAppStore } from '../store/useAppStore';
 
 interface GuidedSolverPanelProps {
@@ -13,14 +14,21 @@ interface GuidedSolverPanelProps {
   };
   onSolved: () => void;
   onSelectHighlight: (square: string | null) => void;
+  step: number;
+  setStep: (step: number) => void;
+  lastMove: { from: string; to: string; san: string } | null;
+  onChangeFen: (fen: string) => void;
 }
 
 export const GuidedSolverPanel: React.FC<GuidedSolverPanelProps> = ({
   puzzle,
   onSolved,
-  onSelectHighlight
+  onSelectHighlight,
+  step,
+  setStep,
+  lastMove,
+  onChangeFen
 }) => {
-  const [step, setStep] = useState<number>(1);
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; text: string } | null>(null);
   const [candidates, setCandidates] = useState<string[]>([]);
   const [selectedSafety, setSelectedSafety] = useState<string | null>(null);
@@ -32,7 +40,6 @@ export const GuidedSolverPanel: React.FC<GuidedSolverPanelProps> = ({
 
   // Clear states when puzzle changes
   useEffect(() => {
-    setStep(1);
     setFeedback(null);
     setCandidates([]);
     setSelectedSafety(null);
@@ -40,13 +47,82 @@ export const GuidedSolverPanel: React.FC<GuidedSolverPanelProps> = ({
     setInputOverloaded('');
   }, [puzzle]);
 
+  // Handle board moves in Step 4 and Step 5
+  useEffect(() => {
+    if (!lastMove) return;
+
+    const cleanSan = (s: string) => s.replace(/[+#x=]/g, '').toLowerCase();
+    const solutionMoves = puzzle.solution.split(' ');
+
+    if (step === 4) {
+      const expectedFirst = solutionMoves[0];
+      const isCorrect = cleanSan(lastMove.san) === cleanSan(expectedFirst);
+
+      if (isCorrect) {
+        setFeedback({ isCorrect: true, text: `Excellent starting move: ${lastMove.san}! (+5 XP)` });
+        addXP(5);
+        
+        setTimeout(() => {
+          setFeedback(null);
+          if (solutionMoves.length <= 1) {
+            // No opponent replies (e.g. Mate in 1), skip variation calculation
+            setStep(6);
+          } else {
+            // Play opponent response automatically and move to Step 5
+            const game = new Chess(puzzle.FEN);
+            try {
+              game.move(solutionMoves[0]);
+              const opponentMove = solutionMoves[1];
+              game.move(opponentMove);
+              onChangeFen(game.fen());
+              setFeedback({ isCorrect: true, text: `Opponent replies with: ${opponentMove}. Now calculate the final move.` });
+            } catch (e) {
+              console.error("Opponent move execution failed", e);
+            }
+            setStep(5);
+          }
+        }, 1500);
+      } else {
+        setFeedback({ isCorrect: false, text: `Inaccurate: ${lastMove.san} is not the best move. Try again.` });
+        // Snap back to initial FEN
+        setTimeout(() => {
+          onChangeFen(puzzle.FEN);
+        }, 1000);
+      }
+    } else if (step === 5) {
+      // Step 5 expects the final winning move (usually index 2 in the solution array)
+      const expectedFinal = solutionMoves[2] || solutionMoves[0];
+      const isCorrect = cleanSan(lastMove.san) === cleanSan(expectedFinal);
+
+      if (isCorrect) {
+        setFeedback({ isCorrect: true, text: `Brilliant! ${lastMove.san} completes the tactical combination. (+10 XP)` });
+        addXP(10);
+        setTimeout(() => {
+          setFeedback(null);
+          setStep(6);
+        }, 1500);
+      } else {
+        setFeedback({ isCorrect: false, text: `Incorrect continuation: ${lastMove.san}. Look for the final blow.` });
+        // Snap back to opponent's move state
+        setTimeout(() => {
+          const game = new Chess(puzzle.FEN);
+          try {
+            game.move(solutionMoves[0]);
+            game.move(solutionMoves[1]);
+            onChangeFen(game.fen());
+          } catch {}
+        }, 1000);
+      }
+    }
+  }, [lastMove]);
+
   const handleKingSafetySubmit = (choice: string) => {
     setSelectedSafety(choice);
-    // Simple heuristic correct answers
+    // Simple evaluation validation
     const isCorrect = choice === 'Equal' || 
                       (puzzle.motif.toLowerCase().includes('king') && choice === 'Black') ||
                       (puzzle.id.includes('m1') && choice === 'Black') || 
-                      choice === 'White'; // Simple check
+                      choice === 'White';
     
     if (isCorrect) {
       setFeedback({ isCorrect: true, text: 'Correct! You evaluated king safety accurately.' });
@@ -79,8 +155,6 @@ export const GuidedSolverPanel: React.FC<GuidedSolverPanelProps> = ({
 
   const handleOverloadedSubmit = () => {
     if (!inputOverloaded) return;
-    // Simple check
-    const isCorrect = true; // Let them specify any weak square or defender
     setFeedback({ isCorrect: true, text: `Excellent! ${inputOverloaded} is indeed a critical target.` });
     onSelectHighlight(inputOverloaded);
     setTimeout(() => {
@@ -258,7 +332,7 @@ export const GuidedSolverPanel: React.FC<GuidedSolverPanelProps> = ({
               The correct line is: <strong className="text-emerald-400 font-mono">{puzzle.solution}</strong>.
             </p>
             <div className="text-sm text-slate-400 border border-white/5 p-3 rounded-lg bg-[#0c0c14] leading-relaxed">
-              <span className="font-semibold text-white">Coach Notes:</span> Bxf7+ exposes the enemy king. If Kxf7, Nxe5+ forks king and bishop, securing an advantageous endgame with an extra pawn and central control.
+              <span className="font-semibold text-white">Coach Notes:</span> The tactical sequence exploits the **{puzzle.motif}** theme. Initiating with **{puzzle.solution.split(' ')[0]}** breaks down the defense, leading to a decisive advantage.
             </div>
             <button
               onClick={handleNextStep}

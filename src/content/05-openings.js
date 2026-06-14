@@ -203,6 +203,62 @@ export const openingsContent = {
       exercises: [
         { type: 'quiz', question: 'What advantage does the Caro-Kann have over the French Defense?', options: ['It\'s more aggressive', 'The light-squared bishop isn\'t blocked', 'It wins more games', 'It avoids all theory'], answer: 1, explanation: 'In the French (1...e6), the light-squared bishop is stuck behind the e6-d5 pawn chain. The Caro-Kann avoids this problem.' }
       ]
+    },
+    {
+      id: 'french-defense',
+      title: 'French Defense',
+      difficulty: 'intermediate',
+      theory: `
+<h2>French Defense — 1.e4 e6</h2>
+<p>A solid, counter-attacking opening where Black immediately supports d5. It creates a closed pawn structure with typical battles around the d4 and e5 chain.</p>
+`,
+      openingTree: [
+        { move: '1.e4', fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', comment: '' },
+        { move: '1...e6', fen: 'rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', comment: 'French Defense — supports d5' },
+        { move: '2.d4', fen: 'rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2', comment: '' },
+        { move: '2...d5', fen: 'rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3', comment: 'Advance variation center' }
+      ],
+      exercises: [
+        { type: 'quiz', question: 'What is Black\'s main strategic problem in the French Defense?', options: ['Vulnerable king', 'Bad light-squared bishop', 'Lack of space on kingside'], answer: 1, explanation: 'The pawn on e6 blocks the light-squared bishop on c8, which becomes Black\'s "bad bishop" for the rest of the game.' }
+      ]
+    },
+    {
+      id: 'kings-indian',
+      title: 'King\'s Indian Defense',
+      difficulty: 'advanced',
+      theory: `
+<h2>King's Indian Defense — 1.d4 Nf6 2.c4 g6</h2>
+<p>A hypermodern defense where Black allows White to occupy the center with pawns, planning to attack and undermine it later. It is highly dynamic and leads to sharp double-edged play.</p>
+`,
+      openingTree: [
+        { move: '1.d4', fen: 'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1', comment: '' },
+        { move: '1...Nf6', fen: 'rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 1 2', comment: '' },
+        { move: '2.c4', fen: 'rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2', comment: '' },
+        { move: '2...g6', fen: 'rnbqkb1r/pppppp1p/5np1/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3', comment: 'King\'s Indian setup' }
+      ],
+      exercises: [
+        { type: 'quiz', question: 'What is the standard middlegame plan for Black in the King\'s Indian Defense?', options: ['Queenside minority attack', 'Kingside pawn storm with f5-f4', 'Symmetrical trading'], answer: 1, explanation: 'Black usually castles kingside and launches a direct attack on White\'s king with ...f5-f4 and ...g5.' }
+      ]
+    },
+    {
+      id: 'nimzo-indian',
+      title: 'Nimzo-Indian Defense',
+      difficulty: 'advanced',
+      theory: `
+<h2>Nimzo-Indian Defense — 1.d4 Nf6 2.c4 e6 3.Nc3 Bb4</h2>
+<p>One of the most respected and solid defenses against 1.d4. Black pins the knight on c3, controlling the e4 square and keeping the pawn structure flexible.</p>
+`,
+      openingTree: [
+        { move: '1.d4', fen: 'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1', comment: '' },
+        { move: '1...Nf6', fen: 'rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 1 2', comment: '' },
+        { move: '2.c4', fen: 'rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2', comment: '' },
+        { move: '2...e6', fen: 'rnbqkb1r/pppp1ppp/4pn2/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3', comment: '' },
+        { move: '3.Nc3', fen: 'rnbqkb1r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq - 1 3', comment: '' },
+        { move: '3...Bb4', fen: 'rnbqk2r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq - 2 4', comment: 'Nimzo-Indian pinning the knight' }
+      ],
+      exercises: [
+        { type: 'quiz', question: 'What is the main strategic purpose of pinning White\'s c3-knight?', options: ['To win the knight immediately', 'To prevent White from playing e4 easily', 'To prepare queenside castling'], answer: 1, explanation: 'By pinning the knight, Black stops White from playing e4 easily, fighting for control of the center using pieces rather than pawns.' }
+      ]
     }
   ]
 };

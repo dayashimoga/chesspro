@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Chess } from 'chess.js';
 
 interface BoardProps {
   fen: string;
   interactive?: boolean;
-  onMove?: (from: string, to: string) => void;
+  onMove?: (from: string, to: string, san: string) => void;
   highlights?: Array<{ square: string; color?: string; class?: string }>;
   arrows?: Array<{ from: string; to: string; color?: string; class?: string; dashed?: boolean }>;
 }
@@ -17,11 +17,16 @@ export const Board: React.FC<BoardProps> = ({
   arrows = []
 }) => {
   const [selectedSq, setSelectedSq] = useState<string | null>(null);
+  const [activeFen, setActiveFen] = useState<string>(fen);
+
+  useEffect(() => {
+    setActiveFen(fen);
+  }, [fen]);
   
   const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
   
-  const game = new Chess(fen);
+  const game = new Chess(activeFen);
   const board = game.board();
 
   const handleSquareClick = (square: string) => {
@@ -34,9 +39,13 @@ export const Board: React.FC<BoardProps> = ({
         // Attempt move
         try {
           const move = game.move({ from: selectedSq, to: square, promotion: 'q' });
-          if (move && onMove) {
-            onMove(selectedSq, square);
+          if (move) {
+            setActiveFen(game.fen());
+            if (onMove) {
+              onMove(selectedSq, square, move.san);
+            }
           }
+          setSelectedSq(null);
         } catch {
           // Check if selecting another of own piece
           const piece = game.get(square as any);

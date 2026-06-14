@@ -31,6 +31,36 @@ export const EndgameTrainer: React.FC = () => {
       expectedMoves: ['Kd4', 'Ke4', 'Kf4']
     },
     {
+      id: 'endgame_triangulation',
+      title: 'Triangulation Drill',
+      category: 'King & Pawn',
+      fen: '8/8/6p1/5kP1/5P2/4K3/8/8 w - - 0 1',
+      desc: 'Use king triangulation to lose a tempo on purpose, forcing the opponent into zugzwang.',
+      keyConcepts: ['Lose a move (tempo)', 'Move in a triangle (e.g. d3-e2-d2)', 'Force enemy king to abandon defense'],
+      solutionText: 'Maneuver the king in a triangle (Kd3-Ke2-Kd2) to return to d3 with Black to move.',
+      expectedMoves: ['Kd3', 'Ke2', 'Kd2']
+    },
+    {
+      id: 'endgame_zugzwang',
+      title: 'Zugzwang Practice',
+      category: 'King & Pawn',
+      fen: '8/8/4k3/p7/P7/3K4/8/8 w - - 0 1',
+      desc: 'Force the opponent king into a position where any move they make weakens their position.',
+      keyConcepts: ['Forced moves weaken position', 'Maintain pawn barriers', 'Infiltrate with king when they yield space'],
+      solutionText: 'Play Kc4 to attack the a5 pawn, forcing the black king to move away.',
+      expectedMoves: ['Kc4']
+    },
+    {
+      id: 'endgame_passed',
+      title: 'Passed Pawns (Square Rule)',
+      category: 'King & Pawn',
+      fen: '8/8/8/4k3/1P6/8/8/4K3 w - - 0 1',
+      desc: 'Calculate if the enemy king can catch your passed pawn using the "Square of the Pawn" rule.',
+      keyConcepts: ['Square of the pawn', 'Promote without king help', 'Stop counter-infiltrations'],
+      solutionText: 'Advance the pawn (b5) to shrink the square and promote before the black king catches up.',
+      expectedMoves: ['b5', 'b6', 'b7']
+    },
+    {
       id: 'endgame_lucena',
       title: 'Lucena Bridge Building',
       category: 'Rook Endgames',
@@ -39,6 +69,36 @@ export const EndgameTrainer: React.FC = () => {
       keyConcepts: ['Pawn on 7th rank', 'Rook on 4th rank (bridge)', 'Build shield against checkstorms'],
       solutionText: '1. Rf4! followed by Rd4 to block rook checks and promote the pawn.',
       expectedMoves: ['Rf4', 'Rd4']
+    },
+    {
+      id: 'endgame_philidor',
+      title: 'Philidor Defense',
+      category: 'Rook Endgames',
+      fen: '8/8/1r6/3k4/3P4/8/3K4/3R4 b - - 0 1',
+      desc: 'Learn the defensive drawing method in rook endgames by cutting off the active king and giving back-rank checks.',
+      keyConcepts: ['Cut off king on 3rd rank', 'Wait until pawn advances', 'Deliver checkstorms from behind'],
+      solutionText: 'Keep the rook on the 6th rank (Rb6) until the pawn advances to the 6th, then drop to the 1st rank (Rb1) to check.',
+      expectedMoves: ['Rb1']
+    },
+    {
+      id: 'endgame_queen',
+      title: 'Queen vs Pawn Endgame',
+      category: 'Queen Endgames',
+      fen: '8/8/8/8/3k4/4p3/3K4/7Q w - - 0 1',
+      desc: 'Maneuver the queen to force the enemy king in front of its passed pawn, earning tempos to bring your own king closer.',
+      keyConcepts: ['Pin the passed pawn', 'Force king to block own pawn', 'March white king closer'],
+      solutionText: 'Play Qe4+ followed by Qd3 to pin and force Kd2, bringing the white king in to win.',
+      expectedMoves: ['Qe4']
+    },
+    {
+      id: 'endgame_fortress',
+      title: 'Fortress Hold Drill',
+      category: 'Fortresses',
+      fen: '8/8/p7/kp6/1p6/1P6/8/K7 w - - 0 1',
+      desc: 'Hold a draw in an otherwise lost material position by constructing an unbreakable defensive fortress.',
+      keyConcepts: ['Closed pawn barriers', 'Restricted enemy ingress paths', 'Shuffing king between safe squares'],
+      solutionText: 'Play Ka2 and shuffle between a1 and a2. Black has no way to infiltrate the closed pawn wall.',
+      expectedMoves: ['Ka2']
     }
   ];
 

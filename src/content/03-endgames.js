@@ -129,7 +129,9 @@ export const endgameContent = {
 `,
       puzzles: [
         { id: 'minor_01', fen: '8/8/8/3k4/8/3BK3/3P4/8 w - - 0 1', solution: 'Ke4', theme: 'Bishop + Pawn', difficulty: 'intermediate', explanation: 'Ke4 advances the king. With correct technique, White wins by escorting the pawn to promotion.' },
-        { id: 'minor_02', fen: '8/8/8/8/2kn4/8/2KP4/8 w - - 0 1', solution: 'd3', theme: 'Pawn vs Knight', difficulty: 'intermediate', explanation: 'Advancing the pawn creates threats. The knight must maneuver carefully to stop promotion.' }
+        { id: 'minor_02', fen: '8/8/8/8/2kn4/8/2KP4/8 w - - 0 1', solution: 'd3', theme: 'Pawn vs Knight', difficulty: 'intermediate', explanation: 'Advancing the pawn creates threats. The knight must maneuver carefully to stop promotion.' },
+        { id: 'minor_03', fen: '8/8/8/8/8/2k5/p1B5/2K5 w - - 0 1', solution: 'Bb1', theme: 'Wrong Color Bishop Corner', difficulty: 'advanced', explanation: 'Bb1! blocks the a2 pawn. If Black plays ...axb1=Q+, Kxb1 is a draw because it\'s a stalemate or wrong-colored bishop corner.' },
+        { id: 'minor_04', fen: '8/8/8/6N1/8/8/p7/k6K w - - 0 1', solution: 'Nf3', theme: 'Knight vs Rook Pawn', difficulty: 'advanced', explanation: 'Nf3! heads to d2 or e1 to stop the pawn from promoting. The knight can successfully draw against a rook pawn.' }
       ]
     },
     {
@@ -158,7 +160,9 @@ export const endgameContent = {
 `,
       puzzles: [
         { id: 'queen_01', fen: '8/8/8/8/8/5K2/6Pq/5Q2 w - - 0 1', solution: 'Qf2', theme: 'Queen Endgame', difficulty: 'expert', explanation: 'Qf2 offers a queen trade. If Qh3+, Qg3 blocks. The extra pawn wins with the queens on.' },
-        { id: 'fort_01', fen: '8/8/8/8/8/5k2/5r2/5K1R w - - 0 1', solution: 'Draw', theme: 'Fortress', difficulty: 'advanced', explanation: 'This position is a theoretical draw. The rook defends from close range and the defending king cannot be driven out.' }
+        { id: 'queen_02', fen: '8/7P/8/8/8/5k2/1q6/3K4 w - - 0 1', solution: 'h8=Q', theme: 'Queen vs Pawn on 7th', difficulty: 'advanced', explanation: 'h8=Q+ promotes the pawn with check, creating a queen vs queen drawing or winning resource.' },
+        { id: 'fort_01', fen: '8/8/8/8/8/5k2/5r2/5K1R w - - 0 1', solution: 'Draw', theme: 'Fortress', difficulty: 'advanced', explanation: 'This position is a theoretical draw. The rook defends from close range and the defending king cannot be driven out.' },
+        { id: 'fort_02', fen: '8/8/p7/kp6/1p6/1P6/8/K7 w - - 0 1', solution: 'Ka2', theme: 'King & Pawn Fortress', difficulty: 'intermediate', explanation: 'Ka2! holds the draw. The king simply shuffles between a1 and a2, and Black cannot breach the pawn barrier.' }
       ]
     }
   ]
