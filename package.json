@@ -1,0 +1,17 @@
+{
+  "name": "chessos",
+  "version": "1.0.0",
+  "description": "Chess Mastery Platform — Zero to Grandmaster",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "chess.js": "^1.0.0-beta.8"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0"
+  }
+}
