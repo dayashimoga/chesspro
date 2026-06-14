@@ -35,9 +35,18 @@ test-e2e:
 # Generate coverage reporting metrics
 test-coverage:
 	@echo "Generating Vitest coverage reports..."
-	docker run --rm -v $(CURDIR):/app -w /app/frontend npx vitest run --coverage
+	docker run --rm -v $(CURDIR):/app -w /app/frontend node:22-alpine npx vitest run --coverage
 
 # Complete validation task
-verify: test-unit
-	@echo "Verification checks passing successfully!"
+verify:
+	@echo "Starting full platform verification suite..."
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-tests.sh
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-coverage.sh
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-security.sh
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-performance.sh
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-accessibility.sh
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-docs.sh
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-architecture.sh
+	docker run --rm -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-release.sh
+	@echo "All verification pipelines completed successfully!"
 
