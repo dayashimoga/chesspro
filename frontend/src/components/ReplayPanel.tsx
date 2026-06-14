@@ -24,7 +24,7 @@ export const ReplayPanel: React.FC<ReplayPanelProps> = ({
   onFlipBoard
 }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoplayTimerRef = useRef<any | null>(null);
 
   // Clear autoplay when moves change or we reach the end
   useEffect(() => {

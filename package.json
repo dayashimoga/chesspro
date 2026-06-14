@@ -4,9 +4,9 @@
   "description": "Chess Mastery Platform — Zero to Grandmaster",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "preview": "npm run preview --prefix frontend"
   },
   "dependencies": {
     "chess.js": "^1.0.0-beta.8"
