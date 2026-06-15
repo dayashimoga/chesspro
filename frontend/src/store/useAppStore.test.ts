@@ -99,4 +99,20 @@ describe('useAppStore Zustand Store', () => {
     expect(useAppStore.getState().user.xp).toBe(15); // puzzle success gives 15 XP
     expect(useAppStore.getState().user.puzzleRating).toBeGreaterThan(800); // rating should increase
   });
+
+  it('should sync from storage', () => {
+    localStorageMock.setItem('chessos_progress', JSON.stringify({
+      xp: 400,
+      level: 2,
+      puzzleRating: 950,
+      streak: 5,
+      completedLessons: ['lesson1']
+    }));
+    useAppStore.getState().syncFromStorage();
+    const state = useAppStore.getState();
+    expect(state.user.xp).toBe(400);
+    expect(state.user.puzzleRating).toBe(950);
+    expect(state.user.streak).toBe(5);
+    expect(state.completedLessons).toContain('lesson1');
+  });
 });

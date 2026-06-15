@@ -10,17 +10,22 @@ import BlindfoldTrainer from './pages/BlindfoldTrainer';
 import AICoachDashboard from './pages/AICoachDashboard';
 import PlayVsAI from './pages/PlayVsAI';
 import SpacedReview from './pages/SpacedReview';
+import FoundationsUniversity from './pages/FoundationsUniversity';
+import TacticalUniversity from './pages/TacticalUniversity';
+import MiddlegameUniversity from './pages/MiddlegameUniversity';
 import { useAppStore } from './store/useAppStore';
 import { Storage } from './core/storage';
 
 type PageId = 'dashboard' | 'lessons' | 'puzzles' | 'games' | 'openings' | 'endgames' 
-  | 'calculation' | 'blindfold' | 'aicoach' | 'play' | 'review' | 'lesson-detail';
+  | 'calculation' | 'blindfold' | 'aicoach' | 'play' | 'review' | 'lesson-detail'
+  | 'foundations' | 'tactics' | 'middlegame';
 
 const NAV_SECTIONS = [
   {
     title: 'Main',
     items: [
       { id: 'dashboard' as PageId, label: 'Dashboard', icon: '📊' },
+      { id: 'foundations' as PageId, label: 'Foundations Uni', icon: '🏫' },
       { id: 'play' as PageId, label: 'Play vs AI', icon: '♟️' },
       { id: 'review' as PageId, label: 'Spaced Review', icon: '🔄' },
     ],
@@ -28,7 +33,7 @@ const NAV_SECTIONS = [
   {
     title: 'GM Training Labs',
     items: [
-      { id: 'puzzles' as PageId, label: 'Tactical Solver', icon: '🧩' },
+      { id: 'tactics' as PageId, label: 'Tactics Labs', icon: '🧩' },
       { id: 'calculation' as PageId, label: 'Calculation Lab', icon: '👁️' },
       { id: 'blindfold' as PageId, label: 'Blindfold Lab', icon: '🙈' },
       { id: 'endgames' as PageId, label: 'Endgame Lab', icon: '👑' },
@@ -38,6 +43,7 @@ const NAV_SECTIONS = [
   {
     title: 'Analysis & Study',
     items: [
+      { id: 'middlegame' as PageId, label: 'Middlegame Lab', icon: '⚔️' },
       { id: 'lessons' as PageId, label: 'Curriculum', icon: '📚' },
       { id: 'games' as PageId, label: 'Master Games', icon: '🏆' },
       { id: 'aicoach' as PageId, label: 'AI Chess Coach', icon: '🎙️' },
@@ -73,6 +79,9 @@ export const App: React.FC = () => {
       case 'aicoach': return <AICoachDashboard />;
       case 'play': return <PlayVsAI />;
       case 'review': return <SpacedReview />;
+      case 'foundations': return <FoundationsUniversity />;
+      case 'tactics': return <TacticalUniversity />;
+      case 'middlegame': return <MiddlegameUniversity />;
       default: return <Dashboard />;
     }
   };

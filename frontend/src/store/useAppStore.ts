@@ -13,7 +13,8 @@ export interface UserProfile {
 type PageId =
   | 'dashboard' | 'lessons' | 'puzzles' | 'games' | 'openings'
   | 'endgames' | 'calculation' | 'blindfold' | 'aicoach'
-  | 'play' | 'review' | 'settings' | 'lesson-detail';
+  | 'play' | 'review' | 'settings' | 'lesson-detail'
+  | 'foundations' | 'tactics' | 'middlegame';
 
 interface AppState {
   // Navigation

@@ -122,6 +122,14 @@ describe('Storage', () => {
       const p = Storage.getProgress();
       expect(p.streak).toBe(1);
     });
+
+    it('should increment streak when active on consecutive days', () => {
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      Storage.saveProgress({ lastActiveDate: yesterday, streak: 3 });
+      Storage.updateStreak();
+      const p = Storage.getProgress();
+      expect(p.streak).toBe(4);
+    });
   });
 
   describe('analyzeWeaknesses', () => {
@@ -223,6 +231,16 @@ describe('SpacedRepetition', () => {
       const cards = SpacedRepetition.getCards();
       expect(cards[0].repetitions).toBe(2);
       expect(cards[0].interval).toBe(6); // Second review: interval = 6
+    });
+
+    it('should multiply interval on third consecutive review', () => {
+      SpacedRepetition.addCard({ id: 'c1', front: 'Q1', back: 'A1', category: 'tactics' });
+      SpacedRepetition.reviewCard('c1', 4);
+      SpacedRepetition.reviewCard('c1', 4);
+      SpacedRepetition.reviewCard('c1', 4);
+      const cards = SpacedRepetition.getCards();
+      expect(cards[0].repetitions).toBe(3);
+      expect(cards[0].interval).toBeGreaterThan(6);
     });
 
     it('should increase ease factor with perfect quality', () => {

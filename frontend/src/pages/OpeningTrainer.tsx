@@ -1,13 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Board } from '../components/Board';
 import { SpacedRepetition } from '../core/storage';
 import { Chess } from 'chess.js';
+import { useAppStore } from '../store/useAppStore';
 
 interface OpeningItem {
   id: string;
   name: string;
   side: 'White' | 'Black';
-  moves: string;
+  moves: string[]; // parsed moves array
   fen: string;
   trap: string;
   middlegameTheme: string;
@@ -15,234 +16,292 @@ interface OpeningItem {
 }
 
 export const OpeningTrainer: React.FC = () => {
-  const [selectedOpeningIdx, setSelectedOpeningIdx] = useState<number>(0);
+  const [openings, setOpenings] = useState<OpeningItem[]>([]);
+  const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [exploringFen, setExploringFen] = useState<string | null>(null);
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
+  
+  // Guess the Move states
+  const [trainMode, setTrainMode] = useState<'explore' | 'guess'>('explore');
+  const [guessMoveIdx, setGuessMoveIdx] = useState<number>(0);
+  const [guessMessage, setGuessMessage] = useState<string>('Play the starting move of the opening.');
+
   const [practiceToast, setPracticeToast] = useState<string | null>(null);
 
-  const openings: OpeningItem[] = [
+  const addXP = useAppStore(state => state.addXP);
+  const user = useAppStore(state => state.user);
+
+  const localOpenings: OpeningItem[] = [
     {
       id: 'ruy_lopez',
-      name: 'Ruy Lopez (Spanish Opening)',
+      name: 'Ruy Lopez',
       side: 'White',
-      moves: '1. e4 e5 2. Nf3 Nc6 3. Bb5',
+      moves: ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5'],
       fen: 'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3',
       trap: 'Noah\'s Ark Trap: Black traps White\'s light-squared bishop on b3 using a pawn storm (a6, b5, c5, c4).',
       middlegameTheme: 'Fight for the d4 square, queenside expansion for Black, kingside attack build-ups for White.',
-      endgameTransition: 'White has a pawn majority on the kingside; Black has the bishop pair to compensate for damaged pawn structure.'
-    },
-    {
-      id: 'italian',
-      name: 'Italian Game',
-      side: 'White',
-      moves: '1. e4 e5 2. Nf3 Nc6 3. Bc4',
-      fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3',
-      trap: 'Blackburne Shilling Gambit: Black traps the white king with an early knight sortie (Nd4) and queen checkmate threat.',
-      middlegameTheme: 'Classic bishop target on f7, center control with c3-d4 expansions, quiet maneuvering in Giuoco Piano.',
-      endgameTransition: 'Highly structured minor piece battles, often transitioning to rook endgames with balanced majorities.'
-    },
-    {
-      id: 'queens_gambit',
-      name: "Queen's Gambit",
-      side: 'White',
-      moves: '1. d4 d5 2. c4',
-      fen: 'rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 2',
-      trap: 'Albin Countergambit Trap: Black sacrifices a pawn and promotes a pawn to a knight on f1 with check on move 7.',
-      middlegameTheme: 'Queen-side minority attacks, isolated queen pawn (IQP) structures, outpost knight on c5.',
-      endgameTransition: 'Favorable rook endgames for White due to active rook files and pressure against backward pawns.'
-    },
-    {
-      id: 'london',
-      name: 'London System',
-      side: 'White',
-      moves: '1. d4 d5 2. Bf4',
-      fen: 'rnbqkbnr/ppp1pppp/8/3p4/5B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 1 2',
-      trap: 'Early Queen sorties by Black on b6 targeting b2 can be punished by developing pieces and trapping the black queen.',
-      middlegameTheme: 'Solid pawn pyramid on c3-d4-e3, outpost knight on e5, attacking target on the h7 pawn.',
-      endgameTransition: 'Symmetric structures lead to highly technical minor-piece endgames where pawn majorities are scarce.'
+      endgameTransition: 'White has a pawn majority on the kingside; Black has the bishop pair to compensate.'
     },
     {
       id: 'sicilian',
       name: 'Sicilian Defense',
       side: 'Black',
-      moves: '1. e4 c5',
+      moves: ['e4', 'c5', 'Nf3', 'd6', 'd4', 'cxd4', 'Nxd4'],
       fen: 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c5 0 2',
-      trap: 'Siberian Trap: Black sacrifices a pawn in the Smith-Morra Gambit to deliver a surprise checkmate on h2 with Queen and Knight.',
-      middlegameTheme: 'Asymmetrical battles, d5 break for Black, f4 expansion for White, queenside counterplay on open c-file.',
-      endgameTransition: 'Black usually enjoys a central pawn majority (2 vs 1 pawns in center), favoring Black in standard endgames.'
-    },
-    {
-      id: 'caro_kann',
-      name: 'Caro-Kann Defense',
-      side: 'Black',
-      moves: '1. e4 c6',
-      fen: 'rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
-      trap: 'Keres Mate: White sacrifices a knight on e6 and delivers a quick smothered mate with the queen on d6 or e6.',
-      middlegameTheme: 'Solid pawn chain for Black, queenside expansion, and target focus against White\'s isolated d4 pawn.',
-      endgameTransition: 'Black enjoys a highly resilient pawn structure, making it one of the safest openings for endgame survival.'
-    },
-    {
-      id: 'french',
-      name: 'French Defense',
-      side: 'Black',
-      moves: '1. e4 e6',
-      fen: 'rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
-      trap: 'Reti Gambit Trap: White offers the e4 pawn to secure rapid development and deliver mate on the back rank.',
-      middlegameTheme: 'Closed pawn chains (e5 vs d5), bad light-squared bishop for Black, active counterplay on the c5 break.',
-      endgameTransition: 'Focus on blockading the passed e5 pawn; knight outposts vs restricted bishop pairs.'
-    },
-    {
-      id: 'kings_indian',
-      name: "King's Indian Defense",
-      side: 'Black',
-      moves: '1. d4 Nf6 2. c4 g6',
-      fen: 'rnbqkb1r/pppppp1p/5np1/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3',
-      trap: 'Bayonet Attack Trap: White forces a queenside breakthrough, trapping Black\'s bishop if they play passively.',
-      middlegameTheme: 'Dynamic kingside pawn storm for Black (f5-f4-g5), queenside space invasion for White (b4-c5).',
-      endgameTransition: 'Highly imbalanced; the passer on c7 vs Black\'s passed kingside pawns decide the minor piece endgame.'
-    },
-    {
-      id: 'nimzo_indian',
-      name: 'Nimzo-Indian Defense',
-      side: 'Black',
-      moves: '1. d4 Nf6 2. c4 e6 3. Nc3 Bb4',
-      fen: 'rnbqk2r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq - 2 4',
-      trap: 'Spielmann Trap: White overextends their center pawns, allowing Black to isolate and win the d4 pawn.',
-      middlegameTheme: 'Pinning the c3 knight, doubling White\'s c-pawns, blockade on dark squares (e4/d5).',
-      endgameTransition: 'Doubled c-pawns favor Black in closed pawn endgames due to White\'s impaired pawn mobility.'
+      trap: 'Siberian Trap: Black sacrifices a pawn in the Smith-Morra Gambit to deliver checkmate on h2.',
+      middlegameTheme: 'Asymmetrical battles, d5 break for Black, f4 expansion for White, queenside counterplay.',
+      endgameTransition: 'Black usually enjoys a central pawn majority (2 vs 1 pawns in center).'
     }
   ];
 
-  const currentOpening = openings[selectedOpeningIdx];
-  const displayFen = exploringFen || currentOpening.fen;
+  // Fetch openings from Worker API on mount with local fallback
+  useEffect(() => {
+    const fetchOpenings = async () => {
+      try {
+        const res = await fetch('http://localhost:8787/api/openings');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            // Map edge schema structures
+            const formatted = data.map((row: any) => ({
+              id: row.id,
+              name: row.name,
+              side: row.id.includes('sicilian') || row.id.includes('french') ? 'Black' : 'White',
+              moves: JSON.parse(row.moves || '[]'),
+              fen: row.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+              trap: row.traps || 'Avoid standard traps.',
+              middlegameTheme: row.core_ideas || 'Fight for the center.',
+              endgameTransition: row.history || 'Solid theoretical ending.'
+            }));
+            setOpenings(formatted);
+            return;
+          }
+        }
+      } catch {
+        // Fallback
+      }
+      setOpenings(localOpenings);
+    };
+    fetchOpenings();
+  }, []);
 
-  const handleMove = useCallback((from: string, to: string) => {
+  const currentOpening = openings[selectedIdx] || localOpenings[0];
+  const displayFen = exploringFen || (trainMode === 'guess' ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' : currentOpening.fen);
+
+  // Sync exploration / guess state when opening or mode changes
+  useEffect(() => {
+    setExploringFen(null);
+    setMoveHistory([]);
+    setGuessMoveIdx(0);
+    setGuessMessage(`Your turn! Guess the 1st move for White: ${currentOpening.moves[0] ? '?' : ''}`);
+  }, [selectedIdx, trainMode, openings]);
+
+  const handleMove = useCallback((from: string, to: string, san: string) => {
     const game = new Chess(displayFen);
+
     try {
-      const move = game.move({ from, to });
+      const move = game.move({ from, to, promotion: 'q' });
       if (move) {
-        setExploringFen(game.fen());
-        setMoveHistory(prev => [...prev, move.san]);
+        if (trainMode === 'guess') {
+          // Verify user guess
+          const cleanSan = (s: string) => s.replace(/[+#x=]/g, '').toLowerCase();
+          const expected = currentOpening.moves[guessMoveIdx];
+
+          if (cleanSan(move.san) === cleanSan(expected)) {
+            const nextIdx = guessMoveIdx + 1;
+            
+            if (nextIdx >= currentOpening.moves.length) {
+              setGuessMessage('🎉 Brilliant! You matched the entire opening line. (+15 XP)');
+              addXP(15);
+              setExploringFen(game.fen());
+              setMoveHistory(currentOpening.moves);
+              setTrainMode('explore');
+            } else {
+              // Opponent plays next move automatically
+              const replyMove = currentOpening.moves[nextIdx];
+              game.move(replyMove);
+              setExploringFen(game.fen());
+              setGuessMoveIdx(nextIdx + 1);
+              setGuessMessage(`Correct! Opponent played ${replyMove}. Guess the next move.`);
+            }
+          } else {
+            setGuessMessage(`❌ Incorrect. ${move.san} is not the standard line. Try again!`);
+            // Snap back
+            setTimeout(() => {
+              const resetGame = new Chess();
+              for (let i = 0; i < guessMoveIdx; i++) {
+                resetGame.move(currentOpening.moves[i]);
+              }
+              setExploringFen(resetGame.fen());
+            }, 1000);
+          }
+        } else {
+          // Free explore mode
+          setExploringFen(game.fen());
+          setMoveHistory(prev => [...prev, move.san]);
+        }
       }
     } catch {
-      // Illegal move — ignore
+      // Illegal move
     }
-  }, [displayFen]);
+  }, [displayFen, trainMode, guessMoveIdx, currentOpening]);
 
   const resetExploration = () => {
     setExploringFen(null);
     setMoveHistory([]);
+    setGuessMoveIdx(0);
+    setGuessMessage('Guess the starting move of the opening.');
   };
 
-  const selectOpening = (idx: number) => {
-    setSelectedOpeningIdx(idx);
-    setExploringFen(null);
-    setMoveHistory([]);
-  };
-
-  const addToSRS = () => {
+  const addToSRS = async () => {
+    // Save to local storage SRS card
     SpacedRepetition.addCard({
       id: `opening-${currentOpening.id}`,
-      front: `${currentOpening.name}\n\nMoves: ${currentOpening.moves}\n\nWhat are the key middlegame themes?`,
-      back: `${currentOpening.middlegameTheme}\n\nTrap to know: ${currentOpening.trap}\n\nEndgame transition: ${currentOpening.endgameTransition}`,
+      front: `${currentOpening.name}\n\nMoves: ${currentOpening.moves.join(' ')}`,
+      back: `${currentOpening.middlegameTheme}\n\nTrap: ${currentOpening.trap}`,
       category: 'openings',
     });
-    setPracticeToast('✅ Added to Spaced Repetition review queue!');
-    setTimeout(() => setPracticeToast(null), 3000);
+
+    // Save to Cloudflare Workers Repertoire API
+    try {
+      const token = localStorage.getItem('chessos_token') || `token_${user.id}`;
+      await fetch('http://localhost:8787/api/coach/repertoire', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          moveId: currentOpening.id,
+          pgnLine: currentOpening.moves.join(' '),
+          interval: 1,
+          easeFactor: 2.5,
+          repetitions: 0,
+          nextReview: Date.now() + 86400000
+        })
+      });
+    } catch {
+      // Offline fallback
+    }
+
+    setPracticeToast('✅ Opening added to your Spaced Repetition queue & Cloud Repertoire!');
+    setTimeout(() => setPracticeToast(null), 3500);
   };
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto py-4 animate-fadeIn">
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Opening Repertoire</span>
-        <h2 className="text-2xl font-black text-white font-serif">Interactive Opening Trainer</h2>
+    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
+        <div>
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Opening Builder</span>
+          <h2 className="text-2xl font-black text-white font-serif">Interactive Opening Trainer</h2>
+        </div>
+
+        {/* Explore vs Guess Mode */}
+        <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl gap-1">
+          <button
+            onClick={() => setTrainMode('explore')}
+            className={`py-1 px-3 text-xs font-bold rounded-lg transition-all ${
+              trainMode === 'explore' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
+            }`}
+          >
+            Explore Mode
+          </button>
+          <button
+            onClick={() => setTrainMode('guess')}
+            className={`py-1 px-3 text-xs font-bold rounded-lg transition-all ${
+              trainMode === 'guess' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
+            }`}
+          >
+            Guess Move Mode
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Openings List */}
+        {/* Sidebar Selector */}
         <div className="flex flex-col gap-3">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Openings Library</span>
-          {openings.map((op, idx) => (
-            <button
-              key={op.id}
-              onClick={() => selectOpening(idx)}
-              className={`p-4 rounded-2xl border text-left flex flex-col gap-1 transition-all ${
-                idx === selectedOpeningIdx 
-                  ? 'bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/20' 
-                  : 'bg-white/5 border-white/5 hover:bg-white/10'
-              }`}
-            >
-              <div className="flex justify-between items-center w-full">
-                <h4 className="font-bold text-sm text-white">{op.name}</h4>
-                <span className={`text-[10px] px-2 py-0.5 rounded font-semibold ${
-                  op.side === 'White' ? 'bg-white/10 text-slate-200' : 'bg-emerald-500/10 text-emerald-400'
-                }`}>
-                  {op.side}
-                </span>
-              </div>
-              <p className="text-xs font-mono text-slate-400 mt-1">{op.moves}</p>
-            </button>
-          ))}
-        </div>
-
-        {/* Board View */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-8 border border-white/5">
-          <Board 
-            fen={displayFen} 
-            interactive={true}
-            onMove={handleMove}
-          />
-          <div className="text-xs text-slate-500 mt-2 flex flex-col items-center gap-2">
-            {exploringFen ? (
-              <>
-                <span className="text-emerald-400">🔍 Exploring: {moveHistory.join(' ')}</span>
-                <button 
-                  onClick={resetExploration}
-                  className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1 rounded-lg border border-white/5 transition-all"
-                >
-                  ↩ Reset to opening position
-                </button>
-              </>
-            ) : (
-              <span>Make moves on the board to explore the <strong className="text-slate-300 font-semibold">{currentOpening.name}</strong></span>
-            )}
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Openings Library</span>
+          <div className="flex flex-col gap-2 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
+            {openings.map((op, idx) => (
+              <button
+                key={op.id}
+                onClick={() => setSelectedIdx(idx)}
+                className={`p-3.5 rounded-xl border text-left flex flex-col gap-1 transition-all ${
+                  idx === selectedIdx ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-white/5 border-white/5 hover:bg-white/10'
+                }`}
+              >
+                <div className="flex justify-between items-center w-full">
+                  <h4 className="font-bold text-xs text-white leading-tight">{op.name}</h4>
+                  <span className="text-[9px] bg-white/5 px-2 py-0.5 rounded text-slate-400 font-bold uppercase">
+                    {op.side}
+                  </span>
+                </div>
+                <p className="text-[10px] font-mono text-slate-500 truncate max-w-[200px]">{op.moves.join(' ')}</p>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Strategic Analysis Details */}
-        <div className="glass-panel p-6 rounded-2xl flex flex-col gap-5 justify-between">
+        {/* Center: Interactive Board */}
+        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5">
+          <Board
+            fen={displayFen}
+            interactive={true}
+            onMove={handleMove}
+          />
+          
+          {trainMode === 'guess' ? (
+            <div className="text-xs text-amber-400 mt-2 bg-amber-500/5 px-4 py-1.5 rounded-full border border-amber-500/10 font-bold text-center">
+              🎯 Guess: {guessMessage}
+            </div>
+          ) : (
+            <div className="text-xs text-slate-500 mt-2 text-center flex flex-col gap-1.5 items-center">
+              {exploringFen ? (
+                <>
+                  <span className="text-emerald-400 truncate max-w-[280px]">Exploring: {moveHistory.join(' ')}</span>
+                  <button onClick={resetExploration} className="bg-white/5 hover:bg-white/10 px-3 py-1 rounded text-[10px] border border-white/5 transition-all">
+                    ↩ Reset Line
+                  </button>
+                </>
+              ) : (
+                <span>Explore variations on the board directly.</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Right: Strategy details */}
+        <div className="glass-panel p-6 rounded-3xl border border-white/5 flex flex-col justify-between">
           <div className="flex flex-col gap-4">
             <div>
-              <span className="text-[10px] uppercase font-bold text-emerald-500">Opening Strategy</span>
-              <h3 className="text-base font-bold text-white mt-0.5">{currentOpening.name}</h3>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Opening Strategy</span>
+              <h3 className="text-base font-extrabold text-white mt-0.5">{currentOpening.name}</h3>
             </div>
 
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-2">
-              <strong className="text-xs text-emerald-400">⚡ Common Opening Trap:</strong>
-              <p className="text-xs text-slate-300 leading-relaxed">{currentOpening.trap}</p>
+            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-1">
+              <strong className="text-[11px] text-emerald-400 uppercase font-mono tracking-wider">⚡ Core Trap:</strong>
+              <p className="text-[11px] text-slate-300 leading-normal">{currentOpening.trap}</p>
             </div>
 
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-2">
-              <strong className="text-xs text-amber-400">🛡️ Typical Middlegame Themes:</strong>
-              <p className="text-xs text-slate-300 leading-relaxed">{currentOpening.middlegameTheme}</p>
+            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-1">
+              <strong className="text-[11px] text-amber-400 uppercase font-mono tracking-wider">🛡️ Middlegame Goals:</strong>
+              <p className="text-[11px] text-slate-300 leading-normal">{currentOpening.middlegameTheme}</p>
             </div>
 
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-2">
-              <strong className="text-xs text-slate-400">🏁 Endgame Transition:</strong>
-              <p className="text-xs text-slate-300 leading-relaxed">{currentOpening.endgameTransition}</p>
+            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-1">
+              <strong className="text-[11px] text-slate-400 uppercase font-mono tracking-wider">🏁 Endings structure:</strong>
+              <p className="text-[11px] text-slate-300 leading-normal">{currentOpening.endgameTransition}</p>
             </div>
 
-            {/* Practice Button + Toast */}
-            <button 
+            <button
               onClick={addToSRS}
-              className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 font-bold text-xs py-2.5 rounded-xl transition-all mt-2"
+              className="bg-emerald-500 text-bg-primary font-extrabold py-2.5 rounded-xl text-xs transition-all w-full mt-2"
             >
-              📚 Add to Spaced Repetition Queue
+              Add to Repertoire Spaced Repetition 📚
             </button>
+            
             {practiceToast && (
-              <div className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-2 rounded-lg text-center animate-fadeIn">
-                {practiceToast}
-              </div>
+              <p className="text-[10px] text-emerald-400 text-center animate-fadeIn">{practiceToast}</p>
             )}
           </div>
         </div>
@@ -250,4 +309,5 @@ export const OpeningTrainer: React.FC = () => {
     </div>
   );
 };
+
 export default OpeningTrainer;

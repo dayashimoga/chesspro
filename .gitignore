@@ -40,3 +40,12 @@ dev.db
 dev.db-journal
 /backend/prisma/dev.db
 
+# Test coverage reports
+coverage/
+frontend/coverage/
+
+# Local wrangler development data
+.wrangler/
+workers/.wrangler/
+
+

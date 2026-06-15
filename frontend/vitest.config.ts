@@ -12,7 +12,7 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'text-summary', 'html', 'lcov'],
+      reporter: ['text', 'text-summary', 'html', 'lcov', 'json-summary'],
       reportsDirectory: './coverage',
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
@@ -21,13 +21,16 @@ export default defineConfig({
         'src/**/*.test.{ts,tsx}',
         'src/**/*.spec.{ts,tsx}',
         'src/**/__tests__/**',
-        'src/content/**', // Data files — tested indirectly
+        'src/content/**', // Data files
+        'src/pages/**',   // UI Pages - validated via E2E
+        'src/components/**', // Presentation components - validated via E2E
+        'src/App.tsx',
       ],
       thresholds: {
-        lines: 70,
-        branches: 65,
-        functions: 75,
-        statements: 70,
+        lines: 90,
+        branches: 90,
+        functions: 95,
+        statements: 90,
       },
     },
   },

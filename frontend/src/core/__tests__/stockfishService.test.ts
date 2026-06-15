@@ -124,4 +124,43 @@ describe('StockfishService', () => {
       expect(result.bestMove).toBeNull();
     });
   });
+
+  describe('error handling and edge cases', () => {
+    it('should handle worker error initialization', async () => {
+      vi.stubGlobal('Worker', vi.fn().mockImplementation(() => {
+        setTimeout(() => {
+          if (mockWorkerInstance.onmessage) {
+            mockWorkerInstance.onmessage({ data: 'worker_error: Failed to load' });
+          }
+        }, 0);
+        return mockWorkerInstance;
+      }));
+
+      await expect(stockfishService.init()).rejects.toThrow('worker_error');
+    });
+
+    it('should handle runtime worker errors', async () => {
+      vi.stubGlobal('Worker', vi.fn().mockImplementation(() => {
+        setTimeout(() => {
+          if (mockWorkerInstance.onerror) {
+            mockWorkerInstance.onerror(new ErrorEvent('error', { message: 'Runtime crash' }));
+          }
+        }, 0);
+        return mockWorkerInstance;
+      }));
+
+      await expect(stockfishService.init()).rejects.toThrow();
+    });
+
+    it('should ignore invalid info lines', async () => {
+      const analyzePromise = stockfishService.analyze('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 10);
+      await new Promise(resolve => setTimeout(resolve, 5));
+      if (mockWorkerInstance.onmessage) {
+        mockWorkerInstance.onmessage({ data: 'info invalid line missing score and pv' });
+        mockWorkerInstance.onmessage({ data: 'bestmove e2e4' });
+      }
+      const result = await analyzePromise;
+      expect(result.lines).toHaveLength(0);
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import { Storage } from '../core/storage';
 
@@ -11,40 +11,56 @@ export const AICoachDashboard: React.FC = () => {
   const analysis = Storage.analyzeWeaknesses();
   const progress = Storage.getProgress();
 
-  // Create a dynamic skill score based on user rating, XP, and actual database history
-  const getSkillScore = (category: string, defaultVal: number): number => {
-    // If analyzed as weakness, score is low
-    if (analysis.weaknesses.includes(category)) return Math.max(25, defaultVal - 25);
-    // If analyzed as strength, score is high
-    if (analysis.strengths.includes(category)) return Math.min(98, defaultVal + 15);
-    // If lesson complete, boost score
-    const hasLesson = completedLessons.some(l => l.includes(category));
-    if (hasLesson) return Math.min(90, defaultVal + 10);
-    return defaultVal;
-  };
+  // Edge Workers Statistics state
+  const [stats, setStats] = useState({
+    tacticalAccuracy: 0.65,
+    openingKnowledge: 0.55,
+    endgameKnowledge: 0.45,
+    calculationDepth: 3,
+    strategicUnderstanding: 0.40,
+    puzzleAccuracy: 0.70,
+    timeUsage: 15
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('chessos_token') || `token_${user.id}`;
+        const res = await fetch('http://localhost:8787/api/progress/statistics', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setStats(data);
+        }
+      } catch {
+        // Fallback
+      }
+    };
+    fetchStats();
+  }, [user]);
 
   const weaknesses = [
-    { id: 'calculation', name: 'Tactical Calculation', score: getSkillScore('calculation', 65), desc: 'Deep visualization & variations' },
-    { id: 'endgames', name: 'Endgame Opposition', score: getSkillScore('endgames', 45), desc: 'Zugzwang, Lucena, Philidor' },
-    { id: 'foundations', name: 'King Safety Assessment', score: getSkillScore('foundations', 70), desc: 'Evaluating check threats & defense' },
-    { id: 'openings', name: 'Opening Principles', score: getSkillScore('openings', 55), desc: 'Central control & developmental tempo' },
-    { id: 'deflection', name: 'Deflection Recognition', score: getSkillScore('deflection', 40), desc: 'Luring defenders away from key tasks' }
+    { id: 'calculation', name: 'Tactical Calculation', score: Math.round(stats.tacticalAccuracy * 100), desc: 'Deep visualization & variations' },
+    { id: 'endgames', name: 'Endgame Opposition', score: Math.round(stats.endgameKnowledge * 100), desc: 'Zugzwang, Lucena, Philidor' },
+    { id: 'foundations', name: 'King Safety Assessment', score: Math.round(stats.puzzleAccuracy * 100), desc: 'Evaluating check threats & defense' },
+    { id: 'openings', name: 'Opening Principles', score: Math.round(stats.openingKnowledge * 100), desc: 'Central control & developmental tempo' },
+    { id: 'deflection', name: 'Deflection Recognition', score: Math.round(stats.strategicUnderstanding * 100), desc: 'Luring defenders away from key tasks' }
   ];
 
   // Map weaknesses to tailored suggestions
   const getRecommendations = () => {
     const recs = [];
-    if (analysis.weaknesses.includes('deflection') || analysis.weaknesses.includes('fundamentals')) {
+    if (analysis.weaknesses.includes('deflection') || analysis.weaknesses.includes('fundamentals') || stats.strategicUnderstanding < 0.5) {
       recs.push({ type: 'Puzzle Set', title: 'Deflection & Back Rank Combos', difficulty: 'Intermediate', reward: '+15 XP', page: 'puzzles' as const });
     }
-    if (analysis.weaknesses.includes('endgames') || progress.completedLessons.length < 5) {
+    if (analysis.weaknesses.includes('endgames') || progress.completedLessons.length < 5 || stats.endgameKnowledge < 0.5) {
       recs.push({ type: 'Drill Lab', title: 'Lucena Bridge Building Practice', difficulty: 'Advanced', reward: '+20 XP', page: 'endgames' as const });
     }
-    if (analysis.weaknesses.includes('openings') || progress.completedLessons.length < 2) {
+    if (analysis.weaknesses.includes('openings') || progress.completedLessons.length < 2 || stats.openingKnowledge < 0.5) {
       recs.push({ type: 'Repertoire', title: 'Sicilian Defense - Common Mistakes & Traps', difficulty: 'Beginner', reward: '+10 XP', page: 'openings' as const });
     }
     
-    // Default fallback recommendations if profile is clean
     if (recs.length === 0) {
       recs.push({ type: 'Puzzle Set', title: 'General Tactics & Mate in 2', difficulty: 'Intermediate', reward: '+15 XP', page: 'puzzles' as const });
       recs.push({ type: 'Calculation', title: 'Deep Knight Visualization', difficulty: 'Advanced', reward: '+20 XP', page: 'calculation' as const });
@@ -55,24 +71,23 @@ export const AICoachDashboard: React.FC = () => {
 
   const recommendations = getRecommendations();
 
-  // Create a structured daily routine schedule mapping to their weaknesses
   const getDailySchedule = () => {
     const list = [
       { time: '09:00 AM', task: 'Warm-up: 5 Coordinate Color Matching drills', duration: '5 min' },
     ];
-    if (analysis.weaknesses.includes('deflection') || analysis.weaknesses.includes('tactics')) {
+    if (analysis.weaknesses.includes('deflection') || analysis.weaknesses.includes('tactics') || stats.tacticalAccuracy < 0.6) {
       list.push({ time: '10:30 AM', task: 'Tactics: Solve 3 forks and deflection puzzles in Guided Solve Mode', duration: '15 min' });
     } else {
       list.push({ time: '10:30 AM', task: 'Tactics: Review 5 tactical cards in Spaced Repetition queue', duration: '10 min' });
     }
 
-    if (analysis.weaknesses.includes('calculation')) {
+    if (analysis.weaknesses.includes('calculation') || stats.calculationDepth < 4) {
       list.push({ time: '04:00 PM', task: 'Calculation: Deep visualization training (MC-02 Knight Fork)', duration: '15 min' });
     } else {
       list.push({ time: '04:00 PM', task: 'Blindfold Lab: Track coordinates of 3-move bishop routes', duration: '10 min' });
     }
 
-    if (analysis.weaknesses.includes('endgames')) {
+    if (analysis.weaknesses.includes('endgames') || stats.endgameKnowledge < 0.5) {
       list.push({ time: '08:30 PM', task: 'Endgame: Practice Lucena Position drilling against standard engine', duration: '15 min' });
     } else {
       list.push({ time: '08:30 PM', task: 'Free play: Play 1 chess game against AI (Intermediate Level)', duration: '20 min' });
@@ -83,7 +98,7 @@ export const AICoachDashboard: React.FC = () => {
   const dailySchedule = getDailySchedule();
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn">
+    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-emerald-500/15 via-indigo-500/10 to-transparent border border-white/5 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4">
@@ -215,7 +230,6 @@ export const AICoachDashboard: React.FC = () => {
               <div className="flex flex-col gap-3 border-l border-emerald-500/20 pl-4 py-1 relative">
                 {currentSchedule.map((sch, idx) => (
                   <div key={idx} className="relative flex flex-col gap-1 pb-3 last:pb-0">
-                    {/* Timeline node dot */}
                     <div className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-emerald-500 border border-bg-primary shadow-glow" />
                     <div className="flex justify-between items-center text-[9px] text-slate-500 font-mono">
                       <span>{sch.time}</span>
