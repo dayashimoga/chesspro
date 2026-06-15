@@ -3,15 +3,15 @@
 ## 1. OWASP Top 10 Risk Matrix & Protections
 
 ### A01:2021-Broken Access Control
-- **Mitigation:** NestJS route guards check JWT token credentials on all `/api/user/*` paths.
-- **Rule:** A student cannot fetch or modify another user's progress log or SRS card data by swapping the `userId` param. Ownership queries are enforced at the repository level.
+- **Mitigation:** Hono JWT middleware verifies token signatures and credentials on all `/api/user/*` paths.
+- **Rule:** A student cannot fetch or modify another user's progress log or SRS card data by swapping the `userId` param. Ownership queries are enforced at the database layer.
 
 ### A02:2021-Cryptographic Failures
-- **Mitigation:** Secure all transit via HTTPS/TLS 1.3. Passwords must be hashed using `bcrypt` (work factor 10) before storage in PostgreSQL.
+- **Mitigation:** Secure all transit via HTTPS/TLS 1.3. Passwords must be hashed using `bcrypt` (work factor 10) before storage in Cloudflare D1.
 
 ### A03:2021-Injection Attacks
 - **Mitigation:**
-  - Prisma ORM is utilized for SQL queries, parameterized by default to prevent SQL Injection.
+  - SQL queries are executed via parameterized bindings in Cloudflare D1 to prevent SQL Injection.
   - DOM-based XSS is mitigated by React's default safe string escaping. Dangerous nodes are sterilized using `dompurify` if raw HTML rendering is required.
 
 ---

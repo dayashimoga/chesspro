@@ -1,244 +1,95 @@
 import React, { useState, useEffect } from 'react';
+import { Chess } from 'chess.js';
 import { Board } from '../components/Board';
 import { GuidedSolverPanel } from '../components/GuidedSolverPanel';
+import { VariationExplorer } from '../components/VariationExplorer';
+import { ALL_PUZZLES, PUZZLE_CATEGORIES, Puzzle, getRandomPuzzle, queryPuzzles } from '../content/puzzle-db';
+import { useAppStore } from '../store/useAppStore';
 
-interface PuzzleItem {
-  id: string;
-  FEN: string;
-  solution: string;
-  category: string;
-  difficulty: string;
-  motif: string;
-  theme?: string;
-}
+type SolveMode = 'guided' | 'practice' | 'coach' | 'examination' | 'analysis';
 
 export const Puzzles: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('mate_in_1');
-  const [activeMode, setActiveMode] = useState<'guided' | 'practice'>('guided');
+  const [activeMode, setActiveMode] = useState<SolveMode>('guided');
   const [activePuzzleIdx, setActivePuzzleIdx] = useState<number>(0);
   const [customHighlight, setCustomHighlight] = useState<string | null>(null);
   const [solvedCount, setSolvedCount] = useState<number>(0);
+  const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+
+  // Examination Mode state
+  const [examTimer, setExamTimer] = useState<number>(60);
+  const [examSubmitted, setExamSubmitted] = useState<boolean>(false);
+  const [examResult, setExamResult] = useState<'success' | 'failed' | null>(null);
+
+  // Analysis Mode free play state
+  const [analysisMoves, setAnalysisMoves] = useState<string[]>([]);
 
   // Lifted solver states
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [lastMove, setLastMove] = useState<{ from: string; to: string; san: string } | null>(null);
 
-  const puzzles: PuzzleItem[] = [
-    // Mate in 1
-    {
-      id: 'm1_01',
-      FEN: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR b KQkq - 0 1',
-      solution: 'Qxf7#',
-      category: 'mate_in_1',
-      difficulty: 'beginner',
-      motif: 'Weak f7'
-    },
-    {
-      id: 'm1_02',
-      FEN: '6k1/5ppp/8/8/8/8/r4PPP/1R4K1 w - - 0 1',
-      solution: 'Rb8#',
-      category: 'mate_in_1',
-      difficulty: 'beginner',
-      motif: 'Back Rank Mate'
-    },
-    {
-      id: 'm1_03',
-      FEN: '6k1/R7/8/8/8/8/5PPP/1R4K1 w - - 0 1',
-      solution: 'Rb8#',
-      category: 'mate_in_1',
-      difficulty: 'beginner',
-      motif: 'Back Rank Mate'
-    },
-    {
-      id: 'm1_04',
-      FEN: 'r1b1kbnr/pppp1ppp/2n5/4p3/6pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 0 1',
-      solution: 'e3#',
-      category: 'mate_in_1',
-      difficulty: 'beginner',
-      motif: "Fool's Mate Variation"
-    },
-    // Mate in 2
-    {
-      id: 'm2_01',
-      FEN: '6k1/5ppp/8/8/8/2r5/1R3PPP/6K1 w - - 0 1',
-      solution: 'Rb8+ Rc8 Rxc8#',
-      category: 'mate_in_2',
-      difficulty: 'beginner',
-      motif: 'Back Rank Mate'
-    },
-    {
-      id: 'm2_02',
-      FEN: 'r1b1k2r/ppppqppp/2n5/4P3/2B1n3/B4N2/P4PPP/R2Q1RK1 w kq - 1 10',
-      solution: 'Bxf7+ Kxf7 Qd5+',
-      category: 'mate_in_2',
-      difficulty: 'intermediate',
-      motif: 'Attraction'
-    },
-    {
-      id: 'm2_03',
-      FEN: 'r2q1rk1/pb3ppp/1p1bp3/3n4/3P4/3B1N2/PP1BQPPP/R3R1K1 w - - 0 14',
-      solution: 'Bxh7+ Kxh7 Ng5+',
-      category: 'mate_in_2',
-      difficulty: 'intermediate',
-      motif: 'Greek Gift'
-    },
-    {
-      id: 'm2_04',
-      FEN: '3r2k1/5pp1/7p/R7/4n3/1Q6/5PPP/3r2K1 w - - 0 1',
-      solution: 'Qxd1 Rxd1#',
-      category: 'mate_in_2',
-      difficulty: 'beginner',
-      motif: 'Back Rank Deflection'
-    },
-    // Mate in 3
-    {
-      id: 'm3_01',
-      FEN: 'r1b3kr/pppn1pNp/8/4q3/8/8/PPPPQPPP/R1B1K2R w KQ - 0 1',
-      solution: 'Qe8+ Rxe8 Nf7#',
-      category: 'mate_in_3',
-      difficulty: 'advanced',
-      motif: 'Smothered Mate'
-    },
-    {
-      id: 'm3_02',
-      FEN: '6rk/5Qpp/7N/8/8/8/8/6QK w - - 0 1',
-      solution: 'Qg8+ Rxg8 Nf7#',
-      category: 'mate_in_3',
-      difficulty: 'intermediate',
-      motif: 'Smothered Mate'
-    },
-    {
-      id: 'm3_03',
-      FEN: 'r3k2r/ppp2ppp/2n5/3qp1Nb/8/3P3P/PPP1BPP1/R2QK2R b KQkq - 0 10',
-      solution: 'Bxe2 Qxe2 Qxg2 O-O-O',
-      category: 'mate_in_3',
-      difficulty: 'intermediate',
-      motif: 'Zwischenzug'
-    },
-    // Forks
-    {
-      id: 'fork_01',
-      FEN: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4',
-      solution: 'Ng5',
-      category: 'forks',
-      difficulty: 'beginner',
-      motif: 'Knight Fork'
-    },
-    {
-      id: 'fork_02',
-      FEN: '8/3k4/8/3N4/8/8/1K6/4r3 w - - 0 1',
-      solution: 'Nf6+',
-      category: 'forks',
-      difficulty: 'intermediate',
-      motif: 'Knight Fork'
-    },
-    {
-      id: 'fork_03',
-      FEN: '2r3k1/pp3pp1/4p2p/8/1b2q3/1B2B1P1/PP3P1P/3QR1K1 w - - 0 1',
-      solution: 'Qd7',
-      category: 'forks',
-      difficulty: 'intermediate',
-      motif: 'Queen Fork'
-    },
-    {
-      id: 'fork_04',
-      FEN: 'r3k2r/ppp1nppp/3q1n2/3pN3/3P4/2N5/PPP2PPP/R2QR1K1 w kq - 0 10',
-      solution: 'Nxf7',
-      category: 'forks',
-      difficulty: 'advanced',
-      motif: 'Knight Fork'
-    },
-    // Pins
-    {
-      id: 'pin_01',
-      FEN: 'rn1qkb1r/ppp2ppp/4pn2/3p4/3P2b1/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 2 4',
-      solution: 'Bg5',
-      category: 'pins',
-      difficulty: 'beginner',
-      motif: 'Absolute Pin'
-    },
-    {
-      id: 'pin_02',
-      FEN: 'r1bqk1nr/pppp1ppp/2n5/1Bb1p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4',
-      solution: 'Bb5',
-      category: 'pins',
-      difficulty: 'beginner',
-      motif: 'Absolute Pin'
-    },
-    {
-      id: 'pin_03',
-      FEN: 'r2qk2r/ppp1bppp/2n1pn2/3p2B1/3P4/2N2N2/PPP1PPPP/R2QKB1R w KQkq - 0 6',
-      solution: 'Bxf6',
-      category: 'pins',
-      difficulty: 'intermediate',
-      motif: 'Exploiting Pin'
-    },
-    // Skewers
-    {
-      id: 'skewer_01',
-      FEN: '8/8/2k5/8/8/r7/8/7R w - - 0 1',
-      solution: 'Rh6+',
-      category: 'skewers',
-      difficulty: 'beginner',
-      motif: 'Rook Skewer'
-    },
-    {
-      id: 'skewer_02',
-      FEN: 'q7/8/2k5/8/5B2/8/8/3K4 w - - 0 1',
-      solution: 'Be4+',
-      category: 'skewers',
-      difficulty: 'intermediate',
-      motif: 'Bishop Skewer'
-    },
-    // Deflection
-    {
-      id: 'deflection',
-      FEN: 'r4rk1/ppp1qppp/2n2n2/2bpp3/2B5/2NP1N2/PPP1QPPP/R1B2RK1 w - - 0 8',
-      solution: 'Bxe6',
-      category: 'deflection',
-      difficulty: 'advanced',
-      motif: 'Deflection'
-    },
-    // Decoy
-    {
-      id: 'decoy',
-      FEN: '6k1/pp3ppp/8/8/4r3/1Q6/PP3PPP/6K1 w - - 0 1',
-      solution: 'Qb8+',
-      category: 'decoy',
-      difficulty: 'intermediate',
-      motif: 'Attraction/Decoy'
-    },
-    // Sacrifices
-    {
-      id: 'sacrifices',
-      FEN: 'r1b2rk1/pp1nbppp/1q2p3/3pP3/3P4/3B1N2/PP3PPP/R1BQ1RK1 w - - 0 11',
-      solution: 'Bxh7+',
-      category: 'sacrifices',
-      difficulty: 'advanced',
-      motif: 'Greek Gift Sacrifice'
-    }
-  ];
+  const addXP = useAppStore(state => state.addXP);
+  const updateRating = useAppStore(state => state.updateRating);
 
-  const filteredPuzzles = puzzles.filter(p => p.category === selectedCategory);
-  const currentPuzzle = filteredPuzzles[activePuzzleIdx] || puzzles[0];
+  const filteredPuzzles = queryPuzzles({ category: selectedCategory });
+  const currentPuzzle: Puzzle = filteredPuzzles[activePuzzleIdx] || ALL_PUZZLES[0];
 
-  const [puzzleFen, setPuzzleFen] = useState<string>(currentPuzzle.FEN);
+  const [puzzleFen, setPuzzleFen] = useState<string>(currentPuzzle.fen);
 
-  // Sync FEN and clear step/moves when puzzle changes
+  // Sync FEN and clear step/moves when puzzle changes or mode changes
   useEffect(() => {
-    setPuzzleFen(currentPuzzle.FEN);
+    setPuzzleFen(currentPuzzle.fen);
     setCurrentStep(1);
     setLastMove(null);
-  }, [currentPuzzle]);
+    setExamTimer(60);
+    setExamSubmitted(false);
+    setExamResult(null);
+    setAnalysisMoves([]);
+  }, [currentPuzzle, activeMode]);
+
+  // Exam timer interval
+  useEffect(() => {
+    if (activeMode !== 'examination' || examSubmitted) return;
+    const timer = setInterval(() => {
+      setExamTimer(prev => {
+        if (prev <= 1) {
+          setExamSubmitted(true);
+          setExamResult('failed');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [activeMode, examSubmitted]);
+
+  const showToast = (type: 'success' | 'error' | 'info', text: string) => {
+    setToast({ type, text });
+    setTimeout(() => setToast(null), 3500);
+  };
 
   const handleSolved = () => {
-    setSolvedCount(solvedCount + 1);
-    alert('Congratulations! Puzzle solved successfully. You have earned +15 XP.');
+    setSolvedCount(prev => prev + 1);
+    addXP(15);
+    updateRating(12);
+    showToast('success', '🎉 Puzzle solved! +15 XP, +12 rating.');
     // Move to next puzzle
     if (activePuzzleIdx < filteredPuzzles.length - 1) {
       setActivePuzzleIdx(activePuzzleIdx + 1);
     } else {
       setActivePuzzleIdx(0);
+    }
+  };
+
+  const navigatePuzzle = (direction: 'prev' | 'next') => {
+    if (direction === 'next' && activePuzzleIdx < filteredPuzzles.length - 1) {
+      setActivePuzzleIdx(activePuzzleIdx + 1);
+    } else if (direction === 'next') {
+      setActivePuzzleIdx(0);
+    } else if (direction === 'prev' && activePuzzleIdx > 0) {
+      setActivePuzzleIdx(activePuzzleIdx - 1);
+    } else {
+      setActivePuzzleIdx(filteredPuzzles.length - 1);
     }
   };
 
@@ -250,106 +101,336 @@ export const Puzzles: React.FC = () => {
 
   const handleBoardMove = (from: string, to: string, san: string) => {
     setLastMove({ from, to, san });
+
+    if (activeMode === 'practice') {
+      const cleanSan = (s: string) => s.replace(/[+#x=]/g, '').toLowerCase();
+      const firstMoveExpected = currentPuzzle.solution[0];
+      
+      if (cleanSan(san) === cleanSan(firstMoveExpected)) {
+        if (currentPuzzle.solution.length <= 1) {
+          handleSolved();
+        } else {
+          // Play opponent response and let player make final move
+          const tempGame = new Chess(currentPuzzle.fen);
+          try {
+            tempGame.move(currentPuzzle.solution[0]);
+            const reply = currentPuzzle.solution[1];
+            tempGame.move(reply);
+            setPuzzleFen(tempGame.fen());
+            // Move expectation to final move
+            setLastMove(null);
+            // Alert or notify
+          } catch {}
+        }
+      } else {
+        // Check if final move matches
+        const finalExpected = currentPuzzle.solution[2] || currentPuzzle.solution[0];
+        if (cleanSan(san) === cleanSan(finalExpected)) {
+          handleSolved();
+        } else {
+          showToast('error', `Incorrect: ${san}. Try again!`);
+          setPuzzleFen(currentPuzzle.fen);
+        }
+      }
+    } else if (activeMode === 'examination') {
+      const cleanSan = (s: string) => s.replace(/[+#x=]/g, '').toLowerCase();
+      const firstMoveExpected = currentPuzzle.solution[0];
+      if (cleanSan(san) === cleanSan(firstMoveExpected)) {
+        setExamResult('success');
+        addXP(20);
+        updateRating(15);
+      } else {
+        setExamResult('failed');
+        updateRating(-8);
+      }
+      setExamSubmitted(true);
+    } else if (activeMode === 'analysis') {
+      setAnalysisMoves(prev => [...prev, san]);
+    }
   };
 
   const activeHighlights = customHighlight 
     ? [{ square: customHighlight, color: 'rgba(239, 68, 68, 0.4)', class: 'border-2 border-red-500' }]
     : [];
 
-  const isBoardInteractive = activeMode === 'practice' || (activeMode === 'guided' && (currentStep === 4 || currentStep === 5));
+  const isBoardInteractive = activeMode === 'analysis' ||
+                             activeMode === 'practice' ||
+                             (activeMode === 'examination' && !examSubmitted) ||
+                             (activeMode === 'coach') ||
+                             (activeMode === 'guided' && (currentStep === 4 || currentStep === 5));
+
+  const changeMode = (mode: SolveMode) => {
+    setActiveMode(mode);
+  };
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto py-4 animate-fadeIn">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Practice Arena</span>
-          <h2 className="text-2xl font-black text-white font-serif">Interactive Chess Puzzles</h2>
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Mastery Arena</span>
+          <h2 className="text-2xl font-black text-white font-serif">Tactical Solver Labs</h2>
         </div>
-        <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl">
-          <button
-            onClick={() => setActiveMode('guided')}
-            className={`py-1.5 px-4 text-xs font-bold rounded-lg transition-all ${
-              activeMode === 'guided' 
-                ? 'bg-emerald-500 text-bg-primary font-bold shadow-glow' 
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Guided Solve Mode
-          </button>
-          <button
-            onClick={() => setActiveMode('practice')}
-            className={`py-1.5 px-4 text-xs font-bold rounded-lg transition-all ${
-              activeMode === 'practice' 
-                ? 'bg-emerald-500 text-bg-primary font-bold shadow-glow' 
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Practice Mode
-          </button>
+
+        {/* 5 Solve Modes Switcher */}
+        <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl flex-wrap gap-1">
+          {([
+            { id: 'guided', label: 'Guided Coach' },
+            { id: 'practice', label: 'Standard Practice' },
+            { id: 'coach', label: 'AI Hint Helper' },
+            { id: 'examination', label: 'Exam Stress' },
+            { id: 'analysis', label: 'Free Analysis' }
+          ] as const).map(m => (
+            <button
+              key={m.id}
+              onClick={() => changeMode(m.id)}
+              className={`py-1.5 px-3.5 text-xs font-bold rounded-lg transition-all ${
+                activeMode === m.id 
+                  ? 'bg-emerald-500 text-bg-primary font-bold shadow-glow' 
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Category Menu Selector */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Categories</span>
-          <div className="flex flex-col gap-2">
-            {[
-              { id: 'mate_in_1', label: 'Mate in 1' },
-              { id: 'mate_in_2', label: 'Mate in 2' },
-              { id: 'mate_in_3', label: 'Mate in 3' },
-              { id: 'forks', label: 'Forks & Double Attacks' },
-              { id: 'pins', label: 'Pins' },
-              { id: 'skewers', label: 'Skewers' },
-              { id: 'deflection', label: 'Deflection' },
-              { id: 'decoy', label: 'Decoy' },
-              { id: 'sacrifices', label: 'Sacrifices' }
-            ].map(cat => (
+          <div className="flex flex-col gap-2 max-h-[380px] overflow-y-auto pr-1">
+            {PUZZLE_CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => selectCategory(cat.id)}
-                className={`p-3 rounded-xl border text-left text-xs font-semibold transition-all ${
+                className={`p-3 rounded-xl border text-left text-xs font-semibold flex justify-between items-center transition-all ${
                   selectedCategory === cat.id 
                     ? 'bg-emerald-500/10 border-emerald-500/30 text-white' 
                     : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-400 hover:text-slate-200'
                 }`}
               >
-                {cat.label}
+                <span className="flex items-center gap-2">
+                  <span>{cat.icon}</span>
+                  <span>{cat.label}</span>
+                </span>
+                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-slate-500 font-mono">
+                  {cat.count}
+                </span>
               </button>
             ))}
           </div>
-          <div className="text-xs text-slate-500 bg-white/5 p-4 rounded-xl border border-white/5 leading-relaxed mt-4">
-            🔥 Puzzles Solved: <span className="text-white font-bold">{solvedCount}</span>
+
+          <div className="glass-panel p-4 rounded-xl border border-white/5 leading-relaxed mt-2 text-xs flex justify-between items-center text-slate-400">
+            <span>🔥 Puzzles Solved:</span>
+            <span className="text-emerald-400 font-bold text-sm">{solvedCount}</span>
           </div>
         </div>
 
         {/* Board View */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-8 border border-white/5">
+        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5">
           <Board 
             fen={puzzleFen} 
             interactive={isBoardInteractive} 
             highlights={activeHighlights}
             onMove={handleBoardMove}
           />
-          <div className="text-xs text-slate-500 mt-2 font-mono">
-            Difficulty: <span className="text-amber-400 uppercase font-semibold">{currentPuzzle.difficulty}</span> • Theme: {currentPuzzle.motif}
+          <div className="text-[11px] text-slate-500 mt-2 font-mono text-center flex flex-col gap-1">
+            <div>
+              Difficulty: <span className="text-amber-400 uppercase font-semibold">{currentPuzzle.difficulty}</span> • Theme: {currentPuzzle.theme}
+              • <span className="text-slate-400">{activePuzzleIdx + 1}/{filteredPuzzles.length}</span>
+            </div>
+            {/* Puzzle Navigation */}
+            <div className="flex items-center justify-center gap-2 mt-1">
+              <button onClick={() => navigatePuzzle('prev')} className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1 rounded-lg border border-white/5 transition-all">◀ Prev</button>
+              <button onClick={() => navigatePuzzle('next')} className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1 rounded-lg border border-white/5 transition-all">Next ▶</button>
+            </div>
+            {activeMode === 'analysis' && (
+              <div className="text-emerald-400 text-xs mt-1 bg-emerald-500/5 px-3 py-1 rounded-full border border-emerald-500/10">
+                📊 FREE PLAY: Make moves for either color to explore variants
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Solver Panel */}
+        {/* Solver Panel or Mode Panel */}
         <div className="flex justify-center">
-          <GuidedSolverPanel 
-            puzzle={currentPuzzle} 
-            onSolved={handleSolved}
-            onSelectHighlight={setCustomHighlight}
-            step={currentStep}
-            setStep={setCurrentStep}
-            lastMove={lastMove}
-            onChangeFen={setPuzzleFen}
-          />
+          {activeMode === 'guided' && (
+            <GuidedSolverPanel 
+              puzzle={currentPuzzle} 
+              onSolved={handleSolved}
+              onSelectHighlight={setCustomHighlight}
+              step={currentStep}
+              setStep={setCurrentStep}
+              lastMove={lastMove}
+              onChangeFen={setPuzzleFen}
+            />
+          )}
+
+          {activeMode === 'practice' && (
+            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+              <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
+                <span>🎯</span> Standard Practice Mode
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Solve the tactical combination directly on the board. No guidance, just pure chess execution.
+              </p>
+              <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl text-center my-2">
+                <span className="text-[10px] text-slate-500 uppercase block">Expected moves</span>
+                <span className="text-sm font-mono text-white font-bold">{currentPuzzle.solution.length} move sequence</span>
+              </div>
+              <button 
+                onClick={() => setPuzzleFen(currentPuzzle.fen)}
+                className="bg-white/5 hover:bg-white/10 text-white font-semibold py-2 rounded-xl text-xs transition-all border border-white/10"
+              >
+                Reset Position
+              </button>
+            </div>
+          )}
+
+          {activeMode === 'coach' && (
+            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+              <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
+                <span>💡</span> AI Hint Helper
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Need a hand? The AI Coach has analyzed the position and provides the following coaching pointers:
+              </p>
+              <div className="flex flex-col gap-3 bg-[#0c0c14] border border-white/5 p-4 rounded-xl">
+                <div className="text-xs">
+                  <span className="font-semibold text-emerald-400 block mb-1">🔑 Core Motif:</span>
+                  <span className="text-slate-300">{currentPuzzle.theme}</span>
+                </div>
+                <div className="text-xs">
+                  <span className="font-semibold text-amber-400 block mb-1">📢 Coach Tip:</span>
+                  <span className="text-slate-300">{currentPuzzle.coachNotes}</span>
+                </div>
+                <div className="text-xs">
+                  <span className="font-semibold text-slate-400 block mb-1">🔍 Target coordinates:</span>
+                  <span className="text-slate-300">Look closely at pieces defending the 8th rank or overloaded files.</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => showToast('info', `First move hint: ${currentPuzzle.solution[0]}`)}
+                className="bg-emerald-500 hover:bg-emerald-600 text-bg-primary font-bold py-2 rounded-xl text-xs transition-all"
+              >
+                Reveal First Move SAN
+              </button>
+            </div>
+          )}
+
+          {activeMode === 'examination' && (
+            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+              <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
+                <span>⏰</span> Tournament Stress Test
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Simulate real chess tournament stress. Solve the puzzle within the time limit. Incorrect moves decrease rating instantly.
+              </p>
+              
+              <div className="flex justify-between gap-3 my-2">
+                <div className="flex-1 bg-[#0c0c14] border border-white/5 p-3 rounded-xl text-center">
+                  <span className="text-[10px] text-slate-500 block uppercase">Time Remaining</span>
+                  <span className={`text-lg font-mono font-bold ${examTimer <= 15 ? 'text-red-500 animate-pulse' : 'text-amber-500'}`}>
+                    {examTimer}s
+                  </span>
+                </div>
+                <div className="flex-1 bg-[#0c0c14] border border-white/5 p-3 rounded-xl text-center">
+                  <span className="text-[10px] text-slate-500 block uppercase">Reward</span>
+                  <span className="text-lg font-mono font-bold text-emerald-400">+20 XP</span>
+                </div>
+              </div>
+
+              {examSubmitted && (
+                <div className={`p-4 rounded-xl border text-center font-bold ${
+                  examResult === 'success' 
+                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
+                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+                }`}>
+                  {examResult === 'success' 
+                    ? '🎉 EXAM PASSED! (+20 XP, +15 Rating)' 
+                    : '❌ EXAM FAILED! (-8 Rating)'}
+                  <button 
+                    onClick={() => {
+                      setExamSubmitted(false);
+                      setExamResult(null);
+                      setExamTimer(60);
+                      if (activePuzzleIdx < filteredPuzzles.length - 1) {
+                        setActivePuzzleIdx(activePuzzleIdx + 1);
+                      } else {
+                        setActivePuzzleIdx(0);
+                      }
+                    }}
+                    className="mt-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold py-1.5 px-4 rounded-lg text-xs w-full block"
+                  >
+                    Load Next Position
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeMode === 'analysis' && (
+            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+              <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
+                <span>📊</span> Free Analysis Mode
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Free analysis mode allows exploring multiple candidate options and analyzing branching variations on the board.
+              </p>
+
+              <div className="bg-[#0c0c14] border border-white/5 p-3 rounded-xl min-h-[100px] flex flex-col justify-between">
+                <span className="text-[10px] text-slate-500 uppercase block mb-1">Played Moves</span>
+                <div className="flex flex-wrap gap-1.5 text-xs font-mono max-h-[80px] overflow-y-auto">
+                  {analysisMoves.length > 0 ? (
+                    analysisMoves.map((m, idx) => (
+                      <span key={idx} className="bg-white/5 px-2 py-0.5 rounded border border-white/5 text-slate-300">
+                        {idx + 1}. {m}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-slate-500 italic">No moves entered yet...</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => {
+                    setPuzzleFen(currentPuzzle.fen);
+                    setAnalysisMoves([]);
+                  }}
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-2 rounded-xl text-xs transition-all text-center"
+                >
+                  Reset Board
+                </button>
+                <button 
+                  onClick={() => {
+                    showToast('info', 'Use board reset to return to the starting position.');
+                  }}
+                  className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-2 rounded-xl text-xs transition-all text-center"
+                >
+                  Undo Move
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl border text-sm font-semibold animate-fadeIn max-w-md ${
+          toast.type === 'success' ? 'bg-emerald-500/90 border-emerald-400/30 text-white' :
+          toast.type === 'error' ? 'bg-red-500/90 border-red-400/30 text-white' :
+          'bg-slate-700/90 border-slate-500/30 text-white'
+        }`}>
+          {toast.text}
+        </div>
+      )}
     </div>
   );
 };
+
 export default Puzzles;

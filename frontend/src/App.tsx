@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Dashboard from './pages/Dashboard';
 import Lessons from './pages/Lessons';
 import Puzzles from './pages/Puzzles';
@@ -8,85 +8,150 @@ import EndgameTrainer from './pages/EndgameTrainer';
 import CalculationTrainer from './pages/CalculationTrainer';
 import BlindfoldTrainer from './pages/BlindfoldTrainer';
 import AICoachDashboard from './pages/AICoachDashboard';
+import PlayVsAI from './pages/PlayVsAI';
+import SpacedReview from './pages/SpacedReview';
 import { useAppStore } from './store/useAppStore';
+import { Storage } from './core/storage';
 
-type PageId = 'dashboard' | 'lessons' | 'puzzles' | 'games' | 'openings' | 'endgames' | 'calculation' | 'blindfold' | 'aicoach';
+type PageId = 'dashboard' | 'lessons' | 'puzzles' | 'games' | 'openings' | 'endgames' 
+  | 'calculation' | 'blindfold' | 'aicoach' | 'play' | 'review' | 'lesson-detail';
+
+const NAV_SECTIONS = [
+  {
+    title: 'Main',
+    items: [
+      { id: 'dashboard' as PageId, label: 'Dashboard', icon: '📊' },
+      { id: 'play' as PageId, label: 'Play vs AI', icon: '♟️' },
+      { id: 'review' as PageId, label: 'Spaced Review', icon: '🔄' },
+    ],
+  },
+  {
+    title: 'GM Training Labs',
+    items: [
+      { id: 'puzzles' as PageId, label: 'Tactical Solver', icon: '🧩' },
+      { id: 'calculation' as PageId, label: 'Calculation Lab', icon: '👁️' },
+      { id: 'blindfold' as PageId, label: 'Blindfold Lab', icon: '🙈' },
+      { id: 'endgames' as PageId, label: 'Endgame Lab', icon: '👑' },
+      { id: 'openings' as PageId, label: 'Opening Builder', icon: '🌳' },
+    ],
+  },
+  {
+    title: 'Analysis & Study',
+    items: [
+      { id: 'lessons' as PageId, label: 'Curriculum', icon: '📚' },
+      { id: 'games' as PageId, label: 'Master Games', icon: '🏆' },
+      { id: 'aicoach' as PageId, label: 'AI Chess Coach', icon: '🎙️' },
+    ],
+  },
+];
 
 export const App: React.FC = () => {
-  const [activePage, setActivePage] = useState<PageId>('dashboard');
-  const user = useAppStore(state => state.user) || {
-    id: 'user_01',
-    email: 'learner@chessos.com',
-    xp: 620,
-    level: 3,
-    puzzleRating: 1450,
-    streak: 5
-  };
+  const activePage = useAppStore(s => s.activePage);
+  const setActivePage = useAppStore(s => s.setActivePage);
+  const user = useAppStore(s => s.user);
 
-  const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'lessons', label: 'Lessons Lab', icon: '📚' },
-    { id: 'puzzles', label: 'Puzzle Arena', icon: '⚔️' },
-    { id: 'games', label: 'Master Games', icon: '🏆' },
-    { id: 'openings', label: 'Openings', icon: '📖' },
-    { id: 'endgames', label: 'Endgame Lab', icon: '🏁' },
-    { id: 'calculation', label: 'Calculation', icon: '🧠' },
-    { id: 'blindfold', label: 'Blindfold Vision', icon: '👁️' },
-    { id: 'aicoach', label: 'AI Mentor', icon: '🤖' }
-  ];
+  // Update streak on mount
+  React.useEffect(() => {
+    Storage.updateStreak();
+    useAppStore.getState().syncFromStorage();
+  }, []);
+
+  const xpProgress = user.xp % 250;
+  const xpPercentage = (xpProgress / 250) * 100;
+
+  const renderPage = () => {
+    switch (activePage) {
+      case 'dashboard': return <Dashboard />;
+      case 'lessons': return <Lessons />;
+      case 'lesson-detail': return <Lessons />;
+      case 'puzzles': return <Puzzles />;
+      case 'games': return <MasterGames />;
+      case 'openings': return <OpeningTrainer />;
+      case 'endgames': return <EndgameTrainer />;
+      case 'calculation': return <CalculationTrainer />;
+      case 'blindfold': return <BlindfoldTrainer />;
+      case 'aicoach': return <AICoachDashboard />;
+      case 'play': return <PlayVsAI />;
+      case 'review': return <SpacedReview />;
+      default: return <Dashboard />;
+    }
+  };
 
   return (
     <div className="flex h-screen bg-bg-primary overflow-hidden">
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-bg-secondary border-r border-white/5 flex flex-col justify-between shrink-0">
-        <div className="flex flex-col gap-6 p-6">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl text-emerald-500 font-bold">♔</span>
-            <h1 className="text-xl font-black text-white font-serif tracking-wide">ChessOS <span className="text-emerald-500 text-xs">PRO</span></h1>
+      <aside className="w-64 bg-bg-secondary border-r border-white/5 flex flex-col justify-between shrink-0 overflow-y-auto">
+        <div className="flex flex-col gap-1 p-4">
+          {/* Brand */}
+          <div className="flex items-center gap-3 px-3 py-4 mb-2">
+            <span className="text-3xl font-bold" style={{ color: '#10b981' }}>♚</span>
+            <div>
+              <h1 className="text-lg font-black text-white tracking-wide leading-tight">ChessOS</h1>
+              <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#10b981' }}>GM MASTERY</span>
+            </div>
           </div>
-          
-          <nav className="flex flex-col gap-1.5">
-            {navItems.map(item => (
-              <button
-                key={item.id}
-                onClick={() => setActivePage(item.id as PageId)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                  activePage === item.id 
-                    ? 'bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/15' 
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]'
-                }`}
-              >
-                <span>{item.icon}</span>
-                {item.label}
-              </button>
-            ))}
-          </nav>
+
+          {/* Nav Sections */}
+          {NAV_SECTIONS.map(section => (
+            <div key={section.title} className="mb-3">
+              <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 px-3 mb-1.5">
+                {section.title}
+              </div>
+              {section.items.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setActivePage(item.id)}
+                  className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    activePage === item.id
+                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/15'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03] border border-transparent'
+                  }`}
+                >
+                  <span className="text-base">{item.icon}</span>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          ))}
         </div>
 
         {/* User Card */}
-        <div className="p-4 border-t border-white/5 bg-bg-tertiary/20">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center font-bold text-bg-primary text-sm">
-              L{user.level}
+        <div className="p-4 border-t border-white/5">
+          <div className="mb-2">
+            <div className="flex justify-between text-[10px] font-bold mb-1">
+              <span style={{ color: '#fbbf24' }}>LEVEL {user.level}</span>
+              <span className="text-slate-400">{user.xp} XP</span>
             </div>
-            <div className="min-w-0">
-              <p className="text-xs font-bold text-white truncate">{user.email}</p>
-              <p className="text-[10px] text-slate-500 font-mono mt-0.5">{user.xp} XP • {user.puzzleRating} Elo</p>
+            <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${xpPercentage}%`, background: 'linear-gradient(90deg, #10b981, #fbbf24)' }}
+              />
+            </div>
+          </div>
+          <div className="flex gap-4 text-center">
+            <div>
+              <div className="text-lg font-bold text-white">{user.puzzleRating}</div>
+              <div className="text-[10px] text-slate-500">Elo</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold" style={{ color: '#f59e0b' }}>🔥 {user.streak}</div>
+              <div className="text-[10px] text-slate-500">Streak</div>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-bg-secondary/40 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-8 shrink-0">
+        <header className="h-14 bg-bg-secondary/40 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-6 shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Active Workspace</span>
-            <span className="text-slate-500">/</span>
-            <span className="text-white text-xs font-bold font-mono capitalize">{activePage}</span>
+            <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">ChessOS</span>
+            <span className="text-slate-600">›</span>
+            <span className="text-white text-xs font-bold capitalize">{activePage.replace('-', ' ')}</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/15 px-3 py-1 rounded-full">
               <span>🔥</span>
               <span>{user.streak} Day Streak</span>
@@ -98,17 +163,9 @@ export const App: React.FC = () => {
           </div>
         </header>
 
-        {/* Page Container */}
-        <main className="flex-1 overflow-y-auto p-8 bg-bg-primary">
-          {activePage === 'dashboard' && <Dashboard />}
-          {activePage === 'lessons' && <Lessons />}
-          {activePage === 'puzzles' && <Puzzles />}
-          {activePage === 'games' && <MasterGames />}
-          {activePage === 'openings' && <OpeningTrainer />}
-          {activePage === 'endgames' && <EndgameTrainer />}
-          {activePage === 'calculation' && <CalculationTrainer />}
-          {activePage === 'blindfold' && <BlindfoldTrainer />}
-          {activePage === 'aicoach' && <AICoachDashboard />}
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto p-6 bg-bg-primary">
+          {renderPage()}
         </main>
       </div>
     </div>

@@ -14,13 +14,16 @@ To spin up both frontend and backend locally using Docker:
 
 ### Build & Run
 1. Pull the repository.
-2. Initialize database:
+2. Initialize the local D1 database schema:
    ```bash
-   docker run --rm -v ${pwd}:/app -w /app/backend node:22 npx prisma db push
+   docker run --rm -v $(pwd):/app -w /app/workers node:22-alpine npx wrangler d1 migrations apply local-db --local
    ```
-3. Start the development servers:
-   - **Frontend React**: Run on port 3105.
-   - **Backend NestJS**: Run on port 3005.
+3. Start the development servers using Docker Compose:
+   ```bash
+   docker compose up -d
+   ```
+   - **Frontend React**: Accessible on port 3105.
+   - **Backend Workers (Hono/Wrangler)**: Runs on port 8787.
 
 ---
 
@@ -44,9 +47,9 @@ Every branch push (excluding `main`) triggers automated preview builds:
 
 To deploy the production-ready platform:
 
-1. **Prisma SQLite client build**:
+1. **Build the Frontend**:
    ```bash
-   npm run build
+   npm run build --workspace=frontend
    ```
 2. **Deploy Frontend to Cloudflare Pages**:
    Upload the compiled static bundle in `frontend/dist/` directly via the Cloudflare Dashboard or Wrangler CLI:

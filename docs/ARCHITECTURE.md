@@ -1,13 +1,13 @@
 # Architecture Specification — ChessOS Pro
 
 ## 1. System Components
-ChessOS Pro is designed as a modular monorepo containing a high-performance React frontend and a robust NestJS backend.
+ChessOS Pro is designed as a modular monorepo containing a high-performance React frontend and a robust Hono API backend deployed as a Cloudflare Worker.
 
 ```mermaid
 graph LR
-  Client[React Frontend] -->|REST API / HTTPS| Backend[NestJS Backend]
+  Client[React Frontend] -->|REST API / HTTPS| Backend[Hono Backend]
   Client -->|WS Channels| CoachWS[WebSocket Coach Channel]
-  Backend -->|Prisma Client| DB[(PostgreSQL / D1)]
+  Backend -->|D1 Client| DB[(Cloudflare D1 SQL)]
   Client -->|Local Thread| SFWorker[Stockfish CDN Worker]
 ```
 
@@ -18,9 +18,9 @@ graph LR
 - **Stockfish Service:** Worker thread running in background to evaluate positions and pv moves asynchronously.
 
 ### 1.2 Backend API Services
-- **NestJS Gateway:** Directs HTTP requests to corresponding modules.
-- **Prisma Client:** Performs database queries to PostgreSQL (local/production) or Cloudflare D1 (edge).
-- **JWT Guard:** Intercepts incoming requests to verify identity and permissions.
+- **Hono Gateway:** Directs HTTP requests to corresponding route handlers.
+- **D1 Client:** Performs database queries directly against Cloudflare D1 SQL database.
+- **JWT Auth Middleware:** Intercepts incoming requests to verify identity and permissions.
 
 ---
 
@@ -36,6 +36,6 @@ graph TD
 
 ### 2.1 Edge Deployment on Cloudflare
 - **Frontend Hosting:** Cloudflare Pages hosts the compiled static React build folder (`dist/`).
-- **Edge API Gateway:** Backend runs inside Cloudflare Workers or serverless NestJS nodes.
+- **Edge API Gateway:** Backend runs inside Cloudflare Workers using the Hono framework.
 - **Edge DB:** Cloudflare D1 stores SQL data globally close to the user client.
 - **Asset Storage:** Cloudflare R2 serves as the asset storage bucket for game studies and user profile configurations.

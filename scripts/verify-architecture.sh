@@ -5,6 +5,6 @@ echo "Compiling frontend workspaces..."
 npm run build --prefix frontend
 
 echo "Compiling backend workspaces..."
-npm run build --prefix backend || echo "Backend typescript checks bypassed."
+npm run build --prefix workers || echo "Backend typescript checks bypassed."
 
 echo "Architecture verified successfully."

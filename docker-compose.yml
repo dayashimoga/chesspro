@@ -1,0 +1,32 @@
+# ChessOS Pro — Docker Compose for local development
+# Usage: docker compose up -d (starts frontend + backend)
+# Usage: docker compose down   (stops all services)
+
+services:
+  frontend:
+    image: node:22-alpine
+    container_name: chessos-frontend-dev
+    working_dir: /app/frontend
+    volumes:
+      - .:/app
+    ports:
+      - "3105:3105"
+    command: npx vite --host 0.0.0.0 --port 3105
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+
+  backend:
+    image: node:22-alpine
+    container_name: chessos-backend-dev
+    working_dir: /app/workers
+    volumes:
+      - .:/app
+    ports:
+      - "8787:8787"
+    command: npx wrangler dev --ip 0.0.0.0
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - frontend

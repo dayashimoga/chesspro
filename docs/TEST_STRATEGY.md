@@ -18,7 +18,7 @@ We enforce strict coverage constraints. The CI/CD pipeline will fail immediately
 Targeting core algorithms: minimax scoring heuristics, SM-2 calculation schedules, FEN mirroring mappings, and coordinate validations.
 
 ### Integration Tests (Vitest)
-Targeting controller response states, authentication JWT guards, and Prisma connection queries.
+Targeting controller response states, authentication JWT guards, and Cloudflare D1 database queries.
 
 ### End-to-End Tests (Playwright)
 Testing active student flows:

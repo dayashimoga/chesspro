@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Board } from '../components/Board';
+import { SpacedRepetition } from '../core/storage';
+import { Chess } from 'chess.js';
 
 interface OpeningItem {
   id: string;
@@ -14,6 +16,9 @@ interface OpeningItem {
 
 export const OpeningTrainer: React.FC = () => {
   const [selectedOpeningIdx, setSelectedOpeningIdx] = useState<number>(0);
+  const [exploringFen, setExploringFen] = useState<string | null>(null);
+  const [moveHistory, setMoveHistory] = useState<string[]>([]);
+  const [practiceToast, setPracticeToast] = useState<string | null>(null);
 
   const openings: OpeningItem[] = [
     {
@@ -109,6 +114,42 @@ export const OpeningTrainer: React.FC = () => {
   ];
 
   const currentOpening = openings[selectedOpeningIdx];
+  const displayFen = exploringFen || currentOpening.fen;
+
+  const handleMove = useCallback((from: string, to: string) => {
+    const game = new Chess(displayFen);
+    try {
+      const move = game.move({ from, to });
+      if (move) {
+        setExploringFen(game.fen());
+        setMoveHistory(prev => [...prev, move.san]);
+      }
+    } catch {
+      // Illegal move — ignore
+    }
+  }, [displayFen]);
+
+  const resetExploration = () => {
+    setExploringFen(null);
+    setMoveHistory([]);
+  };
+
+  const selectOpening = (idx: number) => {
+    setSelectedOpeningIdx(idx);
+    setExploringFen(null);
+    setMoveHistory([]);
+  };
+
+  const addToSRS = () => {
+    SpacedRepetition.addCard({
+      id: `opening-${currentOpening.id}`,
+      front: `${currentOpening.name}\n\nMoves: ${currentOpening.moves}\n\nWhat are the key middlegame themes?`,
+      back: `${currentOpening.middlegameTheme}\n\nTrap to know: ${currentOpening.trap}\n\nEndgame transition: ${currentOpening.endgameTransition}`,
+      category: 'openings',
+    });
+    setPracticeToast('✅ Added to Spaced Repetition review queue!');
+    setTimeout(() => setPracticeToast(null), 3000);
+  };
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto py-4 animate-fadeIn">
@@ -124,7 +165,7 @@ export const OpeningTrainer: React.FC = () => {
           {openings.map((op, idx) => (
             <button
               key={op.id}
-              onClick={() => setSelectedOpeningIdx(idx)}
+              onClick={() => selectOpening(idx)}
               className={`p-4 rounded-2xl border text-left flex flex-col gap-1 transition-all ${
                 idx === selectedOpeningIdx 
                   ? 'bg-emerald-500/10 border-emerald-500/30 ring-1 ring-emerald-500/20' 
@@ -147,11 +188,24 @@ export const OpeningTrainer: React.FC = () => {
         {/* Board View */}
         <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-8 border border-white/5">
           <Board 
-            fen={currentOpening.fen} 
-            interactive={false}
+            fen={displayFen} 
+            interactive={true}
+            onMove={handleMove}
           />
-          <div className="text-xs text-slate-500 mt-2">
-            Showcasing the tab position for <strong className="text-slate-300 font-semibold">{currentOpening.name}</strong>
+          <div className="text-xs text-slate-500 mt-2 flex flex-col items-center gap-2">
+            {exploringFen ? (
+              <>
+                <span className="text-emerald-400">🔍 Exploring: {moveHistory.join(' ')}</span>
+                <button 
+                  onClick={resetExploration}
+                  className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1 rounded-lg border border-white/5 transition-all"
+                >
+                  ↩ Reset to opening position
+                </button>
+              </>
+            ) : (
+              <span>Make moves on the board to explore the <strong className="text-slate-300 font-semibold">{currentOpening.name}</strong></span>
+            )}
           </div>
         </div>
 
@@ -177,6 +231,19 @@ export const OpeningTrainer: React.FC = () => {
               <strong className="text-xs text-slate-400">🏁 Endgame Transition:</strong>
               <p className="text-xs text-slate-300 leading-relaxed">{currentOpening.endgameTransition}</p>
             </div>
+
+            {/* Practice Button + Toast */}
+            <button 
+              onClick={addToSRS}
+              className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 font-bold text-xs py-2.5 rounded-xl transition-all mt-2"
+            >
+              📚 Add to Spaced Repetition Queue
+            </button>
+            {practiceToast && (
+              <div className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 p-2 rounded-lg text-center animate-fadeIn">
+                {practiceToast}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@
 | **Training Labs** | Complete | Immediate | Calculation, blindfold, and endgame modules. |
 | **Stockfish Worker** | Complete | Immediate | Edge Web Worker execution via Blob URL. |
 | **CI/CD Config** | Complete | Immediate | GitHub Action workflows and Makefile targets. |
-| **Enterprise Docs** | Complete | Immediate | All 14 technical documents created. |
+| **Enterprise Docs** | Complete | Immediate | All 18 technical documents created. |
 
 ---
 

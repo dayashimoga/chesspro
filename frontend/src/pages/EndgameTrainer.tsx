@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Board } from '../components/Board';
 import { useAppStore } from '../store/useAppStore';
+import { Chess } from 'chess.js';
 
 interface EndgameDrill {
   id: string;
@@ -17,8 +18,7 @@ export const EndgameTrainer: React.FC = () => {
   const [selectedDrillIdx, setSelectedDrillIdx] = useState<number>(0);
   const [stepIndex, setStepIndex] = useState<number>(0);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const addXP = useAppStore(state => state.addXP);
-
+  
   const drills: EndgameDrill[] = [
     {
       id: 'endgame_opp',
@@ -102,36 +102,53 @@ export const EndgameTrainer: React.FC = () => {
     }
   ];
 
+  const addXP = useAppStore(state => state.addXP);
   const currentDrill = drills[selectedDrillIdx];
+  const [drillFen, setDrillFen] = useState<string>(currentDrill.fen);
+
+  // Sync FEN when drill changes
+  useEffect(() => {
+    setDrillFen(currentDrill.fen);
+  }, [selectedDrillIdx]);
 
   const handleMoveAttempt = (from: string, to: string) => {
-    // Simple validation of moves matching the solution steps
-    const attempt = `${from}${to}`;
+    const cleanMoveSquare = (san: string) => {
+      return san.replace(/[KQRBN+#x=]/g, '').toLowerCase();
+    };
+
     const expected = currentDrill.expectedMoves[stepIndex];
+    if (!expected) return;
+
+    const expectedSq = cleanMoveSquare(expected);
     
-    // Check if it matches expected or is a valid king opposition move
-    if (currentDrill.id === 'endgame_opp') {
-      if (to === 'd4' || to === 'e4' || to === 'f4') {
-        setFeedback('Correct opposition! You maintain the key square barrier. (+5 XP)');
-        addXP(5);
-        if (stepIndex < currentDrill.expectedMoves.length - 1) {
-          setStepIndex(stepIndex + 1);
+    // For King Opposition Drill, Kd4, Ke4, and Kf4 are all acceptable in step 0
+    const isCorrect = currentDrill.id === 'endgame_opp' 
+      ? (to === 'd4' || to === 'e4' || to === 'f4')
+      : (to.toLowerCase() === expectedSq);
+
+    if (isCorrect) {
+      // Apply the move to the FEN
+      const game = new Chess(drillFen);
+      try {
+        const move = game.move({ from, to, promotion: 'q' });
+        if (move) {
+          setDrillFen(game.fen());
         }
-      } else {
-        setFeedback('Incorrect. You gave up the opposition. Keep your king facing theirs.');
+      } catch (e) {
+        // Fallback FEN update if move notation is complex
       }
-    } else if (currentDrill.id === 'endgame_lucena') {
-      // e.g. f1 to f4 -> f4
-      if (to === 'f4' && stepIndex === 0) {
-        setFeedback('Excellent! Rook to f4 prepares the bridge. Now advance the king.');
-        setStepIndex(1);
-        addXP(5);
-      } else if (to === 'd4' && stepIndex === 1) {
-        setFeedback('Bridge constructed! The rook will shield the king from checks, enabling pawn promotion. (+15 XP)');
+
+      if (stepIndex === currentDrill.expectedMoves.length - 1) {
+        setFeedback(`🎉 Perfect! You successfully completed the ${currentDrill.title}! (+15 XP)`);
         addXP(15);
+        setStepIndex(stepIndex + 1);
       } else {
-        setFeedback('Incorrect rook maneuver. Place the rook on the 4th rank first.');
+        setFeedback(`Correct move! Step ${stepIndex + 1}/${currentDrill.expectedMoves.length} completed. Keep going! (+5 XP)`);
+        addXP(5);
+        setStepIndex(stepIndex + 1);
       }
+    } else {
+      setFeedback(`Incorrect. Review the key concepts or solution and try again.`);
     }
   };
 
@@ -176,7 +193,7 @@ export const EndgameTrainer: React.FC = () => {
         {/* Board View */}
         <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-8 border border-white/5">
           <Board 
-            fen={currentDrill.fen} 
+            fen={drillFen} 
             interactive={true} 
             onMove={handleMoveAttempt}
           />

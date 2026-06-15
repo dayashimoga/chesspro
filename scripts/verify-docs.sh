@@ -2,7 +2,7 @@
 set -e
 echo "=== Verifying Corporate Documentation Completeness ==="
 
-docs="PRD SRS ARCHITECTURE LLD DATABASE API SECURITY TEST_STRATEGY PERFORMANCE_TESTING LOAD_TESTING OPERATIONS USER_GUIDE DEVELOPER_GUIDE DEPLOYMENT_GUIDE PROJECT_STATUS RELEASE_READINESS_REPORT"
+docs="PRD SRS ARCHITECTURE LLD DATABASE API SECURITY TEST_STRATEGY PERFORMANCE_TESTING LOAD_TESTING OPERATIONS USER_GUIDE DEVELOPER_GUIDE DEPLOYMENT_GUIDE PROJECT_STATUS RELEASE_READINESS_REPORT RELEASE_PLAN THREAT_MODEL"
 
 for doc in $docs; do
   path="docs/${doc}.md"
@@ -16,4 +16,4 @@ for doc in $docs; do
   fi
 done
 
-echo "All 16 documentation files checked. Documentation framework is 100% complete."
+echo "All 18 documentation files checked. Documentation framework is 100% complete."

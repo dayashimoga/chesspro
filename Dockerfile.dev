@@ -1,0 +1,15 @@
+# Dockerfile.dev for ChessOS Pro local containerized development
+FROM node:22-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies if any
+RUN apk add --no-cache git
+
+# Expose ports for dev server
+EXPOSE 3105
+EXPOSE 8787
+
+# Default command (interactive shell)
+CMD ["sh"]

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 interface MoveDetails {
   move: string;
-  eval: string;
+  eval?: string;
   idea?: string;
   motif?: string;
   comment?: string;

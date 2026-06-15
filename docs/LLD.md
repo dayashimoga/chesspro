@@ -85,3 +85,36 @@ interface AppStateStore {
   setActivePuzzle: (p: Puzzle) => void;
 }
 ```
+
+---
+
+## 3. Component Interactions Diagram
+
+```mermaid
+classDiagram
+  class Board {
+    +fen string
+    +interactive boolean
+    +onMove(from, to)
+    +arrows array
+  }
+  class GuidedSolver {
+    +SolverState state
+    +answerKingSafety(choice)
+    +answerMotif(motif)
+    +addCandidateMove(from, to)
+  }
+  class StockfishService {
+    +init() Promise
+    +analyze(fen) Promise
+  }
+  class useAppStore {
+    +xp number
+    +level number
+    +addXP(amount)
+  }
+  GuidedSolver --> Board : uses
+  GuidedSolver --> StockfishService : queries
+  GuidedSolver --> useAppStore : updates progress
+```
+

@@ -26,10 +26,10 @@ All client-side applications compiled via Vite must achieve and maintain the fol
 
 ## 2. Backend API Response Benchmarks
 
-NestJS API gateway endpoints are monitored for latency and throughput:
+Hono API gateway endpoints running on Cloudflare Workers are monitored for latency and throughput:
 
-- **P95 Latency**: < 300ms for all authenticated database transaction requests (e.g. login, logging puzzle attempts).
-- **P99 Latency**: < 500ms under standard local load testing scenarios.
+- **P95 Latency**: < 100ms (due to edge delivery) for all authenticated database transaction requests (e.g. login, logging puzzle attempts).
+- **P99 Latency**: < 250ms under standard local load testing scenarios.
 - **WebSocket Throughput**: Live chess coordinate updates via socket gateway must broadcast to subscribers within < 50ms.
 
 ---

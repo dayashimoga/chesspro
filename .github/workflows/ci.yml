@@ -18,7 +18,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+
+      - name: Install Frontend Dependencies
+        run: npm --prefix frontend install
+
+      - name: Install Workers Backend Dependencies
+        run: npm --prefix workers install
 
       - name: Run Complete Platform Verification Suite
         run: |

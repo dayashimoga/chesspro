@@ -1,0 +1,9 @@
+name = "chessos-backend"
+main = "src/index.ts"
+compatibility_date = "2024-05-29"
+
+# D1 Database binding for persistent progress storage
+[[d1_databases]]
+binding = "DB"
+database_name = "chessos-db"
+database_id = "c4b4d6b6-e889-49ff-a82f-870bfb2d4cf6"
