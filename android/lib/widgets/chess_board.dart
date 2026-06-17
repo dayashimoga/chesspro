@@ -10,6 +10,9 @@ class ChessBoardWidget extends StatefulWidget {
   final Function(String from, String to)? onMove;
   final List<String>? highlightSquares;
   final List<MapEntry<String, String>>? arrows;
+  /// Callback to get legal target squares for a selected piece.
+  /// If provided, only these squares will show move indicators.
+  final List<String> Function(String square)? legalTargetsForSquare;
 
   const ChessBoardWidget({
     super.key,
@@ -19,6 +22,7 @@ class ChessBoardWidget extends StatefulWidget {
     this.onMove,
     this.highlightSquares,
     this.arrows,
+    this.legalTargetsForSquare,
   });
 
   @override
@@ -74,14 +78,25 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     final square = _squareName(row, col);
 
     if (selectedSquare == null) {
-      // Select piece
+      // Select piece — only if it's the current player's piece
       final board = _parseFen(widget.fen);
       final displayRow = widget.flipped ? 7 - row : row;
       final displayCol = widget.flipped ? 7 - col : col;
-      if (board[displayRow][displayCol] != null) {
+      final piece = board[displayRow][displayCol];
+      if (piece != null) {
+        // Check turn: uppercase = white pieces, lowercase = black
+        final fenParts = widget.fen.split(' ');
+        final currentTurn = fenParts.length > 1 ? fenParts[1] : 'w';
+        final isWhitePiece = piece == piece.toUpperCase();
+        final isWhiteTurn = currentTurn == 'w';
+
+        // Only allow selecting own pieces
+        if (isWhitePiece != isWhiteTurn) return;
+
         setState(() {
           selectedSquare = square;
-          legalMoveTargets = []; // Would compute legal moves here
+          // Show all squares this piece can move to
+          legalMoveTargets = _computeLegalTargets(square);
         });
       }
     } else if (selectedSquare == square) {
@@ -91,6 +106,26 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         legalMoveTargets = [];
       });
     } else {
+      // Check if tapping another own piece — switch selection
+      final board = _parseFen(widget.fen);
+      final displayRow = widget.flipped ? 7 - row : row;
+      final displayCol = widget.flipped ? 7 - col : col;
+      final piece = board[displayRow][displayCol];
+      if (piece != null) {
+        final fenParts = widget.fen.split(' ');
+        final currentTurn = fenParts.length > 1 ? fenParts[1] : 'w';
+        final isWhitePiece = piece == piece.toUpperCase();
+        final isWhiteTurn = currentTurn == 'w';
+        if (isWhitePiece == isWhiteTurn) {
+          // Switch to this piece
+          setState(() {
+            selectedSquare = square;
+            legalMoveTargets = _computeLegalTargets(square);
+          });
+          return;
+        }
+      }
+
       // Attempt move
       widget.onMove?.call(selectedSquare!, square);
       setState(() {
@@ -98,6 +133,15 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         legalMoveTargets = [];
       });
     }
+  }
+
+  /// Compute legal target squares using the engine callback or fallback
+  List<String> _computeLegalTargets(String fromSquare) {
+    if (widget.legalTargetsForSquare != null) {
+      return widget.legalTargetsForSquare!(fromSquare);
+    }
+    // Fallback: show no indicators (engine will validate on attempt)
+    return [];
   }
 
   @override

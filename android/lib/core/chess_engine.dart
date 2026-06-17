@@ -137,7 +137,7 @@ class ChessEngine {
   /// Make a move (SAN notation like "e4", "Nf3", "O-O")
   bool makeMove(String san) {
     final result = _game.move(san);
-    if (result == true) {
+    if (result != null) {
       _moveHistory.add(MoveRecord(
         san: san,
         fen: _game.fen,
@@ -154,7 +154,7 @@ class ChessEngine {
     final moveData = <String, String>{'from': from, 'to': to};
     if (promotion != null) moveData['promotion'] = promotion;
     final result = _game.move(moveData);
-    if (result == true) {
+    if (result != null) {
       final history = _game.getHistory({'verbose': true});
       final lastMove = history.isNotEmpty ? history.last : null;
       final san = (lastMove is Map) ? (lastMove['san'] ?? '$from$to') : '$from$to';

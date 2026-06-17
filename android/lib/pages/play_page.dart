@@ -352,6 +352,7 @@ class _PlayAIPageState extends State<PlayAIPage> {
                     interactive: !_gameOver && !_isThinking,
                     flipped: !_playerIsWhite,
                     onMove: _onPlayerMove,
+                    legalTargetsForSquare: (square) => _engine.getLegalTargets(square),
                   ),
                 ),
               ),
