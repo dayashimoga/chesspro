@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Chess } from 'chess.js';
 import { Board } from '../components/Board';
 import { GuidedSolverPanel } from '../components/GuidedSolverPanel';
+import { ThinkingModePanel } from '../components/ThinkingModePanel';
 import { VariationExplorer } from '../components/VariationExplorer';
 import { ALL_PUZZLES, PUZZLE_CATEGORIES, Puzzle, getRandomPuzzle, queryPuzzles } from '../content/puzzle-db';
 import { useAppStore } from '../store/useAppStore';
 
-type SolveMode = 'guided' | 'practice' | 'coach' | 'examination' | 'analysis';
+type SolveMode = 'guided' | 'practice' | 'coach' | 'examination' | 'analysis' | 'thinking';
 
 export const Puzzles: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('mate_in_1');
@@ -15,6 +16,7 @@ export const Puzzles: React.FC = () => {
   const [customHighlight, setCustomHighlight] = useState<string | null>(null);
   const [solvedCount, setSolvedCount] = useState<number>(0);
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+  const [thinkingCompleted, setThinkingCompleted] = useState<boolean>(false);
 
   // Examination Mode state
   const [examTimer, setExamTimer] = useState<number>(60);
@@ -45,6 +47,7 @@ export const Puzzles: React.FC = () => {
     setExamSubmitted(false);
     setExamResult(null);
     setAnalysisMoves([]);
+    setThinkingCompleted(false);
   }, [currentPuzzle, activeMode]);
 
   // Exam timer interval
@@ -157,7 +160,8 @@ export const Puzzles: React.FC = () => {
                              activeMode === 'practice' ||
                              (activeMode === 'examination' && !examSubmitted) ||
                              (activeMode === 'coach') ||
-                             (activeMode === 'guided' && (currentStep === 4 || currentStep === 5));
+                             (activeMode === 'guided' && (currentStep === 4 || currentStep === 5)) ||
+                             (activeMode === 'thinking' && thinkingCompleted);
 
   const changeMode = (mode: SolveMode) => {
     setActiveMode(mode);
@@ -176,6 +180,7 @@ export const Puzzles: React.FC = () => {
         <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl flex-wrap gap-1">
           {([
             { id: 'guided', label: 'Guided Coach' },
+            { id: 'thinking', label: '🧠 GM Thinking' },
             { id: 'practice', label: 'Standard Practice' },
             { id: 'coach', label: 'AI Hint Helper' },
             { id: 'examination', label: 'Exam Stress' },
@@ -365,6 +370,45 @@ export const Puzzles: React.FC = () => {
                     className="mt-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold py-1.5 px-4 rounded-lg text-xs w-full block"
                   >
                     Load Next Position
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeMode === 'thinking' && (
+            <div className="w-full max-w-md">
+              {!thinkingCompleted ? (
+                <ThinkingModePanel
+                  fen={puzzleFen}
+                  puzzleTheme={currentPuzzle.theme}
+                  difficulty={currentPuzzle.difficulty}
+                  onComplete={(answers) => {
+                    setThinkingCompleted(true);
+                    addXP(10);
+                    showToast('success', '🧠 Analysis complete! +10 XP. Now play your best move on the board.');
+                  }}
+                  onSkip={() => {
+                    setThinkingCompleted(true);
+                    showToast('info', 'Skipped analysis. Play your move on the board.');
+                  }}
+                />
+              ) : (
+                <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full text-slate-200 border border-white/5">
+                  <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
+                    <span>🧠</span> Play Your Calculated Move
+                  </h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    You've completed your analysis. Now play the move you calculated on the board. The board is interactive.
+                  </p>
+                  <div className="bg-violet-500/10 border border-violet-500/20 p-3 rounded-xl text-xs text-violet-400">
+                    ✅ GM Thinking process complete. Board is now interactive.
+                  </div>
+                  <button 
+                    onClick={() => setPuzzleFen(currentPuzzle.fen)}
+                    className="bg-white/5 hover:bg-white/10 text-white font-semibold py-2 rounded-xl text-xs transition-all border border-white/10"
+                  >
+                    Reset Position
                   </button>
                 </div>
               )}

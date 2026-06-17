@@ -48,4 +48,13 @@ frontend/coverage/
 .wrangler/
 workers/.wrangler/
 
-
+# Flutter & Android Mobile Build Exclusions
+android/.dart_tool/
+android/.flutter-plugins
+android/.flutter-plugins-dependencies
+android/.packages
+android/build/
+android/android/.gradle/
+android/android/local.properties
+*.apk
+*.aab

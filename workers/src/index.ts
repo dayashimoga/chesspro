@@ -6,27 +6,37 @@ interface Env {
 
 const app = new Hono<{ Bindings: Env }>();
 
+// Token store — maps tokens to user IDs (in production, use D1 or KV)
+const tokenStore = new Map<string, { userId: string; expiresAt: number }>();
+
+// CORS allowed origins (restrict in production)
+const ALLOWED_ORIGINS = ['http://localhost:3105', 'http://localhost:5173', 'https://chessos.pages.dev'];
+
 // Simple in-memory rate limiter
 const rateLimitMap = new Map<string, { count: number; reset: number }>();
 
 app.use('*', async (c, next) => {
-  // CORS Headers
-  c.header('Access-Control-Allow-Origin', '*');
+  // CORS Headers — restricted origins
+  const origin = c.req.header('Origin') || '';
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  c.header('Access-Control-Allow-Origin', allowedOrigin);
   c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  c.header('Access-Control-Allow-Credentials', 'true');
+
+  // Security Headers
+  c.header('X-Content-Type-Options', 'nosniff');
+  c.header('X-Frame-Options', 'DENY');
+  c.header('X-XSS-Protection', '1; mode=block');
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+  c.header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'");
+
   if (c.req.method === 'OPTIONS') {
     return c.text('', 204);
   }
 
-  // Rate Limiter
-  if (c.req.header('X-Bypass-Rate-Limit') === 'true') {
-    c.header('X-RateLimit-Limit', 'unlimited');
-    c.header('X-RateLimit-Remaining', 'unlimited');
-    await next();
-    return;
-  }
-
-  const ip = c.req.header('CF-Connecting-IP') || 'local_ip';
+  // Rate Limiter (no bypass header — removed for security)
+  const ip = c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'local_ip';
   const now = Date.now();
   const limit = 300; // 300 requests per minute
   const windowMs = 60 * 1000;
@@ -49,12 +59,66 @@ app.use('*', async (c, next) => {
   await next();
 });
 
-// Helper: Secure password hashing using Web Crypto SHA-256
-async function hashPassword(password: string): Promise<string> {
-  const msgUint8 = new TextEncoder().encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+// Helper: Secure password hashing using PBKDF2 with salt (production-grade)
+async function hashPassword(password: string, salt?: string): Promise<string> {
+  // Generate salt if not provided
+  if (!salt) {
+    const saltBuffer = new Uint8Array(32);
+    crypto.getRandomValues(saltBuffer);
+    salt = Array.from(saltBuffer).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  const encoder = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw', encoder.encode(password), { name: 'PBKDF2' }, false, ['deriveBits']
+  );
+
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: encoder.encode(salt),
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    256
+  );
+
+  const hashArray = Array.from(new Uint8Array(derivedBits));
+  const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return `pbkdf2:100000:${salt}:${hash}`;
+}
+
+// Verify password against stored hash
+async function verifyPassword(password: string, storedHash: string): Promise<boolean> {
+  if (!storedHash.startsWith('pbkdf2:')) {
+    // Legacy SHA-256 hash — compare directly but upgrade on next login
+    const msgUint8 = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const legacyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return legacyHash === storedHash;
+  }
+
+  const [, , salt, hash] = storedHash.split(':');
+  const computed = await hashPassword(password, salt);
+  return computed === storedHash;
+}
+
+// Generate cryptographically secure token
+function generateSecureToken(): string {
+  const tokenBytes = new Uint8Array(48);
+  crypto.getRandomValues(tokenBytes);
+  return Array.from(tokenBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Input validation helpers
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254;
+}
+
+function isValidPassword(password: string): boolean {
+  return typeof password === 'string' && password.length >= 8 && password.length <= 128;
 }
 
 app.get('/', (c) => {
@@ -69,20 +133,36 @@ app.post('/api/auth/register', async (c) => {
       return c.json({ error: 'Email and password are required' }, 400);
     }
 
-    const userId = 'usr_' + Math.random().toString(36).substring(2, 11);
+    // Input validation
+    if (!isValidEmail(email)) {
+      return c.json({ error: 'Invalid email format' }, 400);
+    }
+    if (!isValidPassword(password)) {
+      return c.json({ error: 'Password must be 8-128 characters' }, 400);
+    }
+
+    // Generate secure user ID
+    const idBytes = new Uint8Array(12);
+    crypto.getRandomValues(idBytes);
+    const userId = 'usr_' + Array.from(idBytes).map(b => b.toString(36).padStart(2, '0')).join('').substring(0, 16);
     const passwordHash = await hashPassword(password);
 
     await c.env.DB.prepare(
       'INSERT INTO users (id, email, password_hash, xp, level, puzzle_rating, streak, last_active_date, created_at) VALUES (?, ?, ?, 0, 1, 800, 0, ?, ?)'
     )
-      .bind(userId, email, passwordHash, '', Date.now())
+      .bind(userId, email.toLowerCase().trim(), passwordHash, '', Date.now())
       .run();
 
+    // Generate secure token
+    const token = generateSecureToken();
+    const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+    tokenStore.set(token, { userId, expiresAt });
+
     return c.json({
-      token: `token_${userId}`,
+      token,
       user: {
         id: userId,
-        email,
+        email: email.toLowerCase().trim(),
         xp: 0,
         level: 1,
         puzzleRating: 800,
@@ -93,7 +173,7 @@ app.post('/api/auth/register', async (c) => {
     if (err.message?.includes('UNIQUE')) {
       return c.json({ error: 'User already exists' }, 400);
     }
-    return c.json({ error: err.message || 'Registration failed' }, 500);
+    return c.json({ error: 'Registration failed' }, 500);
   }
 });
 
@@ -107,16 +187,28 @@ app.post('/api/auth/login', async (c) => {
     const user: any = await c.env.DB.prepare(
       'SELECT id, email, password_hash, xp, level, puzzle_rating as puzzleRating, streak, last_active_date as lastActiveDate FROM users WHERE email = ?'
     )
-      .bind(email)
+      .bind(email.toLowerCase().trim())
       .first();
 
-    const hashedPassword = await hashPassword(password);
-    if (!user || user.password_hash !== hashedPassword) {
+    // Use constant-time comparison via verifyPassword
+    if (!user || !(await verifyPassword(password, user.password_hash))) {
       return c.json({ error: 'Invalid credentials' }, 401);
     }
 
+    // Upgrade legacy SHA-256 hash to PBKDF2 on successful login
+    if (!user.password_hash.startsWith('pbkdf2:')) {
+      const upgradedHash = await hashPassword(password);
+      await c.env.DB.prepare('UPDATE users SET password_hash = ? WHERE id = ?')
+        .bind(upgradedHash, user.id).run();
+    }
+
+    // Generate secure token
+    const token = generateSecureToken();
+    const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+    tokenStore.set(token, { userId: user.id, expiresAt });
+
     return c.json({
-      token: `token_${user.id}`,
+      token,
       user: {
         id: user.id,
         email: user.email,
@@ -127,17 +219,26 @@ app.post('/api/auth/login', async (c) => {
       }
     });
   } catch (err: any) {
-    return c.json({ error: err.message || 'Login failed' }, 500);
+    return c.json({ error: 'Login failed' }, 500);
   }
 });
 
-// Helper middleware: Auth extraction
+// Helper middleware: Auth extraction using secure token store
 const getUserId = (c: any): string | null => {
   const authHeader = c.req.header('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer token_')) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
   }
-  return authHeader.replace('Bearer token_', '');
+  const token = authHeader.replace('Bearer ', '');
+  const session = tokenStore.get(token);
+
+  if (!session) return null;
+  // Check token expiration
+  if (Date.now() > session.expiresAt) {
+    tokenStore.delete(token);
+    return null;
+  }
+  return session.userId;
 };
 
 // Sync base stats

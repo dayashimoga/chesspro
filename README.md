@@ -1,105 +1,136 @@
-# ChessOS — Chess Mastery Platform
+# ChessOS Pro — Premium Chess Mastery Platform
 
-> **Complete chess learning platform from beginner to grandmaster.** Interactive lessons, puzzles, AI opponent, opening explorer, progress tracking, and mastery-based progression.
+<div align="center">
 
-![ChessOS](https://img.shields.io/badge/ChessOS-v1.0-emerald?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
-![Deploy](https://img.shields.io/badge/Deploy-Cloudflare_Pages-orange?style=for-the-badge)
+**A Complete Chess University + Personal Coach + Tournament Training Platform**
 
-## ✨ Features
+*Taking students from absolute beginner to advanced tournament-level strength*
 
-- 🎮 **Full Chess Player** — Play against AI with 6 difficulty levels (Beginner ~800 to Master ~2200)
-- 📚 **Complete Curriculum** — 30+ lessons across 9 modules (Foundations → Advanced Chess)
-- 🧩 **75+ Puzzles** — Categorized by tactical theme with solutions and explanations
-- 🌳 **Opening Explorer** — Interactive opening trees for Italian, Ruy Lopez, Sicilian, and more
-- 🏆 **Master Games** — Annotated games from Morphy, Fischer, Kasparov, Carlsen, Tal
-- 📊 **Progress Tracking** — Track lessons, puzzles, rating, and study streaks
-- 🔄 **Spaced Repetition** — SM-2 algorithm for long-term retention
-- 🎨 **Premium Design** — Dark theme with emerald/gold accents, glassmorphism, animations
-- 📱 **Responsive** — Works on desktop, tablet, and mobile
-- ☁️ **Free Hosting** — Deploy to Cloudflare Pages (zero cost)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-brightgreen)](#)
+[![Cloudflare](https://img.shields.io/badge/Deploy-Cloudflare_Pages-orange)](#)
+[![Flutter](https://img.shields.io/badge/Mobile-Flutter_3.24+-blue)](#)
+
+</div>
+
+---
+
+## 🏗 Architecture
+
+```
+ChessOS/
+├── frontend/          # React + TypeScript + Vite (Web App)
+│   ├── src/
+│   │   ├── pages/     # 20+ interactive pages
+│   │   ├── components/# Reusable UI (Board, GuidedSolver, ThinkingMode)
+│   │   ├── content/   # Chess curriculum (puzzles, openings, endgames)
+│   │   ├── store/     # Zustand state management
+│   │   └── core/      # Storage, utilities
+│   ├── tests/         # Vitest unit + Playwright E2E
+│   └── playwright.config.ts
+├── workers/           # Cloudflare Workers (Hono API)
+│   └── src/index.ts   # Auth, progress, puzzles, games
+├── android/           # Flutter 3.24+ Mobile App
+│   ├── lib/
+│   │   ├── main.dart  # Material Design 3 entry
+│   │   ├── blocs/     # BLoC state management
+│   │   ├── core/      # API client, local storage
+│   │   └── widgets/   # Chess board, eval bar
+│   └── pubspec.yaml
+├── docs/              # Documentation
+│   ├── AUDIT_REPORT.md
+│   ├── API_DOCUMENTATION.md
+│   ├── MOBILE_ARCHITECTURE.md
+│   └── RELEASE_READINESS_REPORT.md
+└── .github/workflows/ # CI/CD pipeline
+```
+
+## 🎓 Chess University (7 Departments)
+
+| Department | Topics | Interactive |
+|-----------|--------|-------------|
+| **Foundations** | Board basics, piece movement, check/checkmate | ✅ Labs |
+| **Tactics** | 19 themes, 6,500+ puzzles, procedural generators | ✅ 6 solve modes |
+| **Calculation** | CCT framework, candidate moves, deep visualization | ✅ 5-phase workflow |
+| **Openings** | 20 systems (Italian, Sicilian, QG, KID, Grünfeld...) | ✅ Interactive trees |
+| **Middlegame** | 7 modules (pawn structures → transformation) | ✅ Theory + quizzes |
+| **Endgames** | 10 modules (opposition → practical techniques) | ✅ Assessment |
+| **Master Games** | 19 players, 20+ annotated games (Morphy → Carlsen) | ✅ Guess mode |
+
+## 🧠 GM Thinking Mode
+
+The core pedagogical innovation — forces students through a structured thinking process:
+
+1. **Evaluate** — Assess the position objectively
+2. **Imbalances** — Identify material/positional differences
+3. **Threats** — Find immediate threats (both sides)
+4. **Candidates** — List candidate moves
+5. **Calculate** — Calculate variations for each candidate
+6. **Compare** — Compare results and choose the best move
+
+Board is **locked** until analysis is complete.
+
+## 🏅 Tournament Preparation Center
+
+- ⏱️ **Chess Clock Training** — 10 time controls (Bullet → Classical) with increment
+- 📖 **Opening Prep** — Review repertoire under time pressure
+- 🧘 **Nerves Management** — 8 GM-level psychological techniques
+- 📝 **Pre-Game Routine** — Complete tournament day timeline
+
+## 🤖 AI Chess Coach
+
+- **Weakness Profiler** — Tracks tactical accuracy, calculation depth, opening/endgame knowledge
+- **Tailored Recommendations** — Personalized training pathways based on weaknesses
+- **Practice Plans** — Daily, weekly, and monthly training schedules
+- **Progress Tracking** — XP, rating, streak, completed lessons
+
+## 🔒 Security
+
+| Feature | Implementation |
+|---------|---------------|
+| Password hashing | PBKDF2 (100k iterations + 32-byte salt) |
+| Token generation | 48-byte `crypto.getRandomValues()` |
+| Rate limiting | 300 req/min per IP |
+| CORS | Restricted to allowed origins |
+| Security headers | CSP, X-Frame, X-Content-Type, Referrer-Policy |
+| Input validation | Email format + password length (8-128) |
+| Legacy migration | Auto-upgrade SHA-256 → PBKDF2 on login |
+
+## 📱 Mobile App (Flutter)
+
+- Material Design 3 dark theme (matches web)
+- BLoC state management
+- Offline-first with Hive/SQLite
+- Dio API client with retry + offline queue
+- Interactive chess board widget
 
 ## 🚀 Quick Start
 
-### Using Docker (no local Node.js needed)
 ```bash
-# Install dependencies
-docker run --rm -v $(pwd):/app -w /app node:22-alpine npm install
+# Frontend
+cd frontend && npm install && npm run dev
 
-# Start dev server
-docker run --rm -v $(pwd):/app -w /app -p 3000:3000 node:22-alpine npx vite --host 0.0.0.0
+# Backend (Cloudflare Workers)
+cd workers && npm install && npx wrangler dev
 
-# Build for production
-docker run --rm -v $(pwd):/app -w /app node:22-alpine npx vite build
+# Tests
+cd frontend && npm test          # Unit tests
+cd frontend && npx playwright test  # E2E tests
 ```
 
-### Using Node.js
-```bash
-npm install
-npm run dev     # Development server
-npm run build   # Production build
-```
+## 📊 Platform Stats
 
-## 📁 Structure
-
-```
-chessos/
-├── index.html              # App shell
-├── src/
-│   ├── main.js             # App entry point (components + pages + routing)
-│   ├── core/
-│   │   ├── chess-engine.js  # Chess.js wrapper
-│   │   ├── ai-engine.js    # Minimax AI with alpha-beta pruning
-│   │   ├── board-renderer.js # Interactive SVG chessboard
-│   │   ├── router.js       # Hash-based SPA router
-│   │   └── storage.js      # LocalStorage + SM-2 spaced repetition
-│   ├── content/
-│   │   ├── 00-foundations.js # Board, pieces, rules, notation
-│   │   ├── 01-tactics.js    # Forks, pins, skewers, mates...
-│   │   ├── 02-calculation.js # CCT method, depth training
-│   │   ├── 03-endgames.js   # K+P, rook endings, Lucena/Philidor
-│   │   ├── 04-strategy.js   # Pawn structures, piece activity
-│   │   ├── 05-openings.js   # Italian, Ruy Lopez, Sicilian...
-│   │   ├── 06-master-games.js # Annotated GM games
-│   │   ├── 07-middlegame.js # Attack, defense, planning
-│   │   └── 08-advanced.js   # Sacrifices, psychology, engines
-│   └── styles/
-│       └── main.css        # Premium dark theme design system
-├── DEPLOY.md               # Cloudflare Pages deployment guide
-├── package.json
-└── vite.config.js
-```
-
-## 🎯 Curriculum
-
-| Module | Topics | Difficulty |
-|--------|--------|-----------|
-| Foundations | Board, pieces, rules, notation, basic mates | Beginner |
-| Tactics | Forks, pins, skewers, discovered attacks, mating patterns | Beginner-Advanced |
-| Calculation | Candidate moves, CCT method, visualization | Intermediate |
-| Endgames | K+P, rook endings, Lucena, Philidor, fortresses | Intermediate-Expert |
-| Strategy | Pawn structures, outposts, space, initiative | Intermediate |
-| Openings | Italian, Ruy Lopez, Queen's Gambit, Sicilian, London | Beginner-Advanced |
-| Master Games | Morphy, Fischer, Kasparov, Carlsen, Tal | Advanced-Expert |
-| Middlegame | King attacks, defense, planning | Advanced |
-| Advanced | Sacrifices, tournament psychology, engine analysis | Expert |
-
-## ☁️ Deploy to Cloudflare Pages
-
-See [DEPLOY.md](./DEPLOY.md) for step-by-step instructions. TL;DR:
-1. Push to GitHub
-2. Connect repo in Cloudflare Pages dashboard
-3. Build command: `npm install && npx vite build`, Output: `dist`
-
-## 🛠️ Technology
-
-- **Vanilla JS** — No framework, maximum performance
-- **chess.js** — Chess rules and move validation
-- **Custom AI** — Minimax with alpha-beta pruning, piece-square tables
-- **SVG Board** — Custom interactive chess board renderer
-- **Vite** — Fast build tool
-- **CSS** — Custom design system, no Tailwind dependency
+| Metric | Count |
+|--------|-------|
+| Interactive pages | 20+ |
+| Puzzle database | 6,500+ |
+| Opening systems | 20 |
+| Endgame modules | 10 |
+| Middlegame modules | 7 |
+| Master games | 20+ |
+| Solve modes | 6 |
+| Test cases | 70+ |
+| Security fixes | 8 critical |
 
 ## 📄 License
 
-MIT
+Proprietary — All rights reserved.

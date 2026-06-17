@@ -1,0 +1,2509 @@
+[
+  {
+    "id": "foundations",
+    "title": "Chess Foundations",
+    "icon": "♔",
+    "description": "Master the fundamentals of chess from the very first move. Learn the board, the pieces, and the rules that govern the game.",
+    "difficulty": "beginner",
+    "modules": [
+      {
+        "id": "the-chessboard",
+        "title": "The Chessboard",
+        "difficulty": "beginner",
+        "theory": "\n<h2>The Chessboard</h2>\n<p>The chessboard is an 8×8 grid of 64 squares, alternating between light and dark colors. Every square has a unique name using <strong>algebraic notation</strong> — a system combining a letter (a–h for files) and a number (1–8 for ranks).</p>\n\n<h3>Files, Ranks & Diagonals</h3>\n<ul>\n  <li><strong>Files</strong> are vertical columns labeled <code>a</code> through <code>h</code> from left to right (from White's perspective).</li>\n  <li><strong>Ranks</strong> are horizontal rows numbered <code>1</code> through <code>8</code> from bottom to top (from White's perspective).</li>\n  <li><strong>Diagonals</strong> are lines of same-colored squares running corner to corner.</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Key Concept</div>\n  <p>The bottom-right corner must always be a light square. This is how you verify the board is set up correctly. Remember: <strong>\"white on right.\"</strong></p>\n</div>\n\n<h3>The Center</h3>\n<p>The four central squares — <code>d4</code>, <code>d5</code>, <code>e4</code>, <code>e5</code> — are the most important squares on the board. Controlling the center gives your pieces maximum mobility and influence. Most opening strategies revolve around fighting for center control.</p>\n\n<h3>Board Orientation</h3>\n<p>White always starts on ranks 1 and 2. Black always starts on ranks 7 and 8. The queen starts on her own color: the white queen on a light square (d1), the black queen on a dark square (d8).</p>\n",
+        "examples": [
+          {
+            "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "title": "Starting Position",
+            "description": "This is how every chess game begins. All 32 pieces are arranged symmetrically."
+          },
+          {
+            "fen": "8/8/8/3PP3/3PP3/8/8/8 w - - 0 1",
+            "title": "The Center Squares",
+            "description": "The four center squares (d4, d5, e4, e5) highlighted with pawns. Controlling these squares is a primary strategic goal."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What letter represents the leftmost file from White's perspective?",
+            "options": [
+              "a",
+              "h",
+              "d",
+              "e"
+            ],
+            "answer": 0,
+            "explanation": "Files are labeled a through h from left to right from White's perspective."
+          },
+          {
+            "type": "quiz",
+            "question": "How many squares are on a chessboard?",
+            "options": [
+              "32",
+              "48",
+              "64",
+              "81"
+            ],
+            "answer": 2,
+            "explanation": "The chessboard has 8×8 = 64 squares."
+          },
+          {
+            "type": "quiz",
+            "question": "Which square is in the center of the board?",
+            "options": [
+              "a1",
+              "e4",
+              "h8",
+              "c3"
+            ],
+            "answer": 1,
+            "explanation": "e4 is one of the four central squares (d4, d5, e4, e5)."
+          },
+          {
+            "type": "quiz",
+            "question": "What color is the bottom-right square?",
+            "options": [
+              "Dark",
+              "Light"
+            ],
+            "answer": 1,
+            "explanation": "The board must be oriented so that h1 (bottom-right) is always a light square."
+          }
+        ]
+      },
+      {
+        "id": "piece-movement",
+        "title": "Piece Movement",
+        "difficulty": "beginner",
+        "theory": "\n<h2>How Chess Pieces Move</h2>\n<p>Each of the six types of chess pieces moves in a unique way. Understanding these movements is the foundation of all chess play.</p>\n\n<h3>The King ♔</h3>\n<p>The king moves <strong>one square in any direction</strong> — horizontally, vertically, or diagonally. Though it's the most important piece (the game ends when it's trapped), it's also one of the least mobile. The king can never move to a square that is attacked by an opponent's piece.</p>\n\n<h3>The Queen ♕</h3>\n<p>The queen is the most powerful piece. She combines the movement of the rook and bishop, moving <strong>any number of squares horizontally, vertically, or diagonally</strong>. She cannot jump over other pieces. The queen is valued at approximately <strong>9 points</strong>.</p>\n\n<h3>The Rook ♖</h3>\n<p>The rook moves <strong>any number of squares horizontally or vertically</strong>. Rooks are most powerful on open files (files with no pawns) and on the 7th rank where they can attack pawns and restrict the enemy king. Value: approximately <strong>5 points</strong>.</p>\n\n<h3>The Bishop ♗</h3>\n<p>The bishop moves <strong>any number of squares diagonally</strong>. Each player starts with two bishops — one on light squares, one on dark squares. A bishop can never change its square color. The bishop pair (both bishops together) is considered a strategic advantage. Value: approximately <strong>3 points</strong>.</p>\n\n<h3>The Knight ♘</h3>\n<p>The knight has the most unique movement: it moves in an <strong>L-shape</strong> — two squares in one direction and then one square perpendicular (or vice versa). The knight is the <strong>only piece that can jump over other pieces</strong>. Value: approximately <strong>3 points</strong>.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Knight Movement Tip</div>\n  <p>A knight on e4 can move to: d2, f2, c3, g3, c5, g5, d6, f6. Notice it always moves to a square of the <strong>opposite color</strong> from where it stands.</p>\n</div>\n\n<h3>The Pawn ♙</h3>\n<p>Pawns move <strong>forward one square</strong>, but capture <strong>diagonally forward one square</strong>. On its first move, a pawn may advance <strong>two squares</strong>. Pawns are the only pieces that cannot move backward. Value: <strong>1 point</strong>.</p>\n\n<h3>Relative Piece Values</h3>\n<ul>\n  <li>Pawn = 1</li>\n  <li>Knight = 3</li>\n  <li>Bishop = 3 (slightly more than knight in open positions)</li>\n  <li>Rook = 5</li>\n  <li>Queen = 9</li>\n  <li>King = ∞ (invaluable — losing it loses the game)</li>\n</ul>\n",
+        "examples": [
+          {
+            "fen": "8/8/8/8/4K3/8/8/8 w - - 0 1",
+            "title": "King Movement",
+            "description": "The king on e4 can move to any adjacent square: d3, e3, f3, d4, f4, d5, e5, f5."
+          },
+          {
+            "fen": "8/8/8/8/4Q3/8/8/8 w - - 0 1",
+            "title": "Queen Movement",
+            "description": "The queen combines rook and bishop movement, covering 27 squares from e4."
+          },
+          {
+            "fen": "8/8/8/8/4R3/8/8/8 w - - 0 1",
+            "title": "Rook Movement",
+            "description": "The rook moves along ranks and files. From e4, it covers the entire e-file and 4th rank."
+          },
+          {
+            "fen": "8/8/8/8/4B3/8/8/8 w - - 0 1",
+            "title": "Bishop Movement",
+            "description": "The bishop moves diagonally. This light-squared bishop can never reach a dark square."
+          },
+          {
+            "fen": "8/8/8/8/4N3/8/8/8 w - - 0 1",
+            "title": "Knight Movement",
+            "description": "The knight from e4 can reach 8 squares in an L-shape: d2, f2, c3, g3, c5, g5, d6, f6."
+          },
+          {
+            "fen": "8/8/8/8/4P3/8/8/8 w - - 0 1",
+            "title": "Pawn Movement",
+            "description": "The pawn advances forward. From e4, this pawn can move to e5."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Which piece can jump over other pieces?",
+            "options": [
+              "Bishop",
+              "Rook",
+              "Knight",
+              "Queen"
+            ],
+            "answer": 2,
+            "explanation": "The knight is the only piece that can leap over other pieces on the board."
+          },
+          {
+            "type": "quiz",
+            "question": "How many points is a queen worth?",
+            "options": [
+              "5",
+              "7",
+              "9",
+              "12"
+            ],
+            "answer": 2,
+            "explanation": "The queen is valued at approximately 9 points, making it the most valuable piece after the king."
+          },
+          {
+            "type": "quiz",
+            "question": "How does a pawn capture?",
+            "options": [
+              "Straight forward",
+              "Diagonally forward",
+              "In any direction",
+              "Sideways"
+            ],
+            "answer": 1,
+            "explanation": "Pawns move forward but capture diagonally forward. This is unique among chess pieces."
+          },
+          {
+            "type": "quiz",
+            "question": "Can a bishop ever reach a square of the opposite color?",
+            "options": [
+              "Yes",
+              "No"
+            ],
+            "answer": 1,
+            "explanation": "A bishop is permanently confined to squares of one color throughout the entire game."
+          },
+          {
+            "type": "find-move",
+            "fen": "8/8/8/8/4N3/8/8/8 w - - 0 1",
+            "question": "The knight is on e4. Which squares can it move to?",
+            "solution": [
+              "d2",
+              "f2",
+              "c3",
+              "g3",
+              "c5",
+              "g5",
+              "d6",
+              "f6"
+            ],
+            "explanation": "The knight moves in an L-shape: two squares in one direction and one perpendicular."
+          }
+        ]
+      },
+      {
+        "id": "special-rules",
+        "title": "Special Rules",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Special Rules of Chess</h2>\n<p>Beyond basic movement, chess has several special rules that add depth and strategic possibilities to the game.</p>\n\n<h3>Castling</h3>\n<p>Castling is a special move involving the king and a rook. It's the only move where two pieces move at once. The king moves <strong>two squares toward a rook</strong>, and that rook moves to the square the king crossed.</p>\n\n<p><strong>Kingside castling (O-O):</strong> King goes from e1 to g1, rook from h1 to f1.<br/>\n<strong>Queenside castling (O-O-O):</strong> King goes from e1 to c1, rook from a1 to d1.</p>\n\n<p><strong>Castling requirements:</strong></p>\n<ul>\n  <li>Neither the king nor the rook has previously moved</li>\n  <li>No pieces between the king and rook</li>\n  <li>The king is not currently in check</li>\n  <li>The king does not pass through or land on a square attacked by an enemy piece</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Why Castle?</div>\n  <p>Castling serves two purposes: it moves the king to safety behind a wall of pawns, and it activates the rook by bringing it toward the center. You should usually castle early in the game.</p>\n</div>\n\n<h3>En Passant</h3>\n<p>En passant (\"in passing\") is a special pawn capture. When a pawn advances two squares from its starting position and lands beside an enemy pawn, the enemy pawn may capture it <strong>as if it had only moved one square</strong>. This capture must be made immediately — on the very next move — or the right is lost.</p>\n\n<h3>Pawn Promotion</h3>\n<p>When a pawn reaches the opposite end of the board (8th rank for White, 1st rank for Black), it <strong>must be promoted</strong> to a queen, rook, bishop, or knight. The pawn is removed and replaced by the chosen piece. Most players promote to a queen (\"queening\"), but promoting to a knight (\"underpromotion\") is sometimes strategically necessary.</p>\n\n<h3>Check</h3>\n<p>When a king is under direct attack by an enemy piece, it is in <strong>check</strong>. A player in check must immediately escape by: (1) moving the king, (2) blocking the attack, or (3) capturing the attacking piece. You may never leave your king in check.</p>\n\n<h3>Checkmate</h3>\n<p>Checkmate occurs when a king is in check and there is <strong>no legal move to escape</strong>. This ends the game — the player delivering checkmate wins. The king is never actually captured in chess.</p>\n\n<h3>Stalemate & Draws</h3>\n<p><strong>Stalemate</strong> occurs when a player has no legal moves but is NOT in check. This results in a draw. Other draw conditions include:</p>\n<ul>\n  <li><strong>Insufficient material:</strong> Neither side has enough pieces to force checkmate (e.g., K vs K, K+B vs K)</li>\n  <li><strong>Threefold repetition:</strong> The same position occurs three times</li>\n  <li><strong>50-move rule:</strong> 50 consecutive moves by each side without a pawn move or capture</li>\n  <li><strong>Agreement:</strong> Both players agree to a draw</li>\n</ul>\n",
+        "examples": [
+          {
+            "fen": "r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1",
+            "title": "Castling Setup",
+            "description": "Both sides can castle kingside (O-O) or queenside (O-O-O). No pieces block the path."
+          },
+          {
+            "fen": "8/8/8/pP6/8/8/8/8 w - a6 0 1",
+            "title": "En Passant",
+            "description": "Black just played a7-a5. White can capture en passant with bxa6."
+          },
+          {
+            "fen": "4k3/4P3/8/8/8/8/8/4K3 w - - 0 1",
+            "title": "Pawn Promotion",
+            "description": "White's pawn on e7 can advance to e8 and promote to any piece — usually a queen."
+          },
+          {
+            "fen": "rnb1kbnr/pppp1ppp/4p3/8/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 0 1",
+            "title": "Checkmate (Scholar's Mate)",
+            "description": "Black's queen on h4 delivers checkmate. The white king has no escape."
+          },
+          {
+            "fen": "5k2/5P2/5K2/8/8/8/8/8 b - - 0 1",
+            "title": "Stalemate",
+            "description": "Black to move but has no legal moves, yet is not in check. This is a draw by stalemate."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Can you castle if your king is in check?",
+            "options": [
+              "Yes",
+              "No"
+            ],
+            "answer": 1,
+            "explanation": "Castling is not allowed when the king is in check."
+          },
+          {
+            "type": "quiz",
+            "question": "What happens when a pawn reaches the last rank?",
+            "options": [
+              "It's removed",
+              "It stays as a pawn",
+              "It must be promoted",
+              "The game ends"
+            ],
+            "answer": 2,
+            "explanation": "A pawn reaching the last rank must be promoted to a queen, rook, bishop, or knight."
+          },
+          {
+            "type": "quiz",
+            "question": "En passant must be played...",
+            "options": [
+              "Anytime",
+              "Within 3 moves",
+              "Immediately on the next move",
+              "Before castling"
+            ],
+            "answer": 2,
+            "explanation": "The en passant capture must be made on the very next move, or the right to do so is permanently lost."
+          },
+          {
+            "type": "quiz",
+            "question": "What is stalemate?",
+            "options": [
+              "King is in check with no escape",
+              "Player has no legal moves but is not in check",
+              "Both kings are in check",
+              "A player runs out of time"
+            ],
+            "answer": 1,
+            "explanation": "Stalemate is when the player to move has no legal moves but their king is not in check. It's a draw."
+          }
+        ]
+      },
+      {
+        "id": "chess-notation",
+        "title": "Chess Notation",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Chess Notation</h2>\n<p>Chess notation is the system used to record moves. It allows players to study games, communicate positions, and build opening knowledge.</p>\n\n<h3>Algebraic Notation</h3>\n<p>The standard notation system used worldwide. Each move records the piece and destination square:</p>\n<ul>\n  <li><strong>K</strong> = King, <strong>Q</strong> = Queen, <strong>R</strong> = Rook, <strong>B</strong> = Bishop, <strong>N</strong> = Knight</li>\n  <li>Pawns have no letter prefix — just the destination square</li>\n  <li><code>e4</code> = pawn to e4</li>\n  <li><code>Nf3</code> = knight to f3</li>\n  <li><code>Bb5</code> = bishop to b5</li>\n</ul>\n\n<p><strong>Special symbols:</strong></p>\n<ul>\n  <li><code>x</code> = captures (e.g., <code>Bxf7</code> — bishop captures on f7)</li>\n  <li><code>+</code> = check</li>\n  <li><code>#</code> = checkmate</li>\n  <li><code>O-O</code> = kingside castling</li>\n  <li><code>O-O-O</code> = queenside castling</li>\n  <li><code>=Q</code> = pawn promotion to queen</li>\n  <li><code>!</code> = good move, <code>!!</code> = brilliant move</li>\n  <li><code>?</code> = mistake, <code>??</code> = blunder</li>\n</ul>\n\n<h3>FEN (Forsyth-Edwards Notation)</h3>\n<p>FEN describes a complete board position in a single line of text. The starting position in FEN is:</p>\n<p><code>rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1</code></p>\n<ul>\n  <li>Uppercase = White pieces, lowercase = Black pieces</li>\n  <li>Numbers = consecutive empty squares</li>\n  <li><code>/</code> separates ranks (starting from rank 8)</li>\n  <li>After the position: active color, castling rights, en passant square, halfmove clock, fullmove number</li>\n</ul>\n\n<h3>PGN (Portable Game Notation)</h3>\n<p>PGN is the standard format for recording complete games. It includes metadata (players, date, result) and the move list:</p>\n<pre>[Event \"World Championship\"]\n[White \"Kasparov, Garry\"]\n[Black \"Karpov, Anatoly\"]\n[Result \"1-0\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. a3 Bb7 5. Nc3 d5 1-0</pre>\n",
+        "examples": [
+          {
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
+            "title": "After 1. e4",
+            "description": "The notation \"1. e4\" means White's first move is pawn to e4."
+          },
+          {
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+            "title": "After 1. e4 e5 2. Nf3",
+            "description": "\"Nf3\" means the knight moves to f3. No \"N\" means pawn."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What does \"Nxe5\" mean?",
+            "options": [
+              "Knight to e5",
+              "Knight captures on e5",
+              "Knight from e5",
+              "New move e5"
+            ],
+            "answer": 1,
+            "explanation": "The \"x\" symbol indicates a capture. Nxe5 means a knight captures the piece on e5."
+          },
+          {
+            "type": "quiz",
+            "question": "What does \"O-O\" represent?",
+            "options": [
+              "Queenside castling",
+              "Kingside castling",
+              "A draw",
+              "A null move"
+            ],
+            "answer": 1,
+            "explanation": "O-O is kingside castling. O-O-O is queenside castling."
+          },
+          {
+            "type": "quiz",
+            "question": "In FEN, what does a number represent?",
+            "options": [
+              "Piece value",
+              "Move number",
+              "Consecutive empty squares",
+              "Rank number"
+            ],
+            "answer": 2,
+            "explanation": "In the FEN piece placement, digits 1-8 represent that many consecutive empty squares."
+          }
+        ]
+      },
+      {
+        "id": "basic-checkmates",
+        "title": "Basic Checkmates",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Fundamental Checkmate Patterns</h2>\n<p>Learning basic checkmate patterns is essential. These are the building blocks that every chess player must master.</p>\n\n<h3>King & Queen vs. King</h3>\n<p>The most common endgame checkmate. The technique uses the queen to progressively restrict the opponent's king to the edge of the board, then delivers checkmate with the help of your own king.</p>\n<ol>\n  <li>Use the queen to create a barrier, limiting the enemy king's movement</li>\n  <li>Bring your king closer to support the queen</li>\n  <li>Push the enemy king to the edge of the board</li>\n  <li>Deliver checkmate on the edge</li>\n</ol>\n\n<div class=\"warning-box\">\n  <div class=\"warning-box-title\">⚠️ Common Mistake</div>\n  <p>Be careful not to stalemate! If the enemy king has no legal moves and is not in check, the game is drawn. Always leave the enemy king at least one square to move to until you're ready to deliver checkmate.</p>\n</div>\n\n<h3>King & Rook vs. King</h3>\n<p>Slightly more complex but equally essential. The rook creates a barrier along a rank or file, while your king approaches to help deliver checkmate.</p>\n\n<h3>Back-Rank Checkmate</h3>\n<p>One of the most common tactical motifs in practical play. A rook or queen delivers checkmate on the first or eighth rank when the opponent's king is trapped behind its own pawns.</p>\n\n<h3>Scholar's Mate</h3>\n<p>A four-move checkmate: 1. e4 e5 2. Bc4 Nc6 3. Qh5 Nf6?? 4. Qxf7#. While easily refuted by experienced players, it teaches the importance of the f7/f2 squares and early development.</p>\n",
+        "examples": [
+          {
+            "fen": "4k3/8/8/8/8/8/8/4K2Q w - - 0 1",
+            "title": "K+Q vs K Setup",
+            "description": "White must use the queen and king together to force checkmate. The technique takes at most 10 moves."
+          },
+          {
+            "fen": "4k3/8/4K3/8/8/8/8/7Q w - - 0 1",
+            "title": "K+Q Checkmate Pattern",
+            "description": "White plays Qe1 (or similar), restricting the king, then delivers mate."
+          },
+          {
+            "fen": "4k3/8/8/8/8/8/8/R3K3 w - - 0 1",
+            "title": "K+R vs K Setup",
+            "description": "The rook creates a barrier while the king approaches. This checkmate requires patience."
+          },
+          {
+            "fen": "6k1/5ppp/8/8/8/8/8/R3K3 w - - 0 1",
+            "title": "Back-Rank Mate Threat",
+            "description": "If the rook reaches the 8th rank (Ra8), it's checkmate because the pawns block the king's escape."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "mate1_01",
+            "fen": "6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1",
+            "solution": "Re8#",
+            "theme": "Back-Rank Mate",
+            "difficulty": "beginner",
+            "explanation": "The rook delivers checkmate on the 8th rank. The king is trapped behind its own pawns on f7, g7, h7."
+          },
+          {
+            "id": "mate1_02",
+            "fen": "k7/8/1K6/8/8/8/8/7R w - - 0 1",
+            "solution": "Ra1#",
+            "theme": "K+R Checkmate",
+            "difficulty": "beginner",
+            "explanation": "With the white king on b6 supporting, Ra1 delivers checkmate. The black king has no escape squares."
+          },
+          {
+            "id": "mate1_03",
+            "fen": "5rk1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1",
+            "solution": "Ra8",
+            "theme": "Back-Rank Mate",
+            "difficulty": "beginner",
+            "explanation": "Ra8 pins the rook and threatens checkmate. After Rxa8, it's back-rank mate."
+          },
+          {
+            "id": "mate1_04",
+            "fen": "2k5/8/2K5/8/8/8/8/4Q3 w - - 0 1",
+            "solution": "Qa5",
+            "theme": "K+Q Technique",
+            "difficulty": "beginner",
+            "explanation": "Multiple checkmates work here. Qa5 restricts the king and prepares mate."
+          },
+          {
+            "id": "mate1_05",
+            "fen": "r1bqkbnr/pppp1Qpp/2n2p2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4",
+            "solution": "Scholar's Mate",
+            "theme": "Scholar's Mate",
+            "difficulty": "beginner",
+            "explanation": "This is Scholar's Mate after 1.e4 e5 2.Bc4 Nc6 3.Qh5 f6?? 4.Qxf7#. The queen and bishop combine to attack f7."
+          },
+          {
+            "id": "mate1_06",
+            "fen": "6k1/4Rppp/8/8/8/8/5PPP/6K1 w - - 0 1",
+            "solution": "Re8#",
+            "theme": "Back-Rank Mate",
+            "difficulty": "beginner",
+            "explanation": "Re8 is checkmate. The rook controls the 8th rank and the g7, h7, f7 pawns trap the king."
+          },
+          {
+            "id": "mate1_07",
+            "fen": "k7/pp6/1K6/8/8/8/8/1R6 w - - 0 1",
+            "solution": "Ra1#",
+            "theme": "Support Mate",
+            "difficulty": "beginner",
+            "explanation": "Ra1 checkmate. The rook delivers check on the a-file, the king is trapped by its own pawns."
+          },
+          {
+            "id": "mate1_08",
+            "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
+            "solution": "Qxf7#",
+            "theme": "Scholar's Mate",
+            "difficulty": "beginner",
+            "explanation": "Qxf7 is checkmate. The queen is protected by the bishop on c4, and the king has no escape."
+          }
+        ]
+      },
+      {
+        "id": "opening-principles",
+        "title": "Opening Principles",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Opening Principles</h2>\n<p>The opening is the first phase of a chess game (roughly moves 1-15). While there are hundreds of specific openings, all good play follows these fundamental principles:</p>\n\n<h3>1. Control the Center</h3>\n<p>Place pawns and pieces in or toward the center (d4, d5, e4, e5). Central pieces have more mobility and influence over the board. The two most popular opening moves — <code>1. e4</code> and <code>1. d4</code> — immediately stake a claim in the center.</p>\n\n<h3>2. Develop Your Pieces</h3>\n<p>Bring your knights and bishops into play quickly. Each undeveloped piece is a piece not fighting for you. Aim to develop <strong>all minor pieces before move 10</strong>. Knights typically develop to f3/c3 (for White) or f6/c6 (for Black).</p>\n\n<h3>3. Castle Early</h3>\n<p>Castle within the first 10 moves to get your king to safety and connect your rooks. A king in the center is vulnerable to tactical attacks, especially once the position opens up.</p>\n\n<h3>4. Don't Move the Same Piece Twice</h3>\n<p>In the opening, move different pieces to develop your army quickly. Moving the same piece multiple times wastes valuable development time (called \"tempo\").</p>\n\n<h3>5. Don't Bring the Queen Out Too Early</h3>\n<p>The queen is easily harassed by minor pieces. If developed too early, your opponent gains tempo by attacking it while developing their own pieces.</p>\n\n<h3>6. Connect Your Rooks</h3>\n<p>After castling and developing all minor pieces, your rooks should \"see\" each other on the first rank with no pieces between them. Connected rooks defend each other and are ready to occupy open files.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Three Goals of the Opening</div>\n  <p><strong>Development</strong> (get pieces active), <strong>King Safety</strong> (castle), and <strong>Center Control</strong> (pawns and pieces aimed at d4/d5/e4/e5). Every opening move should serve at least one of these goals.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+            "title": "After 1. e4",
+            "description": "1. e4 controls the center and opens lines for the bishop and queen. The most popular opening move."
+          },
+          {
+            "fen": "r1bqkbnr/pppppppp/2n5/8/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 2 2",
+            "title": "Good Development",
+            "description": "After 1. e4 Nc6 2. Nf3 — White develops a knight to a natural square, controls the center, and prepares castling."
+          },
+          {
+            "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+            "title": "Italian Game Setup",
+            "description": "Both sides have developed knights and bishops, controlling the center. White should castle next (O-O)."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Which opening move controls the center?",
+            "options": [
+              "1. a4",
+              "1. e4",
+              "1. h3",
+              "1. Na3"
+            ],
+            "answer": 1,
+            "explanation": "1. e4 places a pawn in the center, controlling d5 and f5, and opens lines for the queen and bishop."
+          },
+          {
+            "type": "quiz",
+            "question": "Why should you castle early?",
+            "options": [
+              "To trap the opponent",
+              "For king safety and rook activation",
+              "To attack",
+              "To promote a pawn"
+            ],
+            "answer": 1,
+            "explanation": "Castling tucks the king away from the center and activates the rook."
+          },
+          {
+            "type": "quiz",
+            "question": "Why is bringing the queen out early usually bad?",
+            "options": [
+              "Queens are weak",
+              "The queen gets attacked, losing tempo",
+              "Rules prohibit it",
+              "The queen can't move far"
+            ],
+            "answer": 1,
+            "explanation": "Minor pieces can attack the queen while developing, making you waste moves retreating."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tactics",
+    "title": "Tactical Mastery",
+    "icon": "⚔️",
+    "description": "Master every tactical motif from forks to mating nets. Each pattern includes visual explanations, GM examples, and progressive puzzles.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "forks",
+        "title": "Forks (Double Attacks)",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Forks — The Double Attack</h2>\n<p>A fork is a tactic where a single piece <strong>attacks two or more enemy pieces simultaneously</strong>. The opponent can only save one, resulting in material gain. Every piece can deliver a fork, but knight forks are particularly devastating because knights cannot be blocked.</p>\n\n<h3>Knight Forks</h3>\n<p>The knight's unique L-shaped movement makes it the most feared forking piece. A knight can simultaneously attack the king and queen (a \"royal fork\"), which is almost always decisive. Knights are especially dangerous because <strong>no piece can block a knight's attack</strong> — you must move the attacked piece.</p>\n\n<h3>Queen Forks</h3>\n<p>The queen, with her combined rook and bishop movement, can fork pieces in virtually any direction. Queen forks are common in open positions.</p>\n\n<h3>Pawn Forks</h3>\n<p>Pawns fork diagonally. A central pawn advance can often fork two minor pieces. Pawn forks are powerful because the attacker (worth 1 point) threatens pieces worth 3+ points.</p>\n\n<h3>How to Spot Forks</h3>\n<ul>\n  <li>Look for enemy pieces on the same color square (for knight forks)</li>\n  <li>Look for undefended pieces</li>\n  <li>Consider \"in-between\" squares where your piece attacks multiple targets</li>\n  <li>After every exchange, check if a fork is available</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Fork Detection Pattern</div>\n  <p>Whenever your opponent's king and queen are on the same color square, check if any of your knights can reach a square that attacks both. This is the most profitable fork in chess.</p>\n</div>\n",
+        "puzzles": [
+          {
+            "id": "fork_01",
+            "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+            "solution": "Ng5",
+            "theme": "Knight Fork Threat",
+            "difficulty": "beginner",
+            "explanation": "Ng5 attacks f7, threatening a fork on f7 hitting the queen and rook."
+          },
+          {
+            "id": "fork_02",
+            "fen": "r2qkb1r/ppp2ppp/2n1bn2/3pp3/4P3/1BN2N2/PPPP1PPP/R1BQK2R w KQkq - 0 5",
+            "solution": "Nxd5",
+            "theme": "Knight Fork",
+            "difficulty": "intermediate",
+            "explanation": "Nxd5 attacks the queen on d8 and the bishop on e3. Black loses material."
+          },
+          {
+            "id": "fork_03",
+            "fen": "r1bqr1k1/ppp2ppp/2n2n2/3Np3/2B5/8/PPPP1PPP/R1BQK2R w KQ - 0 8",
+            "solution": "Nxf6+",
+            "theme": "Royal Knight Fork",
+            "difficulty": "intermediate",
+            "explanation": "Nxf6+ is a discovered attack on the queen. After ...gxf6, the queen is exposed."
+          },
+          {
+            "id": "fork_04",
+            "fen": "8/8/4k3/8/3N4/8/1K6/4r3 w - - 0 1",
+            "solution": "Nc6",
+            "theme": "Knight Fork",
+            "difficulty": "beginner",
+            "explanation": "Nc6 forks the king on e6 and the rook on e1. White wins the rook."
+          },
+          {
+            "id": "fork_05",
+            "fen": "r1b1kb1r/ppppqppp/2n2n2/1B2N3/4P3/8/PPPP1PPP/RNBQK2R w KQkq - 0 5",
+            "solution": "Nxc6",
+            "theme": "Fork with Check",
+            "difficulty": "intermediate",
+            "explanation": "Nxc6 wins material. The knight attacks multiple pieces simultaneously."
+          },
+          {
+            "id": "fork_06",
+            "fen": "2r3k1/pp3pp1/4p2p/8/1b2q3/1B2B1P1/PP3P1P/3QR1K1 w - - 0 1",
+            "solution": "Qd7",
+            "theme": "Queen Fork",
+            "difficulty": "intermediate",
+            "explanation": "Qd7 forks the rook on c8 and threatens mate threats, winning material."
+          },
+          {
+            "id": "fork_07",
+            "fen": "rnbqkbnr/ppp2ppp/8/3pp3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3",
+            "solution": "Qh5",
+            "theme": "Queen Fork",
+            "difficulty": "beginner",
+            "explanation": "Qh5 attacks the pawn on e5 and threatens Qxf7#. Black must deal with both threats."
+          },
+          {
+            "id": "fork_08",
+            "fen": "r1bqkbnr/pppp1ppp/2n5/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
+            "solution": "d5",
+            "theme": "Pawn Fork Threat",
+            "difficulty": "beginner",
+            "explanation": "After the knight retreats, ...d5 challenges the center and may fork pieces."
+          },
+          {
+            "id": "fork_09",
+            "fen": "r3k2r/ppp1nppp/3q1n2/3pN3/3P4/2N5/PPP2PPP/R2QR1K1 w kq - 0 10",
+            "solution": "Nxf7",
+            "theme": "Knight Fork",
+            "difficulty": "advanced",
+            "explanation": "Nxf7 forks the queen on d6 and the rook on h8. The knight is attacking from a powerful central square."
+          },
+          {
+            "id": "fork_10",
+            "fen": "2r2rk1/pp3ppp/2n1pn2/2Nq4/3P4/4P3/PP3PPP/R2QR1K1 w - - 0 12",
+            "solution": "Nb7",
+            "theme": "Knight Fork",
+            "difficulty": "advanced",
+            "explanation": "Nb7 attacks the queen and the rook on c8 simultaneously."
+          }
+        ]
+      },
+      {
+        "id": "pins",
+        "title": "Pins",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Pins — Immobilizing Enemy Pieces</h2>\n<p>A pin occurs when an attacking piece threatens a less valuable piece that <strong>cannot move without exposing a more valuable piece behind it</strong>. The pinned piece is effectively immobilized.</p>\n\n<h3>Types of Pins</h3>\n<ul>\n  <li><strong>Absolute Pin:</strong> The piece behind is the king. The pinned piece literally cannot move (it would be illegal, as it would expose the king to check). Example: a bishop pinning a knight to the king.</li>\n  <li><strong>Relative Pin:</strong> The piece behind is not the king but is more valuable (e.g., a queen). The pinned piece <em>can</em> legally move but doing so would lose material.</li>\n</ul>\n\n<h3>Exploiting Pins</h3>\n<p>Once a piece is pinned, you can increase pressure by:</p>\n<ul>\n  <li><strong>Piling up:</strong> Adding more attackers to the pinned piece</li>\n  <li><strong>Advancing pawns:</strong> Attack the pinned piece with a pawn</li>\n  <li><strong>Creating threats:</strong> The pinned piece cannot defend other squares</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Pin is Mightier than the Sword</div>\n  <p>Fred Reinfeld famously said: \"The pin is mightier than the sword.\" Pins are one of the most common tactical motifs in chess, appearing in virtually every game. Always look for pin opportunities, especially along diagonals aimed at the king.</p>\n</div>\n",
+        "puzzles": [
+          {
+            "id": "pin_01",
+            "fen": "rn1qkb1r/ppp2ppp/4pn2/3p4/3P2b1/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 2 4",
+            "solution": "Bg5",
+            "theme": "Absolute Pin",
+            "difficulty": "beginner",
+            "explanation": "Bg5 pins the knight on f6 to the queen on d8. The knight cannot move without losing the queen."
+          },
+          {
+            "id": "pin_02",
+            "fen": "r1bqk1nr/pppp1ppp/2n5/1Bb1p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+            "solution": "Bb5",
+            "theme": "Pin on Knight",
+            "difficulty": "beginner",
+            "explanation": "The bishop on b5 pins the knight on c6 to the king. Black cannot move the knight without exposing the king."
+          },
+          {
+            "id": "pin_03",
+            "fen": "r2qk2r/ppp1bppp/2n1pn2/3p2B1/3P4/2N2N2/PPP1PPPP/R2QKB1R w KQkq - 0 6",
+            "solution": "Bxf6",
+            "theme": "Winning a Pin",
+            "difficulty": "intermediate",
+            "explanation": "Bxf6 exploits the pin. After Bxf6 (or gxf6), White damages Black's pawn structure."
+          },
+          {
+            "id": "pin_04",
+            "fen": "r1bqk2r/pppp1ppp/2n2n2/4p3/1b2P3/2NP1N2/PPP2PPP/R1BQKB1R w KQkq - 0 5",
+            "solution": "Bd2",
+            "theme": "Breaking a Pin",
+            "difficulty": "intermediate",
+            "explanation": "Bd2 breaks the pin on the knight. Black's bishop on b4 must retreat or exchange."
+          },
+          {
+            "id": "pin_05",
+            "fen": "r1bq1rk1/ppp2ppp/2n2n2/3pp3/1bPP4/2N1PN2/PP3PPP/R1BQKB1R w KQ - 0 6",
+            "solution": "a3",
+            "theme": "Challenging a Pin",
+            "difficulty": "intermediate",
+            "explanation": "a3 challenges the bishop pin on c3. The bishop must decide where to retreat."
+          }
+        ]
+      },
+      {
+        "id": "skewers",
+        "title": "Skewers",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Skewers — The Reverse Pin</h2>\n<p>A skewer is the reverse of a pin: a more valuable piece is attacked first, and when it moves, a less valuable piece behind it is captured. Think of it as \"attacking through\" a high-value piece to win a lower-value one behind it.</p>\n\n<h3>How Skewers Work</h3>\n<p>The attacker targets a high-value piece (usually king or queen) along a line (rank, file, or diagonal). When that piece is forced to move, the piece behind it is captured. Skewers only work with line-moving pieces: bishops, rooks, and queens.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Skewer vs Pin</div>\n  <p><strong>Pin:</strong> More valuable piece is BEHIND. Less valuable piece is stuck.<br/>\n  <strong>Skewer:</strong> More valuable piece is in FRONT. It must move, exposing the piece behind.</p>\n</div>\n",
+        "puzzles": [
+          {
+            "id": "skewer_01",
+            "fen": "8/8/4k3/8/8/4K3/8/4R3 w - - 0 1",
+            "solution": "Re1+",
+            "theme": "Rook Skewer",
+            "difficulty": "beginner",
+            "explanation": "Re1+ skewers the king. When the king moves, the rook behind can be captured (if there were one)."
+          },
+          {
+            "id": "skewer_02",
+            "fen": "8/8/8/8/2k5/8/K7/1B6 w - - 0 1",
+            "solution": "Ba2+",
+            "theme": "Bishop Skewer",
+            "difficulty": "intermediate",
+            "explanation": "Ba2+ checks the king along the diagonal, potentially winning a piece behind it."
+          },
+          {
+            "id": "skewer_03",
+            "fen": "6k1/8/8/1q6/8/8/1R6/6K1 w - - 0 1",
+            "solution": "Rb8+",
+            "theme": "Rook Skewer",
+            "difficulty": "beginner",
+            "explanation": "Rb8+ checks the king. When it moves, the queen on b5 is captured."
+          },
+          {
+            "id": "skewer_04",
+            "fen": "4r1k1/5pp1/8/8/8/5B2/5PPP/6K1 w - - 0 1",
+            "solution": "Bc6",
+            "theme": "Bishop Skewer",
+            "difficulty": "intermediate",
+            "explanation": "Bc6 attacks the rook and threatens the a8 square. The rook is caught in a skewer."
+          }
+        ]
+      },
+      {
+        "id": "discovered-attacks",
+        "title": "Discovered Attacks",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Discovered Attacks & Discovered Check</h2>\n<p>A discovered attack occurs when a piece moves out of the way, <strong>unmasking an attack from another piece behind it</strong>. These are among the most powerful tactics in chess because they effectively create two threats at once.</p>\n\n<h3>Discovered Check</h3>\n<p>When the unmasked attack is a check, it's called a <strong>discovered check</strong>. The moving piece can go virtually anywhere because the opponent must address the check first. This often leads to winning significant material.</p>\n\n<h3>Double Check</h3>\n<p>The most powerful form: <strong>both the moving piece and the unmasked piece give check simultaneously</strong>. The only defense against double check is to move the king — blocking or capturing is impossible because there are two attackers. Double checks frequently lead to checkmate.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The \"Windmill\"</div>\n  <p>A windmill is a devastating combination of alternating discovered checks and regular checks, allowing one piece to capture multiple enemy pieces in succession. Torre vs. Lasker (1925) features the most famous windmill in chess history.</p>\n</div>\n",
+        "puzzles": [
+          {
+            "id": "disc_01",
+            "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+            "solution": "Ng5",
+            "theme": "Discovered Attack Setup",
+            "difficulty": "intermediate",
+            "explanation": "Ng5 threatens Nxf7 (discovered attack) and direct attack on f7."
+          },
+          {
+            "id": "disc_02",
+            "fen": "rn1qkbnr/ppp2Bpp/8/3pp3/4P1b1/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4",
+            "solution": "Bxf7+",
+            "theme": "Discovered Attack",
+            "difficulty": "intermediate",
+            "explanation": "Bxf7+ is a discovered check from the queen on d1 to the king. Black loses castling rights and the f7 pawn."
+          },
+          {
+            "id": "disc_03",
+            "fen": "2r2rk1/pp3ppp/2nqbn2/3p4/3P4/2NBP1B1/PP3PPP/R2Q1RK1 w - - 0 12",
+            "solution": "Nxe5",
+            "theme": "Discovered Attack",
+            "difficulty": "advanced",
+            "explanation": "Nxe5 discovers an attack from the bishop on g3 to the queen on d6. The knight also attacks the knight on f6."
+          }
+        ]
+      },
+      {
+        "id": "deflection-attraction",
+        "title": "Deflection & Attraction",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Deflection & Attraction</h2>\n\n<h3>Deflection</h3>\n<p>Deflection forces an enemy piece <strong>away from a critical defensive duty</strong>. By luring a defender away from the square or piece it protects, you create a tactical opportunity.</p>\n\n<h3>Attraction</h3>\n<p>Attraction (or \"decoy\") lures an enemy piece <strong>to a specific square</strong> where it becomes vulnerable to a tactic — typically a fork, pin, or mating attack. Sacrifices are often used to attract pieces to unfavorable squares.</p>\n\n<h3>Overloading</h3>\n<p>An overloaded piece is one that has <strong>too many defensive responsibilities</strong>. By attacking one of its duties, you force it to abandon another. Overloading is a form of deflection applied to multi-tasking pieces.</p>\n",
+        "puzzles": [
+          {
+            "id": "defl_01",
+            "fen": "6k1/5ppp/8/8/8/8/r4PPP/1R3RK1 w - - 0 1",
+            "solution": "Rb8+",
+            "theme": "Deflection",
+            "difficulty": "intermediate",
+            "explanation": "Rb8+ deflects the king, allowing the other rook to potentially enter the attack."
+          },
+          {
+            "id": "defl_02",
+            "fen": "r4rk1/ppp1qppp/2n2n2/2bpp3/2B5/2NP1N2/PPP1QPPP/R1B2RK1 w - - 0 8",
+            "solution": "Bxe6",
+            "theme": "Deflection",
+            "difficulty": "advanced",
+            "explanation": "Bxe6 deflects a defender and opens lines for the attack."
+          },
+          {
+            "id": "attr_01",
+            "fen": "6k1/pp3ppp/8/8/4r3/1Q6/PP3PPP/6K1 w - - 0 1",
+            "solution": "Qb8+",
+            "theme": "Attraction + Skewer",
+            "difficulty": "intermediate",
+            "explanation": "Qb8+ attracts the king to b8, then after Kg7/Kh7, the rook on e4 might be won."
+          },
+          {
+            "id": "overl_01",
+            "fen": "r2q1rk1/pp2bppp/2n1pn2/3p4/3P4/2NBPN2/PP3PPP/R2Q1RK1 w - - 0 10",
+            "solution": "Bxh7+",
+            "theme": "Attraction Sacrifice",
+            "difficulty": "advanced",
+            "explanation": "The classic Greek Gift sacrifice. Bxh7+ attracts the king, followed by Ng5+ with a devastating attack."
+          }
+        ]
+      },
+      {
+        "id": "back-rank-smothered",
+        "title": "Back-Rank & Smothered Mates",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Back-Rank Mate</h2>\n<p>The back-rank mate is one of the most common mating patterns in practical play. It occurs when a rook or queen <strong>delivers checkmate on the first or eighth rank</strong> because the king is trapped behind its own pawns (typically on g7, f7, h7 for Black's king on g8).</p>\n\n<h3>Prevention</h3>\n<p>Create a \"luft\" (breathing room) by advancing one of the pawns in front of your king (usually h3/h6 or g3/g6). This gives the king an escape square and prevents back-rank mates.</p>\n\n<h2>Smothered Mate</h2>\n<p>A smothered mate occurs when a knight delivers checkmate to a king that is <strong>completely surrounded by its own pieces</strong>. The most famous pattern is Philidor's Legacy:</p>\n<ol>\n  <li>Queen sacrifice to force the king to the corner</li>\n  <li>Knight delivers checkmate to the smothered king</li>\n</ol>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Philidor's Legacy</div>\n  <p>The classic pattern: with a queen and knight vs. rook (king on g8, rook on f8, pawns on f7/g7/h7), play Nf7+ Kg8, Nh6+ Kh8, Qg8+!! Rxg8, Nf7#. The queen sacrifice forces the rook to block the king's escape, allowing the knight to deliver smothered mate.</p>\n</div>\n",
+        "puzzles": [
+          {
+            "id": "brank_01",
+            "fen": "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+            "solution": "Re8#",
+            "theme": "Back-Rank Mate",
+            "difficulty": "beginner",
+            "explanation": "Re8 is checkmate. The king is trapped behind its own pawns."
+          },
+          {
+            "id": "brank_02",
+            "fen": "3r2k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
+            "solution": "Rd8+",
+            "theme": "Back-Rank Mate",
+            "difficulty": "beginner",
+            "explanation": "Rd8+ forces Rxd8 and then... actually this is a trade. The position demonstrates the back-rank theme."
+          },
+          {
+            "id": "brank_03",
+            "fen": "2r3k1/5pp1/8/8/8/1Q6/5PPP/6K1 w - - 0 1",
+            "solution": "Qb8+",
+            "theme": "Back-Rank with Queen",
+            "difficulty": "beginner",
+            "explanation": "Qb8+ forces Rxb8 but demonstrates back-rank vulnerability. Or if the rook is elsewhere, it's mate."
+          },
+          {
+            "id": "smoth_01",
+            "fen": "6rk/6pp/8/6N1/8/8/8/6QK w - - 0 1",
+            "solution": "Qg6",
+            "theme": "Smothered Mate Setup",
+            "difficulty": "advanced",
+            "explanation": "Qg6 threatens Qf7# and Nf7+ leading to smothered mate patterns."
+          },
+          {
+            "id": "smoth_02",
+            "fen": "5rk1/5ppp/8/8/8/8/5PPP/4NQKR w - - 0 1",
+            "solution": "Nf3",
+            "theme": "Smothered Mate Prep",
+            "difficulty": "intermediate",
+            "explanation": "Preparing Ng5 with threats against f7 and potential smothered mate motifs."
+          },
+          {
+            "id": "smoth_03",
+            "fen": "r1b3kr/pppn1pNp/8/4q3/8/8/PPPPQPPP/R1B1K2R w KQ - 0 1",
+            "solution": "Qe8+",
+            "theme": "Smothered Mate (Philidor)",
+            "difficulty": "expert",
+            "explanation": "Qe8+! Rxe8 (forced), Nf7# — smothered mate! The king is surrounded by its own pieces at g8/h7/pawn on g7."
+          }
+        ]
+      },
+      {
+        "id": "zwischenzug",
+        "title": "Zwischenzug (Intermezzo)",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Zwischenzug — The In-Between Move</h2>\n<p>Zwischenzug (German for \"intermediate move\") is an unexpected <strong>in-between move</strong> inserted into a seemingly forced sequence. Instead of making the \"obvious\" recapture or response, you play a more important move first — typically a check, a threat, or an attack on a higher-value piece.</p>\n\n<h3>Why Zwischenzugs Are Dangerous</h3>\n<p>They break the expected flow of a sequence. Your opponent may have calculated that a certain recapture is forced, but the intermezzo changes the position before returning to the expected sequence — often with a better outcome.</p>\n\n<h3>Common Patterns</h3>\n<ul>\n  <li><strong>Check before recapturing:</strong> Give check, then recapture with improved position</li>\n  <li><strong>Counter-threat:</strong> Create a bigger threat before addressing your opponent's</li>\n  <li><strong>Pinning before recapturing:</strong> Pin a piece, then recapture favorably</li>\n</ul>\n",
+        "puzzles": [
+          {
+            "id": "zwi_01",
+            "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2BPP3/5N2/PPP2PPP/RNBQK2R b KQkq d3 0 4",
+            "solution": "exd4",
+            "theme": "Zwischenzug Setup",
+            "difficulty": "intermediate",
+            "explanation": "After exd4, if White recaptures with Nxd4, Black has Nxd4 Qxd4 — but can insert an intermezzo first."
+          },
+          {
+            "id": "zwi_02",
+            "fen": "r1b1kbnr/ppppqppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4",
+            "solution": "d5",
+            "theme": "Zwischenzug",
+            "difficulty": "advanced",
+            "explanation": "d5 is an in-between move that attacks the knight before recapturing on e5."
+          }
+        ]
+      },
+      {
+        "id": "x-ray-interference",
+        "title": "X-Ray & Interference",
+        "difficulty": "advanced",
+        "theory": "\n<h2>X-Ray Attacks</h2>\n<p>An X-ray attack is when a piece <strong>exerts influence through another piece</strong> to a square beyond it. It's like having \"X-ray vision\" through the board. The effect is similar to a skewer but the attacking piece defends or attacks a square through an intervening piece.</p>\n\n<h2>Interference</h2>\n<p>Interference disrupts the <strong>coordination between enemy pieces</strong> by placing a piece on a critical square between them. This forces one defending piece to block another's defensive line, often winning material or creating mating threats.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Interference in Practice</div>\n  <p>Look for situations where two enemy pieces defend the same square or piece. If you can place a piece between them, the defensive connection breaks down and one of the defenders becomes useless.</p>\n</div>\n",
+        "puzzles": [
+          {
+            "id": "xray_01",
+            "fen": "1r2r1k1/5ppp/8/8/8/8/5PPP/1R2R1K1 w - - 0 1",
+            "solution": "Rxb8",
+            "theme": "X-Ray Defense",
+            "difficulty": "intermediate",
+            "explanation": "Rxb8 works because the other rook on e1 X-rays through to provide support."
+          },
+          {
+            "id": "inter_01",
+            "fen": "r2q1rk1/ppp2ppp/8/4n3/4Q3/8/PPP2PPP/R4RK1 w - - 0 1",
+            "solution": "Qe3",
+            "theme": "Interference",
+            "difficulty": "advanced",
+            "explanation": "Placing a piece on a square that interferes with the coordination of Black's defenses."
+          }
+        ]
+      },
+      {
+        "id": "mating-nets",
+        "title": "Mating Nets & Patterns",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Mating Patterns You Must Know</h2>\n<p>Recognizing mating patterns is essential for tactical play. When you know these patterns, you can spot forced checkmates that others miss.</p>\n\n<h3>Anastasia's Mate</h3>\n<p>A knight and rook combine to checkmate a king on the h-file. The knight controls escape squares while the rook delivers mate along a file or rank.</p>\n\n<h3>Arabian Mate</h3>\n<p>A rook and knight deliver checkmate in the corner. The knight covers the escape squares while the rook gives check.</p>\n\n<h3>Boden's Mate</h3>\n<p>Two bishops deliver checkmate on criss-crossing diagonals, typically after a queen sacrifice opens the diagonals.</p>\n\n<h3>Damiano's Mate</h3>\n<p>A queen and pawn (or queen and piece) deliver checkmate on the h-file after ...Qxh2+ or Qxh7+.</p>\n\n<h3>Epaulette Mate</h3>\n<p>The queen delivers checkmate when the king is flanked (\"epauletted\") by its own pieces on both sides.</p>\n\n<h3>Greco's Mate</h3>\n<p>A bishop and rook (or queen) combine to checkmate on the h-file. The bishop covers diagonal escape squares.</p>\n",
+        "puzzles": [
+          {
+            "id": "mate_pat_01",
+            "fen": "5rk1/pp4pp/8/8/1B6/8/PP3PPP/6KR w - - 0 1",
+            "solution": "Rh8+",
+            "theme": "Arabian Mate",
+            "difficulty": "intermediate",
+            "explanation": "Rh8+ Kxh8... depends on the position, but demonstrates the rook+bishop mating pattern."
+          },
+          {
+            "id": "mate_pat_02",
+            "fen": "r1b1k1nr/ppppqppp/2n5/4p3/2BPP3/2P2N2/PP3PPP/RNBQK2R b KQkq - 0 5",
+            "solution": "Pattern Study",
+            "theme": "Boden's Mate Setup",
+            "difficulty": "advanced",
+            "explanation": "Study position for Boden's Mate pattern where two bishops deliver mate on crossing diagonals."
+          },
+          {
+            "id": "mate_pat_03",
+            "fen": "6k1/5ppp/8/8/8/5N2/5PPP/6K1 w - - 0 1",
+            "solution": "Pattern Recognition",
+            "theme": "Knight Mating Patterns",
+            "difficulty": "intermediate",
+            "explanation": "Study how knights can contribute to mating attacks, especially with other pieces."
+          },
+          {
+            "id": "mate_pat_04",
+            "fen": "r2qr1k1/ppp2ppp/2n2n2/3p4/3P4/2NBPN2/PPP2PPP/R2Q1RK1 w - - 0 9",
+            "solution": "Bxh7+",
+            "theme": "Greek Gift",
+            "difficulty": "expert",
+            "explanation": "The famous Greek Gift sacrifice: Bxh7+! Kxh7, Ng5+ Kg8 (Kg6 h5#), Qh5 Re8, Qxf7+ Kh8, Qh5+ Kg8, Qh7+ Kf8, Qh8+ Ke7, Qxg7#"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "calculation",
+    "title": "Calculation Training",
+    "icon": "🧠",
+    "description": "Develop your ability to see ahead. Learn candidate moves, forcing sequences, and visualization techniques used by grandmasters.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "candidate-moves",
+        "title": "Candidate Moves",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Candidate Moves — The Foundation of Calculation</h2>\n<p>Before calculating variations, you must identify the <strong>candidate moves</strong> — the moves worth considering. Alexander Kotov, in his classic \"Think Like a Grandmaster,\" defined the process:</p>\n<ol>\n  <li><strong>Identify all forcing moves:</strong> checks, captures, and threats</li>\n  <li><strong>Evaluate each candidate:</strong> calculate the consequences</li>\n  <li><strong>Make your decision:</strong> choose the best continuation</li>\n</ol>\n\n<h3>The Forcing Moves Hierarchy</h3>\n<ul>\n  <li><strong>Checks</strong> — the most forcing (opponent MUST respond)</li>\n  <li><strong>Captures</strong> — often force a recapture</li>\n  <li><strong>Threats</strong> — force defensive action</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The CCT Method</div>\n  <p><strong>Checks, Captures, Threats</strong> — always consider these three categories first when analyzing any position. This systematic approach ensures you don't miss critical tactical possibilities.</p>\n</div>\n\n<h3>Avoiding Tunnel Vision</h3>\n<p>A common mistake is to calculate only the first candidate that looks promising. Always consider at least 2-3 candidate moves before going deep into any one line. Grandmasters typically identify 3-5 candidates per move.</p>\n",
+        "exercises": [
+          {
+            "type": "find-candidates",
+            "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+            "question": "Identify the top 3 candidate moves for White",
+            "solution": [
+              "Ng5",
+              "d3",
+              "O-O"
+            ],
+            "explanation": "Ng5 (attacking f7), d3 (solid development), and O-O (king safety) are the main candidates. Ng5 is the most forcing."
+          },
+          {
+            "type": "find-candidates",
+            "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+            "question": "List the candidate moves",
+            "solution": [
+              "O-O",
+              "c3",
+              "d3",
+              "Nc3",
+              "b4"
+            ],
+            "explanation": "Multiple reasonable candidates exist. O-O and c3 are the most popular, leading to the Italian Game main lines."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "calc_cand_01",
+            "fen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 7",
+            "solution": "Bg5",
+            "theme": "Candidate Moves",
+            "difficulty": "intermediate",
+            "explanation": "Bg5 pins the knight and creates pressure. Other candidates: a4, Be3, h3."
+          },
+          {
+            "id": "calc_cand_02",
+            "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQ - 4 4",
+            "solution": "Nxe5",
+            "theme": "Forcing Candidate",
+            "difficulty": "intermediate",
+            "explanation": "Nxe5 is a forcing capture. After Nxe5, White can play d4 with tempo. Always check captures first!"
+          }
+        ]
+      },
+      {
+        "id": "calculation-depth",
+        "title": "Calculation Depth Training",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Building Calculation Depth</h2>\n<p>Calculation depth measures how many moves ahead you can see accurately. Club players typically see 2-3 moves ahead; masters see 5-8; grandmasters can see 10-15 in forcing lines.</p>\n\n<h3>2-Ply (1 move ahead)</h3>\n<p>See your move and your opponent's best response. Focus on immediate tactics.</p>\n\n<h3>4-Ply (2 moves ahead)</h3>\n<p>Your move → opponent's response → your follow-up → opponent's response. This is where most combinations are found.</p>\n\n<h3>6-Ply (3 moves ahead)</h3>\n<p>Deep enough for most practical combinations. Many brilliant sacrifices are calculated to this depth.</p>\n\n<h3>Progressive Training Method</h3>\n<ol>\n  <li>Start with mate-in-1 puzzles (2-ply)</li>\n  <li>Progress to mate-in-2 (4-ply)</li>\n  <li>Graduate to mate-in-3 (6-ply)</li>\n  <li>Practice complex tactical sequences</li>\n  <li>Add positional calculation (evaluating final positions)</li>\n</ol>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Tree of Variations</div>\n  <p>Visualize calculation as a tree: your candidate moves are the main branches, opponent responses are sub-branches. A key skill is <strong>pruning</strong> — eliminating unpromising branches early to focus calculation on the critical lines.</p>\n</div>\n",
+        "puzzles": [
+          {
+            "id": "calc_2ply_01",
+            "fen": "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+            "solution": "Re8#",
+            "theme": "2-Ply Mate",
+            "difficulty": "beginner",
+            "explanation": "One move calculation: Re8 is checkmate. The king is trapped behind its pawns."
+          },
+          {
+            "id": "calc_2ply_02",
+            "fen": "3qk3/8/8/8/8/8/8/3QK3 w - - 0 1",
+            "solution": "Qd2",
+            "theme": "2-Ply",
+            "difficulty": "beginner",
+            "explanation": "Centralizing the queen. Simple one-move thinking."
+          },
+          {
+            "id": "calc_4ply_01",
+            "fen": "r2qk2r/ppp2ppp/2n2n2/2bNp1B1/2B1P3/3P4/PPP2PPP/R2QK2R w KQkq - 0 7",
+            "solution": "Nxf6+",
+            "theme": "4-Ply Combination",
+            "difficulty": "intermediate",
+            "explanation": "Nxf6+ gxf6, Bxf6 — winning a pawn and ruining Black's king safety. Two moves deep."
+          },
+          {
+            "id": "calc_4ply_02",
+            "fen": "r1bqkb1r/pppp1ppp/2n5/4p3/2B1n3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4",
+            "solution": "Bxf7+",
+            "theme": "4-Ply",
+            "difficulty": "intermediate",
+            "explanation": "Bxf7+ Kxf7, Nxe5+ recovering the piece with an extra pawn."
+          },
+          {
+            "id": "calc_6ply_01",
+            "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2NP4/PPP2PPP/R1BQK1NR w KQkq - 0 5",
+            "solution": "Bg5",
+            "theme": "6-Ply Plan",
+            "difficulty": "advanced",
+            "explanation": "Bg5 pins the knight. The plan continues with Nd5 (threatening Nxf6+ and Bxf6). Three moves of calculation needed."
+          },
+          {
+            "id": "calc_6ply_02",
+            "fen": "r2q1rk1/pppb1ppp/2n2n2/3pp3/3PP3/2NB1N2/PPP2PPP/R1BQ1RK1 w - - 0 8",
+            "solution": "dxe5",
+            "theme": "6-Ply Sequence",
+            "difficulty": "advanced",
+            "explanation": "dxe5 dxe4, Nxe4 Nxe4, Bxe4 — winning a pawn after a three-move forcing sequence."
+          }
+        ]
+      },
+      {
+        "id": "visualization",
+        "title": "Board Visualization",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Board Visualization & Blindfold Training</h2>\n<p>Visualization — the ability to see positions in your mind without a physical board — is a trainable skill that separates strong players from the rest.</p>\n\n<h3>Why Visualization Matters</h3>\n<p>When calculating variations, you need to \"see\" the resulting position after several moves. If you can't maintain an accurate mental picture, your calculations will have errors.</p>\n\n<h3>Training Methods</h3>\n<ul>\n  <li><strong>Name that Square:</strong> Practice instantly knowing the color of any square (e.g., d4 is dark, e4 is light)</li>\n  <li><strong>Knight Path:</strong> Visualize a knight's path from one square to another</li>\n  <li><strong>Piece Placement:</strong> Set up positions from FEN notation in your mind</li>\n  <li><strong>Blindfold Puzzles:</strong> Solve simple tactics without looking at a board</li>\n  <li><strong>Blindfold Games:</strong> Play simple games without seeing the board (advanced)</li>\n</ul>\n\n<h3>The Square Color Exercise</h3>\n<p>Can you instantly tell the color of any square? Use this rule: if the file letter and rank number are both odd or both even, the square is <strong>dark</strong>. Otherwise, it's <strong>light</strong>. (a=1, b=2, etc.)</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Visualization Benchmark</div>\n  <p>Beginner: Can visualize 1-2 moves ahead. Intermediate: 3-4 moves in simple positions. Advanced: 5-6 moves. Expert: 8+ moves in forcing lines. Grandmaster: Can play entire games blindfolded.</p>\n</div>\n",
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What color is the square f3?",
+            "options": [
+              "Light",
+              "Dark"
+            ],
+            "answer": 0,
+            "explanation": "f=6 (even), 3 (odd). Even+Odd = Light square. You can verify: f3 is a light square."
+          },
+          {
+            "type": "quiz",
+            "question": "What color is the square d4?",
+            "options": [
+              "Light",
+              "Dark"
+            ],
+            "answer": 1,
+            "explanation": "d=4 (even), 4 (even). Even+Even = Dark square."
+          },
+          {
+            "type": "quiz",
+            "question": "A knight on a1 needs minimum how many moves to reach h8?",
+            "options": [
+              "4",
+              "5",
+              "6",
+              "7"
+            ],
+            "answer": 2,
+            "explanation": "A knight needs at least 6 moves to travel from a1 to h8 (opposite corner). Try: a1-b3-c5-d7-f8-g6-h8."
+          },
+          {
+            "type": "quiz",
+            "question": "Which piece always stays on squares of one color?",
+            "options": [
+              "Knight",
+              "Bishop",
+              "Rook",
+              "Queen"
+            ],
+            "answer": 1,
+            "explanation": "The bishop always moves diagonally, so it can never change its square color."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "viz_01",
+            "fen": "8/8/8/8/4N3/8/8/8 w - - 0 1",
+            "solution": "Visualization Exercise",
+            "theme": "Knight Movement",
+            "difficulty": "beginner",
+            "explanation": "From e4, trace the knight to every possible square it can reach in exactly 2 moves. This builds your knight vision."
+          },
+          {
+            "id": "viz_02",
+            "fen": "8/8/8/8/4B3/8/8/8 w - - 0 1",
+            "solution": "Visualization Exercise",
+            "theme": "Diagonal Vision",
+            "difficulty": "beginner",
+            "explanation": "The bishop on e4 controls two diagonals. Name all squares it can reach. Practice seeing long diagonals instantly."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "endgames",
+    "title": "Endgame Mastery",
+    "icon": "👑",
+    "description": "Master the art of converting advantages and defending inferior positions. From basic king and pawn endgames to complex rook endings.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "opposition",
+        "title": "Opposition",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Opposition — The Key to King & Pawn Endgames</h2>\n<p>Opposition is the most fundamental concept in endgame play. Two kings stand in <strong>direct opposition</strong> when they face each other with one square between them on the same rank, file, or diagonal.</p>\n\n<h3>Types of Opposition</h3>\n<ul>\n  <li><strong>Direct Opposition:</strong> Kings separated by 1 square on the same rank or file</li>\n  <li><strong>Distant Opposition:</strong> Kings separated by 3 or 5 squares on the same rank or file</li>\n  <li><strong>Diagonal Opposition:</strong> Kings separated diagonally by an odd number of squares</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Golden Rule</div>\n  <p>The player who does NOT have to move holds the opposition. The side with the opposition forces the opponent to give way, gaining access to critical squares.</p>\n</div>\n\n<h3>Why Opposition Matters</h3>\n<p>In King + Pawn vs King endgames, the stronger side needs the opposition to shepherd the pawn to promotion. Without it, the defender can block the pawn's path.</p>\n\n<h3>Key Squares</h3>\n<p>For each pawn position, there are <strong>key squares</strong> — if the attacking king reaches one of these squares, the pawn promotes regardless of whose move it is. For a pawn on the 5th rank, the key squares are the three squares on the 6th rank directly ahead.</p>\n",
+        "examples": [
+          {
+            "fen": "8/8/4k3/8/4K3/4P3/8/8 w - - 0 1",
+            "title": "Direct Opposition",
+            "description": "White has the opposition. Black must give way, allowing White's king to advance and support the pawn."
+          },
+          {
+            "fen": "8/4k3/8/4K3/4P3/8/8/8 w - - 0 1",
+            "title": "Key Squares Concept",
+            "description": "White's king is on a key square (e5). The pawn will promote regardless of whose move it is."
+          },
+          {
+            "fen": "8/8/8/8/4k3/8/4K3/4P4 w - - 0 1",
+            "title": "Distant Opposition",
+            "description": "With the pawn far back, White needs to advance the king first while maintaining the opposition."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is direct opposition?",
+            "options": [
+              "Kings adjacent diagonally",
+              "Kings facing each other with one square between",
+              "Kings on the same diagonal",
+              "Kings on opposite sides"
+            ],
+            "answer": 1,
+            "explanation": "Direct opposition means the kings face each other with exactly one square between them on the same rank or file."
+          },
+          {
+            "type": "quiz",
+            "question": "Who benefits from having the opposition?",
+            "options": [
+              "The player who must move",
+              "The player who does NOT have to move",
+              "Always White",
+              "Always the attacker"
+            ],
+            "answer": 1,
+            "explanation": "The player who does NOT have to move holds the opposition and can force the opponent to give way."
+          },
+          {
+            "type": "quiz",
+            "question": "What are key squares for a pawn on e5?",
+            "options": [
+              "d6, e6, f6",
+              "d5, e5, f5",
+              "e7, e8",
+              "d4, e4, f4"
+            ],
+            "answer": 0,
+            "explanation": "For a pawn on the 5th rank, the key squares are the three squares directly ahead on the 6th rank."
+          },
+          {
+            "type": "find-move",
+            "fen": "8/8/4k3/8/8/4K3/4P3/8 w - - 0 1",
+            "question": "White to move. What is the best move to seize the opposition?",
+            "solution": [
+              "Ke4"
+            ],
+            "explanation": "Ke4 takes the direct opposition. Now Black must move aside, and White gains ground."
+          }
+        ]
+      },
+      {
+        "id": "triangulation",
+        "title": "Triangulation",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Triangulation — Losing a Tempo with Purpose</h2>\n<p>Triangulation is a maneuver where the king makes a triangular path (3 moves) to return to a square it previously occupied, effectively <strong>losing a tempo</strong> to transfer the move to the opponent.</p>\n\n<h3>When to Triangulate</h3>\n<p>Triangulation is used when the current position would be winning if it were the opponent's turn to move (zugzwang). By triangulating, you achieve the same position with the opponent to move.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Triangulation Recipe</div>\n  <p>1. Identify a position where the opponent in zugzwang would lose<br/>\n  2. Find three squares the king can traverse in a triangle<br/>\n  3. Make the triangular maneuver to arrive at the same position with the opponent to move</p>\n</div>\n\n<h3>Classic Example</h3>\n<p>White King on d4, Black King on d6, White pawn on e4. White plays Kc4 (step 1), Kc5 (step 2), Kd5 (step 3) — arriving at the same relative position but now it's Black to move.</p>\n",
+        "examples": [
+          {
+            "fen": "8/8/3k4/8/3KP3/8/8/8 w - - 0 1",
+            "title": "Triangulation Setup",
+            "description": "White needs to reach this position with Black to move. The triangulation path is Kc4-Kc5-Kd5."
+          },
+          {
+            "fen": "8/8/1k6/1p6/1P6/1K6/8/8 w - - 0 1",
+            "title": "Mutual Zugzwang",
+            "description": "Whoever moves loses. White triangulates Ka4-Ka3-Kb3 to put Black in zugzwang."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the purpose of triangulation?",
+            "options": [
+              "To gain material",
+              "To lose a tempo and transfer the move",
+              "To promote a pawn",
+              "To reach a stalemate"
+            ],
+            "answer": 1,
+            "explanation": "Triangulation loses a tempo so the opponent must move in a position of zugzwang."
+          },
+          {
+            "type": "quiz",
+            "question": "How many moves does a basic triangulation require?",
+            "options": [
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "answer": 2,
+            "explanation": "A triangulation uses 3 king moves to return to the same position with the opponent to move."
+          }
+        ]
+      },
+      {
+        "id": "zugzwang",
+        "title": "Zugzwang",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Zugzwang — When Moving Is Losing</h2>\n<p>Zugzwang (German: \"compulsion to move\") is a situation where the obligation to make a move puts the player at a disadvantage. If they could \"pass,\" they would be fine — but chess requires you to move.</p>\n\n<h3>Recognizing Zugzwang</h3>\n<ul>\n  <li>The player to move has no useful moves — every legal move worsens their position</li>\n  <li>Most common in endgames with few pieces</li>\n  <li>Can be <strong>mutual zugzwang</strong> — whoever moves loses</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Zugzwang Patterns</div>\n  <p>Look for zugzwang when: the opponent's king is restricted, pieces are locked, and any move breaks a defensive formation. Creating zugzwang is the primary weapon in many endgames.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "8/8/p1p5/1p1p4/1P1Pk3/2P1p3/2K1P3/8 b - - 0 1",
+            "title": "Mutual Zugzwang",
+            "description": "A famous mutual zugzwang. Whoever moves loses — every move breaks a critical pawn structure."
+          },
+          {
+            "fen": "8/8/1k6/1p6/1P6/1K6/8/8 b - - 0 1",
+            "title": "Simple Zugzwang",
+            "description": "Black to move must abandon the defense of b5 or allow White to penetrate."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is zugzwang?",
+            "options": [
+              "A German opening",
+              "A position where being forced to move is a disadvantage",
+              "A type of checkmate",
+              "A draw condition"
+            ],
+            "answer": 1,
+            "explanation": "Zugzwang means any move you make worsens your position."
+          },
+          {
+            "type": "quiz",
+            "question": "In which phase of the game is zugzwang most common?",
+            "options": [
+              "Opening",
+              "Middlegame",
+              "Endgame",
+              "All phases equally"
+            ],
+            "answer": 2,
+            "explanation": "Zugzwang is most common in endgames when there are few pieces and mobility is limited."
+          }
+        ]
+      },
+      {
+        "id": "lucena-position",
+        "title": "Lucena Position",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>The Lucena Position — The Most Important Rook Endgame</h2>\n<p>The Lucena position is a <strong>winning configuration</strong> in rook and pawn vs. rook endgames. Mastering it is essential because it arises (or can be steered toward) in a huge percentage of practical rook endgames.</p>\n\n<h3>The Position</h3>\n<p>White has a pawn on the 7th rank with the king in front of the pawn. Black's rook checks from the side, preventing the king from emerging.</p>\n\n<h3>The Bridge-Building Technique</h3>\n<ol>\n  <li>Move the rook to the 4th rank (the \"bridge position\")</li>\n  <li>Step the king to the side, using the rook as a shelter from checks</li>\n  <li>Advance the rook to cut off the enemy king — this is the \"bridge\"</li>\n  <li>The king emerges and the pawn promotes</li>\n</ol>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Bridge</div>\n  <p>The rook on the 4th rank acts as a \"bridge\" — it blocks lateral checks once the king steps aside. This technique is one of the most important in all of chess.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "1K1k4/1P6/8/8/8/8/1r6/5R2 w - - 0 1",
+            "title": "Lucena Position",
+            "description": "White wins by building a bridge: Rf4! then Kc7, Rc4+, and the king shelters behind the rook."
+          },
+          {
+            "fen": "3K4/3P1k2/8/8/8/8/4r3/5R2 w - - 0 1",
+            "title": "Bridge in Action",
+            "description": "Rf4 starts the bridge. After Re4-Ke7, the rook interposes on e4 blocking checks."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the first step in the bridge-building technique?",
+            "options": [
+              "Advance the pawn",
+              "Move king to the side",
+              "Place the rook on the 4th rank",
+              "Give check"
+            ],
+            "answer": 2,
+            "explanation": "The rook goes to the 4th rank first to prepare the bridge position."
+          },
+          {
+            "type": "quiz",
+            "question": "Why is the Lucena position important?",
+            "options": [
+              "It is rare",
+              "It demonstrates stalemate",
+              "It is the most common winning technique in rook endgames",
+              "It only applies to knight endgames"
+            ],
+            "answer": 2,
+            "explanation": "The Lucena position and bridge technique is the fundamental winning method in rook endgames."
+          }
+        ]
+      },
+      {
+        "id": "philidor-position",
+        "title": "Philidor Position",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>The Philidor Position — The Key to Defending Rook Endgames</h2>\n<p>The Philidor position is the <strong>drawing technique</strong> for the defending side in rook and pawn vs. rook endgames. It is the counterpart to the Lucena position.</p>\n\n<h3>The Defensive Setup</h3>\n<p>Place your rook on the <strong>3rd rank</strong> (6th rank for Black) — this prevents the enemy king from advancing past the 6th rank. Wait until the pawn advances to the 6th rank, then switch to <strong>checking from behind</strong>.</p>\n\n<h3>Two-Phase Defense</h3>\n<ol>\n  <li><strong>Phase 1 — Passive Defense:</strong> Keep the rook on the 3rd rank, preventing the king from advancing</li>\n  <li><strong>Phase 2 — Active Defense:</strong> Once the pawn reaches the 6th rank, go to the back rank and give perpetual checks from behind</li>\n</ol>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Philidor's Rule</div>\n  <p>The rook on the 3rd rank is passive but effective. The moment the pawn advances to the 6th rank (blocking the king's shelter), switch to back-rank checking. The exposed king can never escape the checks.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "8/3k4/8/3KP3/8/3r4/8/4R3 b - - 0 1",
+            "title": "Philidor Defense Setup",
+            "description": "Black's rook on d3 prevents the White king from advancing. This is the key defensive position."
+          },
+          {
+            "fen": "4k3/8/4KP2/8/8/8/8/4r3 b - - 0 1",
+            "title": "Back-Rank Checking",
+            "description": "The pawn has reached the 6th rank, so Black switches to checking from behind with Re1+."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Where should the defending rook be placed in the Philidor position?",
+            "options": [
+              "Behind the pawn",
+              "In front of the pawn",
+              "On the 3rd rank",
+              "Next to the king"
+            ],
+            "answer": 2,
+            "explanation": "The rook on the 3rd rank prevents the attacking king from advancing beyond the 6th rank."
+          },
+          {
+            "type": "quiz",
+            "question": "When should you switch to checking from behind?",
+            "options": [
+              "Immediately",
+              "When the pawn reaches the 6th rank",
+              "Only in the opening",
+              "Never"
+            ],
+            "answer": 1,
+            "explanation": "Switch to back-rank checking once the pawn advances to the 6th rank, as it blocks the king's shelter."
+          }
+        ]
+      },
+      {
+        "id": "rook-endgames",
+        "title": "Rook Endgame Principles",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Rook Endgame Principles</h2>\n<p>Rook endgames occur in roughly 50% of all games that reach an endgame. Mastering them is essential for tournament success.</p>\n\n<h3>Fundamental Principles</h3>\n<ul>\n  <li><strong>Activity is paramount:</strong> An active rook is worth far more than a passive one</li>\n  <li><strong>Rooks belong behind passed pawns:</strong> Whether attacking or defending, place rooks behind passed pawns</li>\n  <li><strong>The 7th rank is golden:</strong> A rook on the 7th rank attacks pawns and restricts the king</li>\n  <li><strong>Cut off the enemy king:</strong> Use the rook to cut off the enemy king from the passed pawn</li>\n  <li><strong>King activity:</strong> Centralize your king — it's a fighting piece in the endgame</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Tarrasch's Rule</div>\n  <p>\"Always place rooks behind passed pawns — your own or your opponent's.\" Behind your own pawn, the rook gains space as the pawn advances. Behind the opponent's pawn, the rook restricts the pawn's advance.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "8/R4pk1/8/5p2/5P2/6K1/8/1r6 w - - 0 1",
+            "title": "Rook on the 7th",
+            "description": "White's rook on a7 dominates the 7th rank, attacking the f7 pawn and confining the Black king."
+          },
+          {
+            "fen": "8/8/8/5p2/5k2/8/R4PK1/1r6 w - - 0 1",
+            "title": "Rook Behind Passed Pawn",
+            "description": "Both rooks are optimally placed behind the respective passed pawns."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is Tarrasch's Rule for rook endgames?",
+            "options": [
+              "Always trade rooks",
+              "Place rooks behind passed pawns",
+              "Keep rooks on the back rank",
+              "Advance the king first"
+            ],
+            "answer": 1,
+            "explanation": "Tarrasch's Rule: Always place rooks behind passed pawns, whether your own or your opponent's."
+          },
+          {
+            "type": "quiz",
+            "question": "Why is the 7th rank important for rooks?",
+            "options": [
+              "It's closest to promotion",
+              "It attacks pawns and restricts the king",
+              "Rooks are trapped there",
+              "It's the starting position"
+            ],
+            "answer": 1,
+            "explanation": "A rook on the 7th rank attacks enemy pawns on their starting squares and confines the king to the back rank."
+          }
+        ]
+      },
+      {
+        "id": "queen-endgames",
+        "title": "Queen Endgames",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Queen Endgames</h2>\n<p>Queen endgames are among the most complex in chess. The queen's enormous power means perpetual check is always a danger, making converting advantages difficult.</p>\n\n<h3>Key Principles</h3>\n<ul>\n  <li><strong>Perpetual check danger:</strong> Always be alert to perpetual check possibilities</li>\n  <li><strong>Centralize the queen:</strong> A centralized queen controls the most squares</li>\n  <li><strong>King safety matters:</strong> Even in endgames, an exposed king invites checks</li>\n  <li><strong>Passed pawns are decisive:</strong> A passed pawn supported by the queen is extremely powerful</li>\n  <li><strong>Queen + Pawn vs Queen:</strong> Usually drawn if the defending queen can give perpetual check</li>\n</ul>\n",
+        "examples": [
+          {
+            "fen": "8/1Q4pk/8/8/8/8/6PP/4q1K1 w - - 0 1",
+            "title": "Queen Centralization",
+            "description": "White's centralized queen controls the board while Black's queen is passive on e1."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the biggest danger in queen endgames?",
+            "options": [
+              "Stalemate",
+              "Perpetual check",
+              "Back rank mate",
+              "Pawn races"
+            ],
+            "answer": 1,
+            "explanation": "In queen endgames, the defending side can often force perpetual check due to the queen's range."
+          }
+        ]
+      },
+      {
+        "id": "minor-piece-endgames",
+        "title": "Minor Piece Endgames",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Bishop and Knight Endgames</h2>\n<p>Minor piece endgames (bishops and knights) have unique characteristics that make them distinct from rook endgames.</p>\n\n<h3>Bishop Endgames</h3>\n<ul>\n  <li><strong>Opposite-colored bishops:</strong> Strong tendency to draw even with extra pawns</li>\n  <li><strong>Same-colored bishops:</strong> Extra pawn is usually decisive</li>\n  <li><strong>Good bishop vs bad bishop:</strong> A bishop not blocked by its own pawns is \"good\"</li>\n  <li><strong>The wrong bishop:</strong> In corner promotions, having the wrong colored bishop (not controlling the promotion square) means you cannot win K+B+RP vs K</li>\n</ul>\n\n<h3>Knight Endgames</h3>\n<ul>\n  <li><strong>Similar to king and pawn endgames:</strong> Knight endgames often reduce to pawn endgames</li>\n  <li><strong>Knights are bad with passed pawns on both sides:</strong> The knight is a short-range piece</li>\n  <li><strong>Knights love outposts:</strong> A centralized knight supported by a pawn is very strong</li>\n</ul>\n\n<h3>Bishop vs Knight</h3>\n<p>Bishops prefer open positions with pawns on both sides. Knights prefer closed positions with fixed pawn structures. The bishop pair is worth approximately half a pawn extra.</p>\n",
+        "examples": [
+          {
+            "fen": "8/pp3k2/2p2b2/3p4/3P1B2/2P2K2/PP6/8 w - - 0 1",
+            "title": "Good vs Bad Bishop",
+            "description": "White's bishop is \"good\" (not blocked by its own pawns) while Black's bishop is \"bad\" (blocked by pawns on c6, d5)."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "In opposite-colored bishop endgames, what is the typical result?",
+            "options": [
+              "White always wins",
+              "Usually a draw",
+              "Black always wins",
+              "Always checkmate"
+            ],
+            "answer": 1,
+            "explanation": "Opposite-colored bishop endgames have a strong drawing tendency because each bishop controls squares the other cannot."
+          },
+          {
+            "type": "quiz",
+            "question": "What is a \"wrong bishop\" in K+B+RP vs K?",
+            "options": [
+              "A bishop that moved too early",
+              "A bishop that doesn't control the promotion square",
+              "A bishop on the wrong color",
+              "Both B and C"
+            ],
+            "answer": 3,
+            "explanation": "The \"wrong bishop\" is one that doesn't control the corner promotion square, making the position a draw."
+          }
+        ]
+      },
+      {
+        "id": "fortresses",
+        "title": "Fortress Positions",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Fortresses — Drawing with Less Material</h2>\n<p>A fortress is a defensive setup where the weaker side creates an impregnable position that the stronger side cannot breach, despite having a significant material advantage.</p>\n\n<h3>Common Fortress Types</h3>\n<ul>\n  <li><strong>Rook vs Bishop + Pawn:</strong> The rook can often create a fortress by controlling the pawn's promotion square</li>\n  <li><strong>Knight + pawns fortress:</strong> A well-placed knight with pawns can hold against a queen</li>\n  <li><strong>Opposite-colored bishop fortress:</strong> The defender blocks the critical diagonal</li>\n  <li><strong>Rook + Pawn vs Queen:</strong> Certain pawn positions create an impenetrable fortress</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Fortress Recognition</div>\n  <p>Recognizing fortress possibilities is crucial for both sides — the defender to create one, and the attacker to prevent it. Key signs: fixed pawn structure, blocked position, limited entry points.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "8/8/8/1p6/1Pk5/2P5/2K5/8 w - - 0 1",
+            "title": "Pawn Fortress",
+            "description": "The blocked pawn structure creates a fortress. Neither side can make progress."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is a fortress in chess?",
+            "options": [
+              "A castle formation",
+              "An impregnable defensive position despite material deficit",
+              "A king safety setup",
+              "An opening system"
+            ],
+            "answer": 1,
+            "explanation": "A fortress is a defensive position the stronger side cannot penetrate, resulting in a draw despite material advantage."
+          }
+        ]
+      },
+      {
+        "id": "practical-endgames",
+        "title": "Practical Endgame Techniques",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Practical Endgame Techniques</h2>\n<p>These are the most important endgame skills for tournament play — techniques you'll use in real games repeatedly.</p>\n\n<h3>Essential Techniques</h3>\n<ul>\n  <li><strong>King and Queen vs King:</strong> Systematic technique to force mate in ≤10 moves</li>\n  <li><strong>King and Rook vs King:</strong> Drive the king to the edge using the rook as a barrier</li>\n  <li><strong>Two Bishops vs King:</strong> Coordinate the bishops to force the king to a corner</li>\n  <li><strong>Converting extra material:</strong> Trade pieces (not pawns) when ahead in material</li>\n  <li><strong>Pawn races:</strong> Calculate accurately who queens first</li>\n  <li><strong>The rule of the square:</strong> Can the king catch a passed pawn? Draw a mental square from the pawn to the promotion square — if the king is inside or can enter it, the pawn is caught.</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Rule of the Square</div>\n  <p>Draw an imaginary square from the pawn's current position to the promotion square. If the opposing king can step inside this square (on their turn), they catch the pawn. If not, the pawn promotes.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "8/8/8/1p6/8/8/5K2/8 w - - 0 1",
+            "title": "Rule of the Square",
+            "description": "Can White's king catch the b-pawn? Draw the square from b5 to b1-f1-f5-b5. Is the king inside?"
+          },
+          {
+            "fen": "8/8/8/8/4k3/8/4K3/4Q3 w - - 0 1",
+            "title": "K+Q vs K Technique",
+            "description": "Use the queen to create a barrier, then bring the king closer to deliver checkmate on the edge."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "When ahead in material in the endgame, what should you generally trade?",
+            "options": [
+              "Pawns",
+              "Pieces (not pawns)",
+              "Everything",
+              "Nothing"
+            ],
+            "answer": 1,
+            "explanation": "When ahead in material, trade pieces (not pawns) to simplify. Keep pawns to have promotion potential."
+          },
+          {
+            "type": "quiz",
+            "question": "What is the Rule of the Square?",
+            "options": [
+              "A pawn structure rule",
+              "A method to determine if a king can catch a passed pawn",
+              "A mating technique",
+              "A castling rule"
+            ],
+            "answer": 1,
+            "explanation": "The Rule of the Square tells you whether a king can catch a passed pawn by imagining a square from the pawn to its promotion square."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "strategy",
+    "title": "Strategic Chess",
+    "icon": "🏰",
+    "description": "Understand the deep positional principles that govern chess: pawn structures, piece placement, space, and long-term planning.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "pawn-structures",
+        "title": "Pawn Structures",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Pawn Structure — The Skeleton of the Position</h2>\n<p>Philidor called pawns \"the soul of chess.\" The pawn structure determines the character of the position: which pieces are strong, where to attack, and what plans to pursue.</p>\n\n<h3>Isolated Pawns</h3>\n<p>An isolated pawn has no friendly pawns on adjacent files. It cannot be defended by other pawns and becomes a target. However, an isolated d-pawn (IQP) can be a dynamic advantage because:</p>\n<ul>\n  <li>It controls key central squares (c5, e5)</li>\n  <li>It provides open files for rooks on c and e files</li>\n  <li>It creates attacking chances with d4-d5 breakthrough</li>\n</ul>\n<p>The IQP is strong in the middlegame (active pieces compensate) but weak in the endgame (no pieces to support it).</p>\n\n<h3>Doubled Pawns</h3>\n<p>Two pawns of the same color on the same file. Generally a weakness because they can't protect each other and one may become a target. However, doubled pawns can control important squares and open files for rooks.</p>\n\n<h3>Backward Pawns</h3>\n<p>A pawn that cannot be advanced because the square in front is controlled by an enemy pawn, and it cannot be supported by adjacent pawns. The square in front of a backward pawn is often a strong outpost for the opponent.</p>\n\n<h3>Hanging Pawns</h3>\n<p>Two adjacent pawns (usually on c4 and d4 or c5 and d5) with no pawns on adjacent files. They can be dynamic (if advanced, they create space) or weak (if blockaded, they become targets).</p>\n\n<h3>Passed Pawns</h3>\n<p>A pawn with no enemy pawns ahead of it on the same or adjacent files. Passed pawns are extremely powerful, especially in the endgame, because they threaten promotion. <em>\"A passed pawn is a criminal which should be kept under lock and key.\"</em> — Nimzowitsch</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Pawn Majority</div>\n  <p>A pawn majority on one side of the board (e.g., 3 vs. 2 on the queenside) can create a passed pawn. The side with the majority should advance those pawns to create a passer.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/3p4/3P4/2NBPN2/PP3PPP/R1BQ1RK1 w - - 0 9",
+            "title": "Isolated Queen Pawn (IQP)",
+            "description": "White has an isolated d4 pawn. It controls c5 and e5, but is a long-term weakness."
+          },
+          {
+            "fen": "r1bq1rk1/pp2ppbp/2np1np1/8/3PP3/2N2N2/PPP1BPPP/R1BQ1RK1 w - - 0 7",
+            "title": "Central Pawn Duo",
+            "description": "White's pawns on d4 and e4 control the center powerfully."
+          },
+          {
+            "fen": "r1bq1rk1/ppp2ppp/2n2n2/3pp3/4P3/2PP1N2/PP3PPP/RNBQ1RK1 w - - 0 6",
+            "title": "Pawn Chain",
+            "description": "White has a pawn chain (c3-d4-e5). Pawns support each other in a diagonal formation."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is an isolated pawn?",
+            "options": [
+              "A pawn with no adjacent friendly pawns",
+              "A pawn that has been captured",
+              "A pawn on the edge of the board",
+              "A pawn that cannot move"
+            ],
+            "answer": 0,
+            "explanation": "An isolated pawn has no friendly pawns on adjacent files to support it."
+          },
+          {
+            "type": "quiz",
+            "question": "A passed pawn is dangerous because...",
+            "options": [
+              "It attacks more squares",
+              "It threatens to promote",
+              "It blocks the opponent's rook",
+              "It's worth more points"
+            ],
+            "answer": 1,
+            "explanation": "A passed pawn has a clear path to promotion with no enemy pawns to stop it."
+          }
+        ]
+      },
+      {
+        "id": "piece-activity",
+        "title": "Piece Activity & Outposts",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Piece Activity</h2>\n<p>The activity and coordination of your pieces is often more important than material count. A well-placed knight can be worth more than a poorly-placed rook.</p>\n\n<h3>Outposts</h3>\n<p>An outpost is a square (usually in the opponent's half of the board) that cannot be attacked by enemy pawns. Knights on outposts are particularly powerful because:</p>\n<ul>\n  <li>They cannot be driven away by pawns</li>\n  <li>They control important squares deep in enemy territory</li>\n  <li>They can only be removed by piece exchanges</li>\n</ul>\n\n<h3>Good Bishop vs. Bad Bishop</h3>\n<p>A bishop is \"good\" when most of its pawns are on the opposite color, leaving its diagonals open. A \"bad\" bishop is blocked by its own pawns. When you have a bad bishop, try to trade it or get your pawns off its color.</p>\n\n<h3>Rook Activity</h3>\n<ul>\n  <li><strong>Open files:</strong> Place rooks on files with no pawns</li>\n  <li><strong>Half-open files:</strong> Files with only enemy pawns</li>\n  <li><strong>7th rank:</strong> A rook on the 7th rank attacks enemy pawns and restricts the king</li>\n  <li><strong>Doubling rooks:</strong> Two rooks on the same file multiply their power</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Principle of Two Weaknesses</div>\n  <p>When your opponent has one weakness, they can usually defend it. To win, create a <strong>second weakness</strong> on a different part of the board. The defender cannot cover both simultaneously, and you can switch the point of attack.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/ppp2ppp/2n2n2/3Np3/2B1P3/8/PPPP1PPP/R1BQ1RK1 w - - 0 7",
+            "title": "Knight Outpost",
+            "description": "White's knight on d5 is a powerful outpost — it cannot be attacked by Black's pawns and dominates the center."
+          },
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/1bPP4/2N1PN2/PP1B1PPP/R2QKB1R w KQ - 0 6",
+            "title": "Open File Control",
+            "description": "After piece exchanges, rooks will contest the open c-file."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What makes a knight outpost strong?",
+            "options": [
+              "It's in the center",
+              "Enemy pawns can't attack it",
+              "It's protected by a pawn",
+              "All of the above"
+            ],
+            "answer": 3,
+            "explanation": "The ideal outpost is centralized, safe from pawn attacks, and supported by a friendly pawn."
+          },
+          {
+            "type": "quiz",
+            "question": "Where do rooks belong?",
+            "options": [
+              "On closed files",
+              "Behind friendly pawns",
+              "On open files",
+              "In the corner"
+            ],
+            "answer": 2,
+            "explanation": "Rooks need open or half-open files to exert maximum influence."
+          }
+        ]
+      },
+      {
+        "id": "space-initiative",
+        "title": "Space & Initiative",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Space Advantage</h2>\n<p>Space is the amount of territory your pieces can access. A space advantage gives your pieces more room to maneuver while cramping your opponent's pieces.</p>\n\n<h3>How Space Works</h3>\n<p>Pawns define space. Pawns on the 4th and 5th ranks control squares in the opponent's territory. A space advantage is valuable because:</p>\n<ul>\n  <li>Your pieces have more mobility</li>\n  <li>You can transfer pieces between flanks more easily</li>\n  <li>The opponent's pieces are cramped and poorly coordinated</li>\n  <li>You have more options for attack</li>\n</ul>\n\n<h2>Initiative</h2>\n<p>The initiative means you are dictating the play — making threats that your opponent must respond to. The side with the initiative controls the game's tempo and direction.</p>\n\n<h3>Maintaining Initiative</h3>\n<ul>\n  <li>Create threats with every move</li>\n  <li>Keep your opponent on the defensive</li>\n  <li>Don't waste time on passive moves</li>\n  <li>Convert initiative to a lasting advantage before it dissipates</li>\n</ul>\n\n<h2>Prophylaxis</h2>\n<p>Prophylaxis is thinking about your opponent's plans and preventing them. Before making your own move, ask: <em>\"What does my opponent want to do?\"</em> — then stop it. Petrosian and Karpov were masters of prophylactic thinking.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Dynamic vs Static Advantages</div>\n  <p><strong>Static advantages</strong> (better structure, bishop pair, extra material) persist. <strong>Dynamic advantages</strong> (initiative, piece activity, development lead) are temporary and must be converted. The art of strategy is converting dynamic advantages into static ones.</p>\n</div>\n",
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is prophylaxis?",
+            "options": [
+              "An aggressive attack",
+              "Preventing your opponent's plans",
+              "Sacrificing material",
+              "Trading pieces"
+            ],
+            "answer": 1,
+            "explanation": "Prophylaxis is the art of anticipating and preventing your opponent's plans before they materialize."
+          },
+          {
+            "type": "quiz",
+            "question": "Dynamic advantages should be...",
+            "options": [
+              "Ignored",
+              "Converted to static advantages",
+              "Traded for material",
+              "Maintained forever"
+            ],
+            "answer": 1,
+            "explanation": "Dynamic advantages (initiative, activity) are temporary and should be converted to lasting static advantages."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "openings",
+    "title": "Opening Mastery",
+    "icon": "📖",
+    "description": "Learn the most important chess openings with main lines, sidelines, traps, typical tactics, and middlegame plans.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "italian-game",
+        "title": "Italian Game",
+        "difficulty": "beginner",
+        "theory": "\n<h2>The Italian Game (1.e4 e5 2.Nf3 Nc6 3.Bc4)</h2>\n<p>One of the oldest and most classical openings, dating back to the 16th century. The Italian Game develops the bishop to an active diagonal aimed at f7, the weakest point in Black's position.</p>\n\n<h3>Main Ideas for White</h3>\n<ul>\n  <li>Control the center with d3 or d4</li>\n  <li>Attack the vulnerable f7 square</li>\n  <li>Rapid development and early castling</li>\n  <li>Build pressure with c3 and d4</li>\n</ul>\n\n<h3>Main Line: Giuoco Piano (3...Bc5)</h3>\n<p>The \"Quiet Game\" — both bishops develop to active diagonals. Play continues with 4.c3 (preparing d4) or 4.d3 (the modern approach).</p>\n\n<h3>Two Knights Defense (3...Nf6)</h3>\n<p>A sharper alternative. Black immediately counterattacks e4. After 4.Ng5 (attacking f7) or 4.d3 (quiet), the positions become highly tactical.</p>\n\n<h3>Traps</h3>\n<p><strong>Fried Liver Attack:</strong> After 3...Nf6 4.Ng5 d5 5.exd5 Nxd5?? 6.Nxf7! — White sacrifices the knight on f7, drawing the king out. This leads to a powerful attack after 6...Kxf7 7.Qf3+ Ke6 8.Nc3.</p>\n",
+        "openingTree": [
+          {
+            "move": "1.e4",
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+            "comment": "King's pawn opening"
+          },
+          {
+            "move": "1...e5",
+            "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "comment": "Open game"
+          },
+          {
+            "move": "2.Nf3",
+            "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+            "comment": "Attacks e5, develops with tempo"
+          },
+          {
+            "move": "2...Nc6",
+            "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+            "comment": "Defends e5"
+          },
+          {
+            "move": "3.Bc4",
+            "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+            "comment": "Italian Game — targets f7"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the main target for White in the Italian Game?",
+            "options": [
+              "d5",
+              "f7",
+              "e5",
+              "c6"
+            ],
+            "answer": 1,
+            "explanation": "The bishop on c4 and potential Ng5 both target the f7 square, which is only defended by the king."
+          },
+          {
+            "type": "quiz",
+            "question": "What does 4.c3 prepare in the Italian Game?",
+            "options": [
+              "Castling",
+              "Nc3",
+              "d4",
+              "b4"
+            ],
+            "answer": 2,
+            "explanation": "4.c3 prepares the central advance d4, fighting for control of the center."
+          }
+        ]
+      },
+      {
+        "id": "ruy-lopez",
+        "title": "Ruy Lopez",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Ruy Lopez (Spanish Game) — 1.e4 e5 2.Nf3 Nc6 3.Bb5</h2>\n<p>The Ruy Lopez is considered the most important opening in chess. Named after a 16th-century Spanish priest, it has been a battleground for world champions for over a century.</p>\n\n<h3>Strategic Ideas</h3>\n<p>The bishop on b5 doesn't capture the knight immediately — it <strong>pins it</strong> and threatens to remove the defender of e5. The key strategic idea is to maintain tension and build a strong center.</p>\n\n<h3>Morphy Defense (3...a6)</h3>\n<p>The most popular response. 3...a6 asks the bishop its intentions. After 4.Ba4, Black plays ...Nf6, ...Be7, and ...b5 (the classic Closed Ruy Lopez setup).</p>\n\n<h3>Berlin Defense (3...Nf6)</h3>\n<p>Made famous by Kramnik's victory over Kasparov in 2000. After 4.O-O Nxe4 5.d4 Nd6 6.Bxc6 dxc6 7.dxe5, the resulting \"Berlin Wall\" endgame is extremely solid for Black but hard to win.</p>\n\n<h3>Marshall Attack (8...d5)</h3>\n<p>A famous gambit where Black sacrifices a pawn for a fierce kingside attack. 1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 O-O 8.c3 d5!? — a dynamic sacrifice that has been tested at the highest levels.</p>\n",
+        "openingTree": [
+          {
+            "move": "1.e4",
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+            "comment": ""
+          },
+          {
+            "move": "1...e5",
+            "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "comment": ""
+          },
+          {
+            "move": "2.Nf3",
+            "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+            "comment": ""
+          },
+          {
+            "move": "2...Nc6",
+            "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
+            "comment": ""
+          },
+          {
+            "move": "3.Bb5",
+            "fen": "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+            "comment": "Ruy Lopez — pins the knight, puts pressure on e5"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Why doesn't White capture Bxc6 immediately?",
+            "options": [
+              "It's illegal",
+              "Maintaining the pin is stronger",
+              "The bishop is trapped",
+              "It loses tempo"
+            ],
+            "answer": 1,
+            "explanation": "Maintaining the pin with 3.Bb5 creates lasting pressure. Capturing immediately gives Black the bishop pair and open b-file."
+          }
+        ]
+      },
+      {
+        "id": "queens-gambit",
+        "title": "Queen's Gambit",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Queen's Gambit — 1.d4 d5 2.c4</h2>\n<p>The Queen's Gambit is one of the oldest and most respected openings. Despite its name, it's not a true gambit — White can always recover the pawn. The aim is to undermine Black's d5 pawn and gain central control.</p>\n\n<h3>Queen's Gambit Declined (2...e6)</h3>\n<p>The classical, solid response. Black maintains the d5 pawn but locks in the light-squared bishop behind the pawn chain. Key plans:</p>\n<ul>\n  <li>Black aims for ...c5 or ...dxc4 followed by ...c5</li>\n  <li>The minority attack (b4-b5) is White's typical queenside plan</li>\n  <li>White often plays for a central space advantage</li>\n</ul>\n\n<h3>Queen's Gambit Accepted (2...dxc4)</h3>\n<p>Black takes the pawn, temporarily conceding the center. The modern interpretation is not to hold the pawn but to develop quickly with ...a6, ...b5, ...Bb7. White plays e3 and Bxc4 to recover the pawn.</p>\n\n<h3>Slav Defense (2...c6)</h3>\n<p>Black supports d5 with a pawn while keeping the light-squared bishop's path open (unlike in the QGD). After 3.Nf3 Nf6 4.Nc3, Black can play ...dxc4 (Slav) or ...e6 (Semi-Slav).</p>\n",
+        "openingTree": [
+          {
+            "move": "1.d4",
+            "fen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1",
+            "comment": "Queen's pawn opening"
+          },
+          {
+            "move": "1...d5",
+            "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
+            "comment": "Symmetric center"
+          },
+          {
+            "move": "2.c4",
+            "fen": "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2",
+            "comment": "Queen's Gambit — challenges d5"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Is the Queen's Gambit a true gambit?",
+            "options": [
+              "Yes, White permanently sacrifices a pawn",
+              "No, White can always recover the pawn"
+            ],
+            "answer": 1,
+            "explanation": "The Queen's Gambit is not a true gambit. After 2...dxc4, White can recover the pawn with e3 and Bxc4."
+          }
+        ]
+      },
+      {
+        "id": "sicilian-defense",
+        "title": "Sicilian Defense",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Sicilian Defense — 1.e4 c5</h2>\n<p>The most popular and statistically the highest-scoring response to 1.e4. The Sicilian creates an <strong>asymmetrical pawn structure</strong>, leading to sharp, dynamic play where both sides have winning chances.</p>\n\n<h3>Why the Sicilian Works</h3>\n<p>1...c5 immediately fights for the d4 square without committing to a symmetric structure. After an eventual d4 by White (usually after 2.Nf3 and 3.d4), Black captures cxd4, gaining a central pawn majority (d and e pawns vs. White's e-pawn) and the half-open c-file.</p>\n\n<h3>Open Sicilian (2.Nf3, 3.d4)</h3>\n<p>The main line. White opens the center quickly. Major variations include:</p>\n<ul>\n  <li><strong>Najdorf (5...a6):</strong> Bobby Fischer's weapon. The most theoretically demanding.</li>\n  <li><strong>Dragon (5...g6):</strong> Black fianchettoes the bishop. The Yugoslav Attack (6.Be3 Bg7 7.f3) leads to mutual kingside/queenside attacks.</li>\n  <li><strong>Classical (5...Nc6):</strong> Solid development, Kasparov played this extensively.</li>\n  <li><strong>Scheveningen (5...e6):</strong> Flexible pawn structure, allows ...d5 later.</li>\n</ul>\n\n<h3>Anti-Sicilians</h3>\n<p>White can avoid the Open Sicilian with systems like the Closed Sicilian (2.Nc3), Grand Prix Attack (2.Nc3, 3.f4), Alapin (2.c3), or Smith-Morra Gambit (2.d4 cxd4 3.c3).</p>\n",
+        "openingTree": [
+          {
+            "move": "1.e4",
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+            "comment": ""
+          },
+          {
+            "move": "1...c5",
+            "fen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "comment": "Sicilian Defense — fights for d4"
+          },
+          {
+            "move": "2.Nf3",
+            "fen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+            "comment": ""
+          },
+          {
+            "move": "2...d6",
+            "fen": "rnbqkbnr/pp2pppp/3p4/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3",
+            "comment": "Most common — prepares ...Nf6"
+          },
+          {
+            "move": "3.d4",
+            "fen": "rnbqkbnr/pp2pppp/3p4/2p5/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3",
+            "comment": "Open Sicilian begins"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Why is 1...c5 the most popular reply to 1.e4?",
+            "options": [
+              "It's the safest move",
+              "It creates asymmetry with winning chances for both sides",
+              "It controls e4",
+              "It develops a piece"
+            ],
+            "answer": 1,
+            "explanation": "The Sicilian creates an asymmetric position. Statistically it gives Black the best winning chances while White retains advantage."
+          }
+        ]
+      },
+      {
+        "id": "london-system",
+        "title": "London System",
+        "difficulty": "beginner",
+        "theory": "\n<h2>London System — 1.d4, 2.Nf3, 3.Bf4</h2>\n<p>The London System is one of the most popular \"system\" openings at all levels. It's a solid, reliable setup that can be played against virtually any Black response.</p>\n\n<h3>Key Setup</h3>\n<p>White's ideal setup: pawns on d4 and e3, bishop on f4, knights on f3 and d2, and king castled short. This setup is nearly universal regardless of Black's response.</p>\n\n<h3>Advantages</h3>\n<ul>\n  <li>Requires minimal memorization</li>\n  <li>Solid and reliable at all levels</li>\n  <li>The Bf4 develops before e3 blocks it in</li>\n  <li>Leads to comfortable middlegame positions</li>\n</ul>\n\n<h3>Plans</h3>\n<ul>\n  <li>Control e5 with d4 + Nf3 (+ e3 if needed)</li>\n  <li>Kingside attack with Ne5, Nd2-f3-e5</li>\n  <li>c4 break when appropriate</li>\n  <li>Bg3 if the bishop is attacked, maintaining the piece</li>\n</ul>\n",
+        "openingTree": [
+          {
+            "move": "1.d4",
+            "fen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1",
+            "comment": ""
+          },
+          {
+            "move": "1...d5",
+            "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
+            "comment": ""
+          },
+          {
+            "move": "2.Nf3",
+            "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/5N2/PPP1PPPP/RNBQKB1R b KQkq - 1 2",
+            "comment": ""
+          },
+          {
+            "move": "2...Nf6",
+            "fen": "rnbqkb1r/ppp1pppp/5n2/3p4/3P4/5N2/PPP1PPPP/RNBQKB1R w KQ - 2 3",
+            "comment": ""
+          },
+          {
+            "move": "3.Bf4",
+            "fen": "rnbqkb1r/ppp1pppp/5n2/3p4/3P1B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 3 3",
+            "comment": "London System — bishop develops before e3"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Why does the bishop go to f4 before e3?",
+            "options": [
+              "e3 would block the bishop's path",
+              "f4 is a better square",
+              "It's a trap",
+              "To attack f7"
+            ],
+            "answer": 0,
+            "explanation": "If White plays e3 first, the dark-squared bishop gets trapped behind the pawn chain. Bf4 must come before e3."
+          }
+        ]
+      },
+      {
+        "id": "caro-kann",
+        "title": "Caro-Kann Defense",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Caro-Kann Defense — 1.e4 c6</h2>\n<p>A solid, reliable defense that aims for ...d5 on the next move. Unlike the French Defense (1...e6), the Caro-Kann keeps the light-squared bishop active. Karpov and Capablanca were notable practitioners.</p>\n\n<h3>Main Variations</h3>\n<ul>\n  <li><strong>Classical (4...Bf5):</strong> Black develops the bishop outside the pawn chain. Solid and reliable.</li>\n  <li><strong>Advance (3.e5):</strong> White grabs space but Black undermines with ...c5 and ...Bf5.</li>\n  <li><strong>Exchange (3.exd5):</strong> Leads to symmetrical, often quiet positions.</li>\n  <li><strong>Two Knights/Modern (3.Nc3 or 3.Nd2):</strong> Various setups with distinct characters.</li>\n</ul>\n",
+        "openingTree": [
+          {
+            "move": "1.e4",
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+            "comment": ""
+          },
+          {
+            "move": "1...c6",
+            "fen": "rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "comment": "Caro-Kann — prepares ...d5"
+          },
+          {
+            "move": "2.d4",
+            "fen": "rnbqkbnr/pp1ppppp/2p5/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2",
+            "comment": ""
+          },
+          {
+            "move": "2...d5",
+            "fen": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3",
+            "comment": "Main position — challenging the center"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What advantage does the Caro-Kann have over the French Defense?",
+            "options": [
+              "It's more aggressive",
+              "The light-squared bishop isn't blocked",
+              "It wins more games",
+              "It avoids all theory"
+            ],
+            "answer": 1,
+            "explanation": "In the French (1...e6), the light-squared bishop is stuck behind the e6-d5 pawn chain. The Caro-Kann avoids this problem."
+          }
+        ]
+      },
+      {
+        "id": "french-defense",
+        "title": "French Defense",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>French Defense — 1.e4 e6</h2>\n<p>A solid, counter-attacking opening where Black immediately supports d5. It creates a closed pawn structure with typical battles around the d4 and e5 chain.</p>\n",
+        "openingTree": [
+          {
+            "move": "1.e4",
+            "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+            "comment": ""
+          },
+          {
+            "move": "1...e6",
+            "fen": "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "comment": "French Defense — supports d5"
+          },
+          {
+            "move": "2.d4",
+            "fen": "rnbqkbnr/pppp1ppp/4p3/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2",
+            "comment": ""
+          },
+          {
+            "move": "2...d5",
+            "fen": "rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3",
+            "comment": "Advance variation center"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is Black's main strategic problem in the French Defense?",
+            "options": [
+              "Vulnerable king",
+              "Bad light-squared bishop",
+              "Lack of space on kingside"
+            ],
+            "answer": 1,
+            "explanation": "The pawn on e6 blocks the light-squared bishop on c8, which becomes Black's \"bad bishop\" for the rest of the game."
+          }
+        ]
+      },
+      {
+        "id": "kings-indian",
+        "title": "King's Indian Defense",
+        "difficulty": "advanced",
+        "theory": "\n<h2>King's Indian Defense — 1.d4 Nf6 2.c4 g6</h2>\n<p>A hypermodern defense where Black allows White to occupy the center with pawns, planning to attack and undermine it later. It is highly dynamic and leads to sharp double-edged play.</p>\n",
+        "openingTree": [
+          {
+            "move": "1.d4",
+            "fen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1",
+            "comment": ""
+          },
+          {
+            "move": "1...Nf6",
+            "fen": "rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 1 2",
+            "comment": ""
+          },
+          {
+            "move": "2.c4",
+            "fen": "rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2",
+            "comment": ""
+          },
+          {
+            "move": "2...g6",
+            "fen": "rnbqkb1r/pppppp1p/5np1/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3",
+            "comment": "King's Indian setup"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the standard middlegame plan for Black in the King's Indian Defense?",
+            "options": [
+              "Queenside minority attack",
+              "Kingside pawn storm with f5-f4",
+              "Symmetrical trading"
+            ],
+            "answer": 1,
+            "explanation": "Black usually castles kingside and launches a direct attack on White's king with ...f5-f4 and ...g5."
+          }
+        ]
+      },
+      {
+        "id": "nimzo-indian",
+        "title": "Nimzo-Indian Defense",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Nimzo-Indian Defense — 1.d4 Nf6 2.c4 e6 3.Nc3 Bb4</h2>\n<p>One of the most respected and solid defenses against 1.d4. Black pins the knight on c3, controlling the e4 square and keeping the pawn structure flexible.</p>\n",
+        "openingTree": [
+          {
+            "move": "1.d4",
+            "fen": "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1",
+            "comment": ""
+          },
+          {
+            "move": "1...Nf6",
+            "fen": "rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 1 2",
+            "comment": ""
+          },
+          {
+            "move": "2.c4",
+            "fen": "rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2",
+            "comment": ""
+          },
+          {
+            "move": "2...e6",
+            "fen": "rnbqkb1r/pppp1ppp/4pn2/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3",
+            "comment": ""
+          },
+          {
+            "move": "3.Nc3",
+            "fen": "rnbqkb1r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq - 1 3",
+            "comment": ""
+          },
+          {
+            "move": "3...Bb4",
+            "fen": "rnbqk2r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq - 2 4",
+            "comment": "Nimzo-Indian pinning the knight"
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the main strategic purpose of pinning White's c3-knight?",
+            "options": [
+              "To win the knight immediately",
+              "To prevent White from playing e4 easily",
+              "To prepare queenside castling"
+            ],
+            "answer": 1,
+            "explanation": "By pinning the knight, Black stops White from playing e4 easily, fighting for control of the center using pieces rather than pawns."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "master-games",
+    "title": "Master Game Studies",
+    "icon": "🏆",
+    "description": "Study annotated games from the greatest players in chess history. Understand their thinking, strategies, and brilliant combinations.",
+    "difficulty": "advanced",
+    "modules": [
+      {
+        "id": "morphy-games",
+        "title": "Paul Morphy — The Pride of Chess",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Paul Morphy (1837–1884)</h2>\n<p>Morphy was the first unofficial world champion and is considered the greatest natural chess talent in history. His games demonstrate the power of <strong>rapid development, open lines, and aggressive but sound attacking play</strong>.</p>\n\n<h3>Key Themes in Morphy's Games</h3>\n<ul>\n  <li>Rapid piece development (Morphy often had all pieces developed while opponents had barely moved)</li>\n  <li>Opening lines for attacks (sacrificing pawns for tempo and open files)</li>\n  <li>Combining development advantage with tactical strikes</li>\n  <li>Punishing slow or greedy play by opponents</li>\n</ul>\n",
+        "games": [
+          {
+            "id": "morphy_opera",
+            "white": "Paul Morphy",
+            "black": "Duke of Brunswick & Count Isouard",
+            "event": "Paris Opera House",
+            "year": 1858,
+            "result": "1-0",
+            "pgn": "1.e4 e5 2.Nf3 d6 3.d4 Bg4 4.dxe5 Bxf3 5.Qxf3 dxe5 6.Bc4 Nf6 7.Qb3 Qe7 8.Nc3 c6 9.Bg5 b5 10.Nxb5 cxb5 11.Bxb5+ Nbd7 12.O-O-O Rd8 13.Rxd7 Rxd7 14.Rd1 Qe6 15.Bxd7+ Nxd7 16.Qb8+ Nxb8 17.Rd8#",
+            "annotations": {
+              "3.d4": "Morphy immediately opens the center. He understood that development + open lines = attack.",
+              "6.Bc4": "Targeting f7, the weakest point. Morphy already has two pieces developed while his opponents have none.",
+              "9.Bg5": "A fourth piece enters the game. Morphy now has massive development advantage.",
+              "10.Nxb5": "A stunning sacrifice. Morphy opens lines at the cost of a knight.",
+              "11.Bxb5+": "Check! The combination unfolds. Morphy's development advantage converts to a decisive attack.",
+              "12.O-O-O": "Castling queenside brings the rook into the attack immediately. Every piece participates.",
+              "13.Rxd7": "Sacrifice! The rook crashes through.",
+              "16.Qb8+": "The brilliant finale — a queen sacrifice! After Nxb8, Rd8 is checkmate. All of Morphy's pieces coordinate perfectly.",
+              "17.Rd8#": "Checkmate. A perfect attacking game demonstrating the power of rapid development."
+            },
+            "themes": [
+              "Rapid Development",
+              "Open Lines",
+              "Sacrificial Attack",
+              "Queen Sacrifice"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "fischer-games",
+        "title": "Bobby Fischer — The Greatest",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Bobby Fischer (1943–2008)</h2>\n<p>Fischer's games combine deep preparation, technical precision, and relentless willpower. He revolutionized opening preparation and was known for his incredible endgame technique and fighting spirit.</p>\n\n<h3>Fischer's Hallmarks</h3>\n<ul>\n  <li>Deep opening preparation (decades ahead of his time)</li>\n  <li>Crystal-clear positional understanding</li>\n  <li>Tenacious defense when required</li>\n  <li>Superior endgame technique</li>\n  <li>Will to win in every game</li>\n</ul>\n",
+        "games": [
+          {
+            "id": "fischer_byrne",
+            "white": "Donald Byrne",
+            "black": "Bobby Fischer",
+            "event": "Rosenwald Memorial",
+            "year": 1956,
+            "result": "0-1",
+            "pgn": "1.Nf3 Nf6 2.c4 g6 3.Nc3 Bg7 4.d4 O-O 5.Bf4 d5 6.Qb3 dxc4 7.Qxc4 c6 8.e4 Nbd7 9.Rd1 Nb6 10.Qc5 Bg4 11.Bg5 Na4 12.Qa3 Nxc3 13.bxc3 Nxe4 14.Bxe7 Qb6 15.Bc4 Nxc3 16.Bc5 Rfe8+ 17.Kf1 Be6 18.Bxb6 Bxc4+ 19.Kg1 Ne2+ 20.Kf1 Nxd4+ 21.Kg1 Ne2+ 22.Kf1 Nc3+ 23.Kg1 axb6 24.Qb4 Ra4 25.Qxb6 Nxd1 26.h3 Rxa2 27.Kh2 Nxf2 28.Re1 Rxe1 29.Qd8+ Bf8 30.Nxe1 Bd5 31.Nf3 Ne4 32.Qb8 b5 33.h4 h5 34.Ne5 Kg7 35.Kg1 Bc5+ 36.Kf1 Ng3+ 37.Ke1 Bb4+ 38.Kd1 Bb3+ 39.Kc1 Ne2+ 40.Kb1 Nc3+ 41.Kc1 Rc2#",
+            "annotations": {
+              "11...Na4": "The 13-year-old Fischer begins a brilliant combination. The knight heads to c3 to destroy White's center.",
+              "13...Nxe4": "Fischer grabs the e4 pawn, seemingly losing material. But he's calculated everything.",
+              "17...Be6": "A quiet move in the middle of a storm — the bishop retreats to a powerful diagonal while maintaining the attack.",
+              "18...Bxc4+": "The combination deepens. Fischer sacrificed his queen for a devastating discovered check.",
+              "19...Ne2+": "The knight dances around White's king in a \"windmill\" pattern, picking up pieces.",
+              "41...Rc2#": "Checkmate! One of the greatest games ever played, by a 13-year-old."
+            },
+            "themes": [
+              "Queen Sacrifice",
+              "Windmill",
+              "Piece Coordination",
+              "Calculation"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "kasparov-games",
+        "title": "Garry Kasparov — The Greatest Attacker",
+        "difficulty": "expert",
+        "theory": "\n<h2>Garry Kasparov (1963–present)</h2>\n<p>Kasparov dominated chess for over 20 years with a combination of deep preparation, extraordinary calculation, and ferocious attacking play. His dynamic style pushed the boundaries of what was thought possible on the chessboard.</p>\n\n<h3>Kasparov's Strengths</h3>\n<ul>\n  <li>Unprecedented opening preparation</li>\n  <li>Dynamic piece play and initiative</li>\n  <li>Willingness to sacrifice for the initiative</li>\n  <li>Psychological dominance over opponents</li>\n  <li>Ability to create complications even in quiet positions</li>\n</ul>\n",
+        "games": [
+          {
+            "id": "kasparov_topalov",
+            "white": "Garry Kasparov",
+            "black": "Veselin Topalov",
+            "event": "Wijk aan Zee",
+            "year": 1999,
+            "result": "1-0",
+            "pgn": "1.e4 d6 2.d4 Nf6 3.Nc3 g6 4.Be3 Bg7 5.Qd2 c6 6.f3 b5 7.Nge2 Nbd7 8.Bh6 Bxh6 9.Qxh6 Bb7 10.a3 e5 11.O-O-O Qe7 12.Kb1 a6 13.Nc1 O-O-O 14.Nb3 exd4 15.Rxd4 c5 16.Rd1 Nb6 17.g3 Kb8 18.Na5 Ba8 19.Bh3 d5 20.Qf4+ Ka7 21.Re1 d4 22.Nd5 Nbxd5 23.exd5 Qd6 24.Rxd4 cxd4 25.Re7+ Kb6 26.Qxd4+ Kxa5 27.b4+ Ka4 28.Qc3 Qxd5 29.Ra7 Bb7 30.Rxb7 Qc4 31.Qxf6 Kxa3 32.Qxa6+ Kxb4 33.c3+ Kxc3 34.Qa1+ Kd2 35.Qb2+ Kd1 36.Bf1 Rd2 37.Rd7 Rxd7 38.Bxc4 bxc4 39.Qxh8 Rd3 40.Qa8 c3 41.Qa4+ Ke1 42.f4 f5 43.Kc1 Rd2 44.Qa7 1-0",
+            "annotations": {
+              "24.Rxd4": "Kasparov begins one of the most brilliant combinations in chess history. The rook sacrifice opens the position.",
+              "25.Re7+": "Another rook enters with check! The king is forced to march up the board.",
+              "26.Qxd4+": "Check! The black king is now on a5, completely exposed.",
+              "27.b4+": "The quiet pawn move is actually the key! The king must go to a4.",
+              "28.Qc3": "Threatening Qa1# and maintaining the attack. Every piece participates.",
+              "29.Ra7": "The remaining rook joins the hunt. The black king has no shelter."
+            },
+            "themes": [
+              "Rook Sacrifice",
+              "King Hunt",
+              "Initiative",
+              "Piece Coordination"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "carlsen-games",
+        "title": "Magnus Carlsen — The Mozart of Chess",
+        "difficulty": "expert",
+        "theory": "\n<h2>Magnus Carlsen (1990–present)</h2>\n<p>Carlsen is the highest-rated player in chess history (2882 peak). His style combines deep positional understanding with relentless technical grinding. He excels at extracting wins from \"dead drawn\" positions through pure technique and stamina.</p>\n\n<h3>Carlsen's Distinctive Traits</h3>\n<ul>\n  <li>Superior endgame technique — perhaps the best ever</li>\n  <li>Ability to create imbalances from nothing</li>\n  <li>Psychological pressure through perfect technique</li>\n  <li>Universal style — equally comfortable in tactical and positional play</li>\n  <li>Incredible competitive stamina</li>\n</ul>\n\n<h3>Learning from Carlsen</h3>\n<p>Study Carlsen for endgame mastery, the art of \"pressing\" in equal positions, and how to convert minimal advantages into wins.</p>\n",
+        "games": [
+          {
+            "id": "carlsen_anand_2013",
+            "white": "Magnus Carlsen",
+            "black": "Viswanathan Anand",
+            "event": "World Championship",
+            "year": 2013,
+            "result": "1-0",
+            "pgn": "1.Nf3 d5 2.g3 g6 3.Bg2 Bg7 4.d4 c6 5.O-O Nf6 6.b3 O-O 7.Bb2 Bf5 8.c4 Nbd7 9.Nc3 dxc4 10.bxc4 Nb6 11.c5 Nc4 12.Bc1 Nd5 13.Qb3 Na5 14.Qa3 Nc4 15.Qa4 Nd6 16.cxd6 exd6 17.Qc2 Re8 18.Rd1 Nf6 19.Bf4 Nh5 20.Bd2 Re6 21.e4 Bd7 22.a4 Qe7 23.a5 f6 24.Rab1 Rae8 25.Qc1 Kh8 26.b4 Qf8 27.Bc3 Be7 28.Nd2 Bf8 29.Nb3 d5 30.e5 fxe5 31.dxe5 Bc8 32.Na4 1-0",
+            "annotations": {
+              "11.c5": "Carlsen gains space on the queenside, a typical strategic idea.",
+              "16.cxd6": "Creating a structural imbalance. White has more space and Black has isolated pawns.",
+              "30.e5": "The breakthrough! Carlsen opens the center with a powerful pawn advance.",
+              "32.Na4": "A quiet move that leaves Black in a hopeless position. Classic Carlsen — squeezing the life out of the position."
+            },
+            "themes": [
+              "Positional Play",
+              "Space Advantage",
+              "Structural Advantage",
+              "Strategic Squeeze"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "tal-games",
+        "title": "Mikhail Tal — The Magician",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Mikhail Tal (1936–1992)</h2>\n<p>Tal was the most brilliant attacking player in chess history. His style featured audacious sacrifices, breathtaking combinations, and a willingness to create chaos on the board. He became World Champion in 1960 at age 23.</p>\n\n<h3>Tal's Philosophy</h3>\n<blockquote>\"You must take your opponent into a deep dark forest where 2+2=5, and the path leading out is only wide enough for one.\" — Mikhail Tal</blockquote>\n<ul>\n  <li>Speculative sacrifices that were difficult to refute over the board</li>\n  <li>Creating maximum complications</li>\n  <li>Practical play — putting pressure on the opponent's clock and nerves</li>\n  <li>Initiative above material</li>\n</ul>\n",
+        "games": [
+          {
+            "id": "tal_larsen",
+            "white": "Mikhail Tal",
+            "black": "Bent Larsen",
+            "event": "Candidates Match",
+            "year": 1965,
+            "result": "1-0",
+            "pgn": "1.e4 c5 2.Nf3 Nc6 3.d4 cxd4 4.Nxd4 e6 5.Nc3 d6 6.Be3 Nf6 7.f3 Be7 8.Qd2 O-O 9.O-O-O a6 10.g4 Nxd4 11.Bxd4 b5 12.g5 Nd7 13.h4 b4 14.Na4 Bb7 15.Qxb4 Bc6 16.b3 Bxa4 17.bxa4 d5 18.Bd3 dxe4 19.fxe4 e5 20.Be3 Bc5 21.Bxc5 Nxc5 22.h5 Nxa4 23.g6 fxg6 24.hxg6 h6 25.Rdg1 Qe7 26.Bc4+ Kh8 27.Rh5 Nc5 28.Rxe5 Qf6 29.Rxc5 Qxg6 30.Rc7 1-0",
+            "annotations": {
+              "10.g4": "Typical Tal — the pawn storm begins immediately.",
+              "14.Na4": "Sacrificing a pawn for the initiative. Pure Tal.",
+              "23.g6": "Ripping open the king position with a pawn sacrifice.",
+              "30.Rc7": "The rook invades with devastating effect. Total domination of the position."
+            },
+            "themes": [
+              "Kingside Attack",
+              "Pawn Storm",
+              "Sacrificial Play",
+              "Initiative"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "middlegame",
+    "title": "Middlegame Mastery",
+    "icon": "⚔️",
+    "description": "Master the art of middlegame strategy — from pawn structures and piece activity to attacking and defensive techniques.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "pawn-structures",
+        "title": "Pawn Structures",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Pawn Structures — The Skeleton of the Position</h2>\n<p>Pawn structures determine the character of the position. They dictate where your pieces belong, what plans are appropriate, and which endgames are favorable.</p>\n\n<h3>Common Pawn Structures</h3>\n<ul>\n  <li><strong>Isolated Queen's Pawn (IQP):</strong> Dynamic play — the pawn controls central squares but is a long-term weakness</li>\n  <li><strong>Hanging Pawns:</strong> Two connected pawns without support — dynamic but vulnerable</li>\n  <li><strong>Pawn Chain:</strong> Diagonal chain of pawns (e.g., d4-e5 in the French) — attack the base!</li>\n  <li><strong>Doubled Pawns:</strong> Structural weakness but extra open file for rooks</li>\n  <li><strong>Passed Pawn:</strong> A pawn with no opposing pawn in front or on adjacent files — extremely powerful in endgames</li>\n  <li><strong>Backward Pawn:</strong> A pawn that cannot advance because it would be captured, and its neighbors have already advanced</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Nimzowitsch's Principle</div>\n  <p>\"First restrain, then blockade, then destroy.\" A passed pawn must be blockaded by a piece (ideally a knight), then attacked from all sides.</p>\n</div>\n\n<h3>Key Concepts</h3>\n<ul>\n  <li>Every pawn move creates weaknesses — pawns cannot go backward</li>\n  <li>The pawn structure determines the optimal piece placement</li>\n  <li>Pawn breaks (like c4-c5 or f4-f5) change the structure and create new dynamics</li>\n  <li>In the endgame, pawn structure is often the decisive factor</li>\n</ul>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2N1PN2/PP2BPPP/R1BQ1RK1 w - - 0 8",
+            "title": "Isolated Queen's Pawn",
+            "description": "After cxd5 exd5, Black has an IQP on d5. White targets it; Black seeks dynamic play."
+          },
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/2ppP3/3P4/2N2N2/PPP2PPP/R1BQKB1R w KQkq - 0 6",
+            "title": "French Pawn Chain",
+            "description": "The d4-e5 chain. White attacks on the kingside; Black undermines the base with c5 and f6."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is an isolated queen's pawn?",
+            "options": [
+              "A pawn on the a-file",
+              "A pawn with no friendly pawns on adjacent files",
+              "A pawn that has been doubled",
+              "A passed pawn"
+            ],
+            "answer": 1,
+            "explanation": "An IQP has no friendly pawns on adjacent files, making it vulnerable but also giving it dynamic potential."
+          },
+          {
+            "type": "quiz",
+            "question": "According to Nimzowitsch, what should you do with a passed pawn?",
+            "options": [
+              "Advance it immediately",
+              "Trade it off",
+              "Restrain → Blockade → Destroy",
+              "Ignore it"
+            ],
+            "answer": 2,
+            "explanation": "\"First restrain, then blockade, then destroy\" — Nimzowitsch's famous strategy against passed pawns."
+          }
+        ]
+      },
+      {
+        "id": "weak-squares",
+        "title": "Weak Squares",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Weak Squares & Outposts</h2>\n<p>A <strong>weak square</strong> is a square that can no longer be defended by pawns. An <strong>outpost</strong> is a weak square occupied by a piece (usually a knight) that cannot be challenged by enemy pawns.</p>\n\n<h3>Identifying Weak Squares</h3>\n<ul>\n  <li>Look at the opponent's pawn structure — squares that cannot be protected by pawns are weak</li>\n  <li>Common weak squares after ...e5 in the Sicilian: d5 becomes a permanent outpost for White</li>\n  <li>After g3, the f3 and h3 squares become potentially weak</li>\n  <li>Pawn moves create weaknesses — every advance leaves holes behind</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Knights Love Outposts</div>\n  <p>A knight on an outpost is a powerful piece — it's defended by a pawn, cannot be challenged by enemy pawns, and controls key squares. A knight on d5 in the Sicilian can be worth as much as a rook!</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r2q1rk1/pp2bppp/2n1bn2/3pp3/8/2N1BNP1/PPPQPPBP/R4RK1 w - - 0 9",
+            "title": "Outpost on d5",
+            "description": "Nd5 — the knight occupies a powerful outpost that cannot be challenged by pawns."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What makes a square \"weak\"?",
+            "options": [
+              "It's occupied by an enemy piece",
+              "It cannot be defended by pawns",
+              "It's on the edge of the board",
+              "It's unoccupied"
+            ],
+            "answer": 1,
+            "explanation": "A weak square is one that can no longer be protected by pawns, making it a permanent target for piece occupation."
+          }
+        ]
+      },
+      {
+        "id": "initiative",
+        "title": "Initiative & Tempo",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Initiative — Making the Opponent React</h2>\n<p>The initiative means you are dictating the play — your opponent must respond to your threats rather than creating their own. In chess, having the initiative is a significant advantage.</p>\n\n<h3>How to Gain Initiative</h3>\n<ul>\n  <li><strong>Faster development:</strong> Get your pieces out quickly and to active squares</li>\n  <li><strong>Central control:</strong> Occupy or pressure the center to restrict the opponent</li>\n  <li><strong>Creating threats:</strong> Each move should threaten something — even small threats force reactions</li>\n  <li><strong>Tempo gains:</strong> Attack pieces to force them to move, gaining time for development</li>\n  <li><strong>Piece activity:</strong> An active piece participates in the battle; a passive piece is a liability</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Initiative = Time</div>\n  <p>When you have the initiative, you control the TEMPO of the game. Your opponent is always one step behind, reacting rather than acting. The key is to maintain pressure — never let up!</p>\n</div>\n\n<h3>Losing the Initiative</h3>\n<p>Common ways to lose the initiative: making unnecessary defensive moves, passive piece retreats, exchanging active pieces, and playing without a plan.</p>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 w - - 0 5",
+            "title": "Italian Game Initiative",
+            "description": "White has the initiative through rapid development and central pressure. Ng5 or d4 maintains pressure."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the initiative in chess?",
+            "options": [
+              "Having more material",
+              "Dictating the play and forcing reactions",
+              "Having more pawns",
+              "Being the first to castle"
+            ],
+            "answer": 1,
+            "explanation": "The initiative means you control the flow of the game — your opponent must react to your threats."
+          }
+        ]
+      },
+      {
+        "id": "piece-activity",
+        "title": "Piece Activity",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Piece Activity — The Life Force of Your Position</h2>\n<p>Piece activity is about how well your pieces are placed and how much influence they have over the board. Active pieces control key squares, attack enemy weaknesses, and coordinate with each other.</p>\n\n<h3>Principles of Piece Activity</h3>\n<ul>\n  <li><strong>Centralization:</strong> Pieces in the center control the most squares</li>\n  <li><strong>Coordination:</strong> Pieces working together are more powerful than the sum of their parts</li>\n  <li><strong>Mobility:</strong> Pieces should have multiple options and not be restricted</li>\n  <li><strong>Bad pieces:</strong> A piece blocked by its own pawns (like a \"bad bishop\") reduces your effective force</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Improve Your Worst Piece</div>\n  <p>When you don't know what to do, identify your worst-placed piece and improve it. This is one of the most practical middlegame rules — it almost always leads to improvement.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/ppp2ppp/2n1pn2/3p4/3P4/2NBPN2/PPP2PPP/R1BQ1RK1 w - - 0 7",
+            "title": "Active vs Passive Pieces",
+            "description": "Both sides have similar material but White's pieces are more actively placed — the d3 bishop eyes h7, and the c3 knight supports d5."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What should you do when you don't know what to do?",
+            "options": [
+              "Move a pawn",
+              "Trade queens",
+              "Improve your worst piece",
+              "Castle"
+            ],
+            "answer": 2,
+            "explanation": "\"Improve your worst piece\" — one of the most practical pieces of advice in chess."
+          }
+        ]
+      },
+      {
+        "id": "prophylaxis",
+        "title": "Prophylaxis",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Prophylaxis — Thinking for Your Opponent</h2>\n<p>Prophylaxis (or \"prophylactic thinking\") is the art of asking <strong>\"What does my opponent want to do?\"</strong> before each move and preventing it. It was perfected by Petrosian and Karpov.</p>\n\n<h3>Prophylactic Thinking Process</h3>\n<ol>\n  <li>Identify your opponent's ideal plan or best move</li>\n  <li>Ask: \"Can I prevent this without making concessions?\"</li>\n  <li>If yes, play the prophylactic move</li>\n  <li>If no, ask: \"Is my own plan stronger than their threat?\"</li>\n</ol>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Petrosian's Philosophy</div>\n  <p>\"The best move is often not the most active one, but the one that prevents the opponent's best plan.\" Prophylaxis is not passive — it's strategic defense that creates opportunities.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/2PP4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+            "title": "Prophylactic a3",
+            "description": "a3 prevents Nb4 (which would pressure d3) — a classic prophylactic move."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is prophylaxis?",
+            "options": [
+              "Attacking the opponent's king",
+              "Preventing the opponent's best plan",
+              "A medical term only",
+              "Trading pieces"
+            ],
+            "answer": 1,
+            "explanation": "Prophylaxis is the art of preventing the opponent's best plan before executing your own."
+          }
+        ]
+      },
+      {
+        "id": "attack-defense",
+        "title": "Attack & Defense",
+        "difficulty": "advanced",
+        "theory": "\n<h2>The Art of Attack & Defense</h2>\n<p>Knowing when to attack and when to defend is one of the most important skills in chess. The key is recognizing the signals that indicate which approach is correct.</p>\n\n<h3>When to Attack</h3>\n<ul>\n  <li>When you have more pieces near the enemy king than your opponent has defenders</li>\n  <li>When the opponent's king has moved or lost castling rights</li>\n  <li>When pawn structure weaknesses (like h6, g6 without a fianchetto) exist near the king</li>\n  <li>When you have a space advantage near the enemy king</li>\n  <li>When your pieces are better coordinated for an attack</li>\n</ul>\n\n<h3>When to Defend</h3>\n<ul>\n  <li>When you're under attack — don't panic, find the calmest defense</li>\n  <li>When the opponent has the initiative — exchange active pieces to neutralize</li>\n  <li>When you have a structural advantage — trade pieces to reach a favorable endgame</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Attack Like Tal, Defend Like Petrosian</div>\n  <p>Attack: Don't calculate every variation — feel the position and create threats faster than your opponent can defend. Defend: Stay calm, trade attacking pieces, and trust your position.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/3p4/3P1B2/2N1PN2/PPP1BPPP/R2Q1RK1 w - - 0 8",
+            "title": "Kingside Attack Setup",
+            "description": "White has developed toward the kingside. Qd3 + Bxh7+ sacrifice is a common attacking pattern."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "When should you attack the enemy king?",
+            "options": [
+              "Always",
+              "When you have more pieces near their king than they have defenders",
+              "Only in the endgame",
+              "When you're losing"
+            ],
+            "answer": 1,
+            "explanation": "Attack when you have more pieces aimed at the enemy king than your opponent has defenders — numerical superiority at the point of attack."
+          }
+        ]
+      },
+      {
+        "id": "transformation",
+        "title": "Transformation of Advantages",
+        "difficulty": "expert",
+        "theory": "\n<h2>Transformation of Advantages</h2>\n<p>One of the deepest concepts in chess strategy: converting one type of advantage into another. A temporary advantage (like the initiative) must be transformed into a permanent one (like a better pawn structure) before it evaporates.</p>\n\n<h3>Types of Advantage Transformation</h3>\n<ul>\n  <li><strong>Material → Position:</strong> Sacrifice material for a lasting positional advantage</li>\n  <li><strong>Initiative → Material:</strong> Use your active pieces to win material</li>\n  <li><strong>Space → Attack:</strong> Use your space advantage to launch a kingside attack</li>\n  <li><strong>Development → Initiative:</strong> Use faster development to seize the initiative</li>\n  <li><strong>Tactics → Endgame:</strong> Use tactical threats to force a favorable endgame</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Steinitz's Theory</div>\n  <p>Wilhelm Steinitz, the first World Champion, taught that advantages accumulate gradually. Once you have enough small advantages, you can transform them into a decisive combination. The art is knowing WHEN to transform.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+            "title": "Accumulating Advantages",
+            "description": "White gradually accumulates small advantages — better development, central pressure — before transforming into a direct attack."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is \"transformation of advantages\"?",
+            "options": [
+              "Trading queens",
+              "Converting one type of advantage into another",
+              "Promoting a pawn",
+              "Castling on the opposite side"
+            ],
+            "answer": 1,
+            "explanation": "Transformation means converting a temporary advantage (like initiative) into a permanent one (like better pawn structure or material)."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "advanced",
+    "title": "Advanced Chess & Tournament Prep",
+    "icon": "🎯",
+    "description": "Advanced topics for competitive players: exchange sacrifices, positional sacrifices, tournament psychology, time management, and engine-assisted analysis.",
+    "difficulty": "expert",
+    "modules": [
+      {
+        "id": "positional-sacrifices",
+        "title": "Positional & Exchange Sacrifices",
+        "difficulty": "expert",
+        "theory": "\n<h2>Positional Sacrifices</h2>\n<p>Unlike tactical sacrifices (which lead to forced sequences), positional sacrifices yield <strong>long-term strategic advantages</strong> — improved piece activity, pawn structure, or initiative — without a clear forced win.</p>\n\n<h3>The Exchange Sacrifice (Rook for Minor Piece)</h3>\n<p>Petrosian popularized the exchange sacrifice. Giving up a rook (5 points) for a knight or bishop (3 points) can be justified when:</p>\n<ul>\n  <li>It eliminates a dangerous enemy piece (especially a strong knight on an outpost)</li>\n  <li>It destroys the opponent's pawn structure</li>\n  <li>The minor piece gained is more active than the lost rook</li>\n  <li>The remaining position favors minor pieces over rooks (closed position)</li>\n</ul>\n\n<h3>Pawn Sacrifices for Positional Compensation</h3>\n<p>A pawn sacrifice in the opening or early middlegame for:</p>\n<ul>\n  <li>Development advantage</li>\n  <li>Control of key squares</li>\n  <li>Open lines for your pieces</li>\n  <li>Initiative</li>\n</ul>\n\n<h3>The Benko Gambit Philosophy</h3>\n<p>1.d4 Nf6 2.c4 c5 3.d5 b5 — Black sacrifices a pawn for lasting queenside pressure with ...a6, ...Bxa6, and rooks on the a and b files. The compensation lasts deep into the endgame.</p>\n",
+        "puzzles": [
+          {
+            "id": "exch_01",
+            "fen": "r1bq1rk1/ppp1nppp/3p4/3Np3/2B5/8/PPP2PPP/R1BQ1RK1 w - - 0 10",
+            "solution": "Rxf7",
+            "theme": "Exchange Sacrifice",
+            "difficulty": "expert",
+            "explanation": "Rxf7 sacrifices the exchange to demolish Black's kingside and create a lasting attack."
+          },
+          {
+            "id": "pos_sac_01",
+            "fen": "r1bqkbnr/pppppppp/2n5/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq d3 0 3",
+            "solution": "d5",
+            "theme": "Positional Pawn Sacrifice",
+            "difficulty": "advanced",
+            "explanation": "d5 sacrifices a pawn for rapid development and control of the center."
+          }
+        ]
+      },
+      {
+        "id": "tournament-psychology",
+        "title": "Tournament Psychology",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Chess Psychology & Tournament Preparation</h2>\n\n<h3>Pre-Game Preparation</h3>\n<ul>\n  <li><strong>Study your opponent:</strong> Review their recent games, opening repertoire, and playing style</li>\n  <li><strong>Prepare surprises:</strong> Have a novelty or unusual line ready</li>\n  <li><strong>Physical preparation:</strong> Sleep, nutrition, and exercise matter enormously</li>\n  <li><strong>Mental preparation:</strong> Visualization, confidence, and focus</li>\n</ul>\n\n<h3>Time Management</h3>\n<ul>\n  <li><strong>Opening (10-15% of time):</strong> Move quickly in known territory</li>\n  <li><strong>Critical moments (40-50% of time):</strong> Spend time where it matters — key decisions, complex tactics</li>\n  <li><strong>Endgame (20-30% of time):</strong> Reserve enough time for accurate endgame play</li>\n  <li><strong>Buffer (10%):</strong> Always maintain a time buffer for unexpected complications</li>\n</ul>\n\n<h3>Dealing with Adversity</h3>\n<ul>\n  <li>After a loss, analyze objectively but don't dwell</li>\n  <li>In a losing position, create maximum practical problems</li>\n  <li>When winning, don't relax — maintain concentration</li>\n  <li>Trust your preparation and training</li>\n</ul>\n\n<h3>The Inner Game</h3>\n<p>Chess is as much a psychological battle as a board battle. Maintaining composure, managing time pressure, and staying focused for 4-6 hours are skills that require training, just like tactics and strategy.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Lasker's Wisdom</div>\n  <p>\"When you see a good move, look for a better one.\" — Emanuel Lasker. This principle prevents hasty decisions and leads to deeper, more accurate play.</p>\n</div>\n",
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "How much of your time should you spend on critical positions?",
+            "options": [
+              "10%",
+              "20%",
+              "40-50%",
+              "80%"
+            ],
+            "answer": 2,
+            "explanation": "About 40-50% of your time should be reserved for the most critical moments — key decisions and complex tactical positions."
+          },
+          {
+            "type": "quiz",
+            "question": "After losing a game, you should...",
+            "options": [
+              "Stop playing",
+              "Analyze objectively and move on",
+              "Change your opening repertoire",
+              "Play faster next time"
+            ],
+            "answer": 1,
+            "explanation": "After a loss, analyze the game objectively to learn from mistakes, but don't dwell on it. Maintain confidence for the next game."
+          }
+        ]
+      },
+      {
+        "id": "engine-analysis",
+        "title": "Engine-Assisted Analysis",
+        "difficulty": "expert",
+        "theory": "\n<h2>Using Chess Engines Effectively</h2>\n<p>Chess engines are the most powerful analytical tools available, but they must be used correctly to improve your understanding rather than create dependency.</p>\n\n<h3>How to Analyze with Engines</h3>\n<ol>\n  <li><strong>Analyze on your own first:</strong> Before turning on the engine, form your own evaluation and find candidate moves</li>\n  <li><strong>Let the engine run:</strong> Give it adequate time (at least 30 seconds per move for meaningful analysis)</li>\n  <li><strong>Understand WHY:</strong> Don't just note the engine's best move — understand why it's best. What does the engine see that you missed?</li>\n  <li><strong>Focus on critical moments:</strong> Analyze positions where you were unsure, not every move</li>\n</ol>\n\n<h3>Engine Limitations</h3>\n<ul>\n  <li>Engines evaluate positions, not plans — they don't explain strategic concepts</li>\n  <li>Engine evaluations of +0.3 vs +0.1 are often meaningless for human play</li>\n  <li>Closed positions may require very deep analysis for accurate evaluation</li>\n  <li>Engine \"best moves\" may not be the best practical moves for humans</li>\n</ul>\n\n<h3>Evaluation Interpretation</h3>\n<ul>\n  <li><code>0.0</code>: Equal position</li>\n  <li><code>+0.5</code>: Slight advantage for White</li>\n  <li><code>+1.0</code>: Clear advantage (roughly a pawn)</li>\n  <li><code>+2.0</code>: Winning advantage</li>\n  <li><code>+3.0+</code>: Decisive advantage</li>\n  <li><code>M5</code>: Mate in 5 moves</li>\n</ul>\n",
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "When analyzing with an engine, you should first...",
+            "options": [
+              "Turn on the engine immediately",
+              "Analyze on your own first",
+              "Skip to the endgame",
+              "Look at opening theory"
+            ],
+            "answer": 1,
+            "explanation": "Always analyze on your own first, then check with the engine. This develops your analytical skills rather than creating dependency."
+          }
+        ]
+      }
+    ]
+  }
+]

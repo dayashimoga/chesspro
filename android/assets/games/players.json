@@ -1,0 +1,74 @@
+[
+  {
+    "id": "morphy",
+    "name": "Paul Morphy",
+    "era": "1837-1884",
+    "title": "Unofficial World Champion",
+    "style": "Romantic Attacking",
+    "count": 2
+  },
+  {
+    "id": "capablanca",
+    "name": "José Raúl Capablanca",
+    "era": "1888-1942",
+    "title": "3rd World Champion",
+    "style": "Positional Genius",
+    "count": 1
+  },
+  {
+    "id": "alekhine",
+    "name": "Alexander Alekhine",
+    "era": "1892-1946",
+    "title": "4th World Champion",
+    "style": "Dynamic Attacker",
+    "count": 1
+  },
+  {
+    "id": "tal",
+    "name": "Mikhail Tal",
+    "era": "1936-1992",
+    "title": "8th World Champion",
+    "style": "The Magician",
+    "count": 1
+  },
+  {
+    "id": "fischer",
+    "name": "Bobby Fischer",
+    "era": "1943-2008",
+    "title": "11th World Champion",
+    "style": "Universal Genius",
+    "count": 1
+  },
+  {
+    "id": "karpov",
+    "name": "Anatoly Karpov",
+    "era": "1951-",
+    "title": "12th World Champion",
+    "style": "Boa Constrictor",
+    "count": 1
+  },
+  {
+    "id": "kasparov",
+    "name": "Garry Kasparov",
+    "era": "1963-",
+    "title": "13th World Champion",
+    "style": "Dynamic Universal",
+    "count": 1
+  },
+  {
+    "id": "anand",
+    "name": "Viswanathan Anand",
+    "era": "1969-",
+    "title": "15th World Champion",
+    "style": "Speed & Precision",
+    "count": 1
+  },
+  {
+    "id": "carlsen",
+    "name": "Magnus Carlsen",
+    "era": "1990-",
+    "title": "16th World Champion",
+    "style": "Universal Endgame Master",
+    "count": 1
+  }
+]

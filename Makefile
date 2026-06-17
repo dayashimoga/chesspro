@@ -80,5 +80,6 @@ verify:
 	docker run --rm --network chessmastery_default -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-docs.sh
 	docker run --rm --network chessmastery_default -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-architecture.sh
 	docker run --rm --network chessmastery_default -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-deployment.sh
+	docker run --rm --network chessmastery_default -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-mobile.sh
 	docker run --rm --network chessmastery_default -v $(CURDIR):/app -w /app node:22-alpine sh scripts/verify-release.sh
 	@echo "All verification pipelines completed successfully!"

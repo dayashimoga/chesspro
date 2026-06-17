@@ -1,0 +1,158 @@
+[
+  {
+    "id": "mate_in_1",
+    "label": "Mate in 1",
+    "icon": "♔",
+    "count": 261
+  },
+  {
+    "id": "mate_in_2",
+    "label": "Mate in 2",
+    "icon": "♕",
+    "count": 8
+  },
+  {
+    "id": "forks",
+    "label": "Forks",
+    "icon": "⚔️",
+    "count": 207
+  },
+  {
+    "id": "pins",
+    "label": "Pins",
+    "icon": "📌",
+    "count": 89
+  },
+  {
+    "id": "skewers",
+    "label": "Skewers",
+    "icon": "🎯",
+    "count": 39
+  },
+  {
+    "id": "discovered_attacks",
+    "label": "Discovered Attacks",
+    "icon": "💥",
+    "count": 66
+  },
+  {
+    "id": "deflection",
+    "label": "Deflection & Decoy",
+    "icon": "🪤",
+    "count": 20
+  },
+  {
+    "id": "sacrifices",
+    "label": "Sacrifices",
+    "icon": "💎",
+    "count": 33
+  },
+  {
+    "id": "endgames",
+    "label": "Endgame Studies",
+    "icon": "👑",
+    "count": 36
+  },
+  {
+    "id": "zwischenzug",
+    "label": "Zwischenzug",
+    "icon": "⚡",
+    "count": 20
+  },
+  {
+    "id": "overloading",
+    "label": "Overloading",
+    "icon": "⚖️",
+    "count": 10
+  },
+  {
+    "id": "strategy",
+    "label": "Strategy",
+    "icon": "📊",
+    "count": 2
+  },
+  {
+    "id": "calculation",
+    "label": "Calculation",
+    "icon": "🧠",
+    "count": 2
+  },
+  {
+    "id": "mate_in_3",
+    "label": "Mate in 3",
+    "icon": "♛",
+    "count": 10
+  },
+  {
+    "id": "mate_in_4",
+    "label": "Mate in 4+",
+    "icon": "♜",
+    "count": 5
+  },
+  {
+    "id": "double_attacks",
+    "label": "Double Attacks",
+    "icon": "⚔️",
+    "count": 5
+  },
+  {
+    "id": "discovered_checks",
+    "label": "Discovered Checks",
+    "icon": "💢",
+    "count": 4
+  },
+  {
+    "id": "double_checks",
+    "label": "Double Checks",
+    "icon": "⚡",
+    "count": 24
+  },
+  {
+    "id": "x_ray",
+    "label": "X-Ray Attacks",
+    "icon": "🔦",
+    "count": 3
+  },
+  {
+    "id": "back_rank",
+    "label": "Back Rank Mates",
+    "icon": "🏰",
+    "count": 5
+  },
+  {
+    "id": "smothered_mates",
+    "label": "Smothered Mates",
+    "icon": "🐴",
+    "count": 3
+  },
+  {
+    "id": "interference",
+    "label": "Interference",
+    "icon": "🚧",
+    "count": 2
+  },
+  {
+    "id": "clearance",
+    "label": "Clearance",
+    "icon": "🧹",
+    "count": 2
+  },
+  {
+    "id": "positional",
+    "label": "Positional Exercises",
+    "icon": "🎯",
+    "count": 6
+  },
+  {
+    "id": "mating_nets",
+    "label": "Mating Nets",
+    "icon": "🕸️",
+    "count": 3
+  },
+  {
+    "id": "attraction",
+    "label": "Attraction & Decoy",
+    "icon": "🧲",
+    "count": 2
+  }
+]

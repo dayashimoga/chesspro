@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Dashboard from './pages/Dashboard';
 import Lessons from './pages/Lessons';
 import Puzzles from './pages/Puzzles';
@@ -13,40 +13,58 @@ import SpacedReview from './pages/SpacedReview';
 import FoundationsUniversity from './pages/FoundationsUniversity';
 import TacticalUniversity from './pages/TacticalUniversity';
 import MiddlegameUniversity from './pages/MiddlegameUniversity';
+// Lazy-loaded university pages for performance
+const CalculationUniversity = React.lazy(() => import('./pages/CalculationUniversity'));
+const EndgameUniversity = React.lazy(() => import('./pages/EndgameUniversity'));
+const MasterGameUniversity = React.lazy(() => import('./pages/MasterGameUniversity'));
+const OpeningUniversity = React.lazy(() => import('./pages/OpeningUniversity'));
+const TournamentPrep = React.lazy(() => import('./pages/TournamentPrep'));
 import { useAppStore } from './store/useAppStore';
 import { Storage } from './core/storage';
 
 type PageId = 'dashboard' | 'lessons' | 'puzzles' | 'games' | 'openings' | 'endgames' 
   | 'calculation' | 'blindfold' | 'aicoach' | 'play' | 'review' | 'lesson-detail'
-  | 'foundations' | 'tactics' | 'middlegame';
+  | 'foundations' | 'tactics' | 'middlegame'
+  | 'calc-university' | 'endgame-university' | 'master-games' | 'opening-university'
+  | 'tournament-prep';
 
 const NAV_SECTIONS = [
   {
     title: 'Main',
     items: [
       { id: 'dashboard' as PageId, label: 'Dashboard', icon: '📊' },
-      { id: 'foundations' as PageId, label: 'Foundations Uni', icon: '🏫' },
       { id: 'play' as PageId, label: 'Play vs AI', icon: '♟️' },
       { id: 'review' as PageId, label: 'Spaced Review', icon: '🔄' },
     ],
   },
   {
-    title: 'GM Training Labs',
+    title: 'Chess University',
     items: [
-      { id: 'tactics' as PageId, label: 'Tactics Labs', icon: '🧩' },
-      { id: 'calculation' as PageId, label: 'Calculation Lab', icon: '👁️' },
-      { id: 'blindfold' as PageId, label: 'Blindfold Lab', icon: '🙈' },
-      { id: 'endgames' as PageId, label: 'Endgame Lab', icon: '👑' },
-      { id: 'openings' as PageId, label: 'Opening Builder', icon: '🌳' },
+      { id: 'foundations' as PageId, label: 'Foundations', icon: '🏫' },
+      { id: 'tactics' as PageId, label: 'Tactics Lab', icon: '🧩' },
+      { id: 'calc-university' as PageId, label: 'Calculation', icon: '🧠' },
+      { id: 'opening-university' as PageId, label: 'Openings', icon: '🌳' },
+      { id: 'middlegame' as PageId, label: 'Middlegame', icon: '⚔️' },
+      { id: 'endgame-university' as PageId, label: 'Endgames', icon: '👑' },
+      { id: 'master-games' as PageId, label: 'Master Games', icon: '🏆' },
     ],
   },
   {
-    title: 'Analysis & Study',
+    title: 'Training Tools',
     items: [
-      { id: 'middlegame' as PageId, label: 'Middlegame Lab', icon: '⚔️' },
-      { id: 'lessons' as PageId, label: 'Curriculum', icon: '📚' },
-      { id: 'games' as PageId, label: 'Master Games', icon: '🏆' },
+      { id: 'puzzles' as PageId, label: 'Puzzle Trainer', icon: '🎯' },
+      { id: 'calculation' as PageId, label: 'Visualization', icon: '👁️' },
+      { id: 'blindfold' as PageId, label: 'Blindfold Lab', icon: '🙈' },
+      { id: 'endgames' as PageId, label: 'Endgame Drills', icon: '♔' },
+      { id: 'tournament-prep' as PageId, label: 'Tournament Prep', icon: '🏅' },
+    ],
+  },
+  {
+    title: 'Coach & Study',
+    items: [
       { id: 'aicoach' as PageId, label: 'AI Chess Coach', icon: '🎙️' },
+      { id: 'lessons' as PageId, label: 'Curriculum', icon: '📚' },
+      { id: 'games' as PageId, label: 'Game Database', icon: '📂' },
     ],
   },
 ];
@@ -82,6 +100,12 @@ export const App: React.FC = () => {
       case 'foundations': return <FoundationsUniversity />;
       case 'tactics': return <TacticalUniversity />;
       case 'middlegame': return <MiddlegameUniversity />;
+      // New University Pages (lazy loaded)
+      case 'calc-university': return <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-500">Loading...</div>}><CalculationUniversity /></Suspense>;
+      case 'endgame-university': return <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-500">Loading...</div>}><EndgameUniversity /></Suspense>;
+      case 'master-games': return <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-500">Loading...</div>}><MasterGameUniversity /></Suspense>;
+      case 'opening-university': return <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-500">Loading...</div>}><OpeningUniversity /></Suspense>;
+      case 'tournament-prep': return <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-500">Loading...</div>}><TournamentPrep /></Suspense>;
       default: return <Dashboard />;
     }
   };
@@ -158,7 +182,7 @@ export const App: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">ChessOS</span>
             <span className="text-slate-600">›</span>
-            <span className="text-white text-xs font-bold capitalize">{activePage.replace('-', ' ')}</span>
+            <span className="text-white text-xs font-bold capitalize">{activePage.replace(/-/g, ' ')}</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5 text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/15 px-3 py-1 rounded-full">
