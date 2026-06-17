@@ -2505,5 +2505,703 @@
         ]
       }
     ]
+  },
+  {
+    "id": "openings",
+    "title": "Opening Mastery",
+    "icon": "🌳",
+    "description": "Master the fundamental openings for both White and Black. Learn key ideas, typical plans, critical variations, and common traps in the most important opening systems.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "italian-game",
+        "title": "Italian Game & Giuoco Piano",
+        "difficulty": "beginner",
+        "theory": "\n<h2>The Italian Game — 1.e4 e5 2.Nf3 Nc6 3.Bc4</h2>\n<p>The Italian Game is one of the <strong>oldest and most classical openings</strong> in chess, dating back to the 16th century. White develops the bishop to c4 to target the vulnerable f7 square.</p>\n\n<h3>Giuoco Piano (Quiet Game)</h3>\n<p>After 3...Bc5, the Giuoco Piano arises. Both sides develop harmoniously. White aims for d4 to claim the center.</p>\n\n<h3>Key Ideas for White</h3>\n<ul>\n  <li><strong>Control the center</strong> with pawns on e4 and d4</li>\n  <li><strong>Target f7</strong> — the weakest square in Black's camp</li>\n  <li><strong>Quick development</strong> and castling kingside</li>\n  <li><strong>Prepare d4</strong> with c3 for a strong pawn center</li>\n</ul>\n\n<h3>Key Ideas for Black</h3>\n<ul>\n  <li><strong>Maintain the e5 pawn</strong> for central presence</li>\n  <li><strong>Develop actively</strong> with ...Nf6 and ...d6 or ...d5</li>\n  <li><strong>Castle quickly</strong> and connect the rooks</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Giuoco Piano Pawn Center</div>\n  <p>After c3-d4, White achieves the ideal pawn center. Black must be ready to counter with ...exd4 or ...d5 at the right moment. Timing is everything.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
+            "title": "Italian Game Starting Position",
+            "description": "After 1.e4 e5 2.Nf3 Nc6 3.Bc4. White's bishop eyes f7, the weakest point in Black's position."
+          },
+          {
+            "fen": "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
+            "title": "Giuoco Piano",
+            "description": "After 3...Bc5 — the quiet game. Both sides develop symmetrically, leading to rich middlegame play."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "In the Italian Game, why does White play Bc4?",
+            "options": [
+              "To control d5",
+              "To target the f7 square",
+              "To prepare queenside castling",
+              "To trade bishops"
+            ],
+            "answer": 1,
+            "explanation": "The bishop on c4 targets f7, which is only defended by the Black king — making it the weakest square."
+          },
+          {
+            "type": "quiz",
+            "question": "What is the typical White plan in the Giuoco Piano?",
+            "options": [
+              "Push f4 immediately",
+              "Castle queenside",
+              "Play c3 followed by d4",
+              "Fianchetto the bishop"
+            ],
+            "answer": 2,
+            "explanation": "White prepares d4 with c3, aiming for an ideal pawn center with pawns on e4 and d4."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "it_01",
+            "fen": "r1bqk1nr/pppp1Bpp/2n5/2b1p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4",
+            "solution": "Kxf7",
+            "theme": "Italian Game Trap",
+            "difficulty": "beginner",
+            "explanation": "The Fried Liver/Scholar's Mate idea — Bxf7+ forces the king to take, exposing it to attack."
+          }
+        ]
+      },
+      {
+        "id": "sicilian-defense",
+        "title": "Sicilian Defense Essentials",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>The Sicilian Defense — 1.e4 c5</h2>\n<p>The Sicilian Defense is the <strong>most popular and combative response</strong> to 1.e4. Black immediately fights for the center while creating an asymmetric position that offers winning chances to both sides.</p>\n\n<h3>Why the Sicilian?</h3>\n<p>Unlike 1...e5 (which leads to symmetric positions), 1...c5 creates <strong>imbalance from move one</strong>. Black accepts a slightly cramped position in exchange for the c-file and dynamic counterplay.</p>\n\n<h3>Main Variations</h3>\n<ul>\n  <li><strong>Open Sicilian (2.Nf3 + 3.d4):</strong> The most principled approach. After cxd4, White gets a lead in development; Black gets the semi-open c-file</li>\n  <li><strong>Najdorf (5...a6):</strong> The most popular variation, favored by Fischer, Kasparov, and Carlsen</li>\n  <li><strong>Dragon (5...g6):</strong> Black fianchettoes the bishop for pressure on the long diagonal</li>\n  <li><strong>Classical (5...Nc6):</strong> Solid development before committing to a plan</li>\n  <li><strong>Scheveningen (5...e6):</strong> Flexible pawn structure allowing ...d5 later</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Sicilian Exchange</div>\n  <p>After 2.Nf3 d6 3.d4 cxd4 4.Nxd4, the fundamental Sicilian trade has occurred: Black's c-pawn for White's d-pawn. This gives White a central majority (e-pawn vs none) but gives Black the semi-open c-file for counterplay.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2",
+            "title": "Sicilian Defense",
+            "description": "After 1.e4 c5 — Black fights for the center asymmetrically. The most popular defense to 1.e4."
+          },
+          {
+            "fen": "rnbqkbnr/pp2pppp/3p4/8/3NP3/8/PPP2PPP/RNBQKB1R b KQkq - 0 4",
+            "title": "Open Sicilian",
+            "description": "After 2.Nf3 d6 3.d4 cxd4 4.Nxd4 — the Open Sicilian. White has central control, Black has the c-file."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Why is 1...c5 called the Sicilian Defense?",
+            "options": [
+              "It was invented in Sicily",
+              "It defends the king",
+              "It fights for the d4 square from the flank",
+              "It's a defensive opening"
+            ],
+            "answer": 2,
+            "explanation": "The c5 pawn fights for control of d4, preventing White from easily establishing a two-pawn center."
+          },
+          {
+            "type": "quiz",
+            "question": "What does Black get in exchange for allowing White's central majority?",
+            "options": [
+              "A pawn advantage",
+              "The semi-open c-file for counterplay",
+              "A better endgame",
+              "A kingside attack"
+            ],
+            "answer": 1,
+            "explanation": "The trade of c-pawn for d-pawn gives Black the semi-open c-file, a key asset for queenside counterplay."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "sic_01",
+            "fen": "r1b1kb1r/pp3ppp/1qnppn2/8/2BNP3/2N1B3/PPP2PPP/R2QK2R w KQkq - 0 8",
+            "solution": "Nd5",
+            "theme": "Sicilian Tactics",
+            "difficulty": "intermediate",
+            "explanation": "Nd5! is a powerful central strike in the Sicilian. The knight cannot be captured without concessions."
+          }
+        ]
+      },
+      {
+        "id": "french-defense",
+        "title": "French Defense",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>The French Defense — 1.e4 e6</h2>\n<p>The French Defense is a <strong>solid, strategic opening</strong> where Black builds a strong pawn chain and fights for the center with ...d5. It leads to rich positional and tactical play.</p>\n\n<h3>Main Ideas</h3>\n<ul>\n  <li><strong>Black's plan:</strong> Challenge White's center with ...d5, then attack the pawn chain at its base (usually ...c5)</li>\n  <li><strong>White's plan:</strong> Maintain the central advantage and develop an attack, often on the kingside</li>\n  <li><strong>The light-squared bishop:</strong> Black's biggest problem — it's blocked by the e6 pawn</li>\n</ul>\n\n<h3>Main Variations</h3>\n<ul>\n  <li><strong>Advance (3.e5):</strong> White gains space; Black counterattacks the pawn chain with ...c5 and ...f6</li>\n  <li><strong>Tarrasch (3.Nd2):</strong> Flexible — supports e4 without blocking the c-pawn</li>\n  <li><strong>Winawer (3.Nc3 Bb4):</strong> Sharp and tactical, Black pins the knight</li>\n  <li><strong>Classical (3.Nc3 Nf6):</strong> Solid development</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The French Pawn Chain</div>\n  <p>The pawn chain d5-e6 for Black and e5-d4 for White defines the French Defense. The key strategic principle: <strong>attack a pawn chain at its base</strong>. For Black, this means ...c5 attacking d4. For White, this means f4-f5 attacking e6.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "title": "French Defense Starting Position",
+            "description": "After 1.e4 e6 — Black prepares ...d5 to challenge the center. A solid, strategic choice."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is Black's biggest strategic problem in the French Defense?",
+            "options": [
+              "The king is exposed",
+              "The light-squared bishop is blocked by e6",
+              "The queen is trapped",
+              "The rooks can't connect"
+            ],
+            "answer": 1,
+            "explanation": "The e6 pawn blocks Black's light-squared bishop, making it the 'French bishop' — a chronic problem."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "fr_01",
+            "fen": "r1bqk2r/ppp1bppp/2n1pn2/3pP3/3P4/2N2N2/PPP2PPP/R1BQKB1R w KQkq - 0 6",
+            "solution": "Bb5",
+            "theme": "French Defense Plans",
+            "difficulty": "intermediate",
+            "explanation": "Bb5 pins the knight, a typical idea in the French Advance."
+          }
+        ]
+      },
+      {
+        "id": "queens-gambit",
+        "title": "Queen's Gambit",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>The Queen's Gambit — 1.d4 d5 2.c4</h2>\n<p>The Queen's Gambit is one of the <strong>oldest and most respected openings</strong> in chess. White offers the c4 pawn to deflect Black's d5 pawn from the center.</p>\n\n<h3>Is it a Real Gambit?</h3>\n<p>Not really! If Black takes with 2...dxc4, White can always recover the pawn. The real question is how Black handles the central tension.</p>\n\n<h3>Queen's Gambit Declined (2...e6)</h3>\n<p>Black maintains the d5 pawn, leading to solid positions. The key challenge is the light-squared bishop, which gets blocked by e6 (similar to the French).</p>\n\n<h3>Queen's Gambit Accepted (2...dxc4)</h3>\n<p>Black grabs the pawn but concedes the center. White plays e4 with a powerful center, then recovers the pawn with Bxc4.</p>\n\n<h3>Slav Defense (2...c6)</h3>\n<p>Black supports d5 with c6, keeping the light-squared bishop's diagonal open (unlike QGD). One of the most popular responses.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Central Tension</div>\n  <p>The Queen's Gambit revolves around the tension between d5 and c4. Black must decide: maintain the tension (QGD/Slav), release it by capturing (QGA), or counterattack (other defenses). This decision shapes the entire game.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq c3 0 2",
+            "title": "Queen's Gambit",
+            "description": "After 1.d4 d5 2.c4 — White challenges Black's central pawn. The oldest and most classical opening."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "Is the Queen's Gambit a real gambit?",
+            "options": [
+              "Yes, White sacrifices a pawn permanently",
+              "No, White can always recover the c4 pawn",
+              "It depends on Black's response",
+              "Only in the QGA"
+            ],
+            "answer": 1,
+            "explanation": "The Queen's Gambit is not a true gambit because White can always recover the c4 pawn if Black captures it."
+          },
+          {
+            "type": "quiz",
+            "question": "What is the main idea behind 2...c6 (Slav Defense)?",
+            "options": [
+              "To attack White's king",
+              "To support d5 while keeping the bishop diagonal open",
+              "To prepare ...b5",
+              "To weaken White's center"
+            ],
+            "answer": 1,
+            "explanation": "2...c6 supports the d5 pawn with a pawn instead of ...e6, which keeps the c8-bishop's diagonal free."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "qg_01",
+            "fen": "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq - 2 4",
+            "solution": "cxd5",
+            "theme": "Queen's Gambit Exchange",
+            "difficulty": "beginner",
+            "explanation": "cxd5 leads to the Exchange Variation where White gets a central majority and minority attack chances."
+          }
+        ]
+      },
+      {
+        "id": "kings-indian",
+        "title": "King's Indian & Indian Systems",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Indian Defense Systems</h2>\n<p>Indian defenses (King's Indian, Nimzo-Indian, Queen's Indian) are <strong>hypermodern openings</strong> where Black allows White to build a big center, then counterattacks it.</p>\n\n<h3>King's Indian Defense (1.d4 Nf6 2.c4 g6)</h3>\n<p>Black fianchettoes the king's bishop and prepares a kingside attack with ...e5 followed by ...f5. This is one of the most <strong>aggressive defenses</strong> in chess, favored by Kasparov and Fischer.</p>\n\n<h3>Nimzo-Indian Defense (1.d4 Nf6 2.c4 e6 3.Nc3 Bb4)</h3>\n<p>Black pins the knight on c3, disrupting White's plan to control the center. One of the most respected defenses, frequently used at the highest level.</p>\n\n<h3>Queen's Indian Defense (1.d4 Nf6 2.c4 e6 3.Nf3 b6)</h3>\n<p>Black develops the queen's bishop to b7, controlling the e4 square and preparing a flexible setup.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Hypermodern Philosophy</div>\n  <p>The hypermodern idea: <strong>you don't need to occupy the center with pawns to control it.</strong> Pieces and flank pawns can control the center just as effectively. Let your opponent build a big center, then undermine it!</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rnbqkb1r/pppppp1p/5np1/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 0 3",
+            "title": "King's Indian Setup",
+            "description": "After 1.d4 Nf6 2.c4 g6 — Black prepares to fianchetto and launch a kingside attack."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the hypermodern approach to the center?",
+            "options": [
+              "Occupy it with pawns immediately",
+              "Control it from a distance with pieces and flank pawns",
+              "Ignore the center completely",
+              "Only attack the queenside"
+            ],
+            "answer": 1,
+            "explanation": "Hypermodern openings control the center with pieces from a distance, then counterattack the opponent's pawn center."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "kid_01",
+            "fen": "r1bq1rk1/pppn1pbp/3p1np1/4p3/2PPP3/2N2N2/PP2BPPP/R1BQ1RK1 b - - 0 8",
+            "solution": "exd4",
+            "theme": "King's Indian Break",
+            "difficulty": "intermediate",
+            "explanation": "exd4 opens the position for Black's fianchettoed bishop. The typical break in the KID."
+          }
+        ]
+      },
+      {
+        "id": "caro-kann",
+        "title": "Caro-Kann Defense",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>The Caro-Kann Defense — 1.e4 c6</h2>\n<p>The Caro-Kann is a <strong>solid, reliable defense</strong> that avoids the theoretical landmines of the Sicilian while still fighting for the center. It's favored by players who prefer solid positions with long-term potential.</p>\n\n<h3>Main Ideas</h3>\n<ul>\n  <li><strong>2...d5:</strong> Challenge White's e4 pawn immediately</li>\n  <li><strong>Keep the light-squared bishop active:</strong> Unlike the French, c6 doesn't block the c8 bishop</li>\n  <li><strong>Solid pawn structure:</strong> Black's structure is hard to attack</li>\n</ul>\n\n<h3>Main Variations</h3>\n<ul>\n  <li><strong>Classical (3.Nc3/Nd2 dxe4 4.Nxe4):</strong> The main line, leading to open positions</li>\n  <li><strong>Advance (3.e5):</strong> White gains space, Black counterattacks with ...c5 and ...Bf5</li>\n  <li><strong>Exchange (3.exd5 cxd5):</strong> Simplified but White retains a slight pull</li>\n  <li><strong>Fantasy/Panov Attack:</strong> Sharp lines with c4 attacking d5</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Caro-Kann vs French</div>\n  <p>The key difference: in the Caro-Kann, c6 supports ...d5 while <strong>keeping the light-squared bishop's diagonal clear</strong>. In the French (1...e6), the bishop gets blocked. This is why the Caro-Kann is considered 'the improved French.'</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
+            "title": "Caro-Kann Starting Position",
+            "description": "After 1.e4 c6 — Black prepares ...d5 while keeping the bishop diagonal open."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What advantage does 1...c6 have over 1...e6?",
+            "options": [
+              "It attacks the king immediately",
+              "It keeps the light-squared bishop's diagonal open",
+              "It controls more central squares",
+              "It develops a piece"
+            ],
+            "answer": 1,
+            "explanation": "Unlike 1...e6, 1...c6 doesn't block the c8-bishop. The bishop can develop to f5 or g4 naturally."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "ck_01",
+            "fen": "rn1qkbnr/pp2pppp/2p5/5b2/3PN3/8/PPP2PPP/R1BQKBNR w KQkq - 1 5",
+            "solution": "Ng3",
+            "theme": "Caro-Kann Classical",
+            "difficulty": "intermediate",
+            "explanation": "Ng3 attacks the bishop on f5. After Bg6, the knight has reached an active post."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "middlegame",
+    "title": "Middlegame Mastery",
+    "icon": "🏰",
+    "description": "Master the critical phase between opening and endgame. Learn attack planning, prophylactic thinking, piece coordination, weak squares, and dynamic vs static advantages.",
+    "difficulty": "intermediate",
+    "modules": [
+      {
+        "id": "weak-squares",
+        "title": "Weak Squares & Outposts",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Weak Squares — The Foundation of Positional Play</h2>\n<p>A <strong>weak square</strong> is a square that cannot be defended by pawns. It becomes a permanent outpost for the opponent's pieces, especially knights.</p>\n\n<h3>How Weak Squares Are Created</h3>\n<ul>\n  <li><strong>Pawn advances:</strong> When a pawn moves forward, it no longer controls the squares it left behind</li>\n  <li><strong>Pawn exchanges:</strong> Trading a pawn can leave holes in the pawn structure</li>\n  <li><strong>Pawn chains:</strong> The squares not covered by the chain become weak</li>\n</ul>\n\n<h3>Exploiting Weak Squares</h3>\n<ul>\n  <li><strong>Occupy with a knight:</strong> Knights are ideal for outposts because they can't be driven away by pawns</li>\n  <li><strong>Control with bishops:</strong> Bishops can control weak squares from a distance</li>\n  <li><strong>Route pieces through:</strong> Use weak squares as transit points for piece maneuvering</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Classic d5 Outpost</div>\n  <p>In many openings (Sicilian, French, King's Indian), the d5 square becomes a powerful outpost for White if Black plays ...e5 and ...exd4. A knight on d5 can dominate the entire board.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp2bppp/2n1pn2/3pN3/3P4/2N1B3/PPP2PPP/R2QKB1R w KQ - 0 8",
+            "title": "Knight Outpost on e5",
+            "description": "White's knight on e5 occupies a powerful outpost. It cannot be chased away by Black's pawns."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is a weak square?",
+            "options": [
+              "A square occupied by a weak piece",
+              "A square that cannot be defended by pawns",
+              "A square near the king",
+              "Any empty square"
+            ],
+            "answer": 1,
+            "explanation": "A weak square is one that cannot be controlled by pawns. It becomes a permanent outpost for the opponent."
+          },
+          {
+            "type": "quiz",
+            "question": "Which piece is best for occupying outposts?",
+            "options": [
+              "Queen",
+              "Bishop",
+              "Knight",
+              "Rook"
+            ],
+            "answer": 2,
+            "explanation": "Knights are ideal for outposts because once established, they can't be driven away by enemy pawns."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "ws_01",
+            "fen": "r1bq1rk1/pp3ppp/2nbpn2/3p4/3P4/2NBPN2/PP3PPP/R1BQ1RK1 w - - 0 9",
+            "solution": "Ne5",
+            "theme": "Outpost Occupation",
+            "difficulty": "intermediate",
+            "explanation": "Ne5 occupies the powerful outpost on e5, establishing a dominant centralized knight."
+          }
+        ]
+      },
+      {
+        "id": "initiative",
+        "title": "Initiative & Tempo",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Initiative — Keeping the Opponent Off Balance</h2>\n<p>The initiative means having the <strong>ability to create threats</strong> that force the opponent to respond. The side with the initiative dictates the course of the game.</p>\n\n<h3>How to Gain the Initiative</h3>\n<ul>\n  <li><strong>Development advantage:</strong> More pieces in play = more threats</li>\n  <li><strong>Central control:</strong> Controlling the center allows pieces to access both sides</li>\n  <li><strong>Pawn breaks:</strong> Creating tension forces the opponent to make concessions</li>\n  <li><strong>Piece activity:</strong> Active pieces create threats naturally</li>\n</ul>\n\n<h3>How to Maintain Initiative</h3>\n<ul>\n  <li><strong>Keep creating threats:</strong> Don't give the opponent time to consolidate</li>\n  <li><strong>Avoid unnecessary exchanges:</strong> Trading pieces usually helps the defender</li>\n  <li><strong>Increase pressure gradually:</strong> Don't rush into premature attacks</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Tempo in Chess</div>\n  <p>A tempo is a unit of time in chess — essentially one move. Gaining a tempo means doing something useful while forcing your opponent to waste a move. Losing a tempo means making a move that doesn't contribute to your plan.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR w KQkq - 1 3",
+            "title": "White's Development Lead",
+            "description": "White has two pawns in the center and will develop pieces quickly, maintaining the initiative."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What does 'having the initiative' mean?",
+            "options": [
+              "Having more material",
+              "Being able to create threats that dictate play",
+              "Having castled first",
+              "Being White"
+            ],
+            "answer": 1,
+            "explanation": "The initiative is the ability to create threats that force the opponent to respond, letting you dictate the game."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "init_01",
+            "fen": "r2qkb1r/pppb1ppp/2n1pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R w KQkq - 0 5",
+            "solution": "cxd5",
+            "theme": "Seizing the Initiative",
+            "difficulty": "intermediate",
+            "explanation": "cxd5 creates immediate tension and forces Black to make decisions, seizing the initiative."
+          }
+        ]
+      },
+      {
+        "id": "piece-activity",
+        "title": "Piece Activity & Coordination",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Piece Activity — The Most Important Positional Factor</h2>\n<p>Piece activity is arguably the <strong>single most important factor</strong> in chess evaluation. An active piece controls key squares, creates threats, and participates in both attack and defense.</p>\n\n<h3>Signs of Active Pieces</h3>\n<ul>\n  <li><strong>Centralized:</strong> Pieces in the center control the most squares</li>\n  <li><strong>Targeting weaknesses:</strong> Pieces aimed at the opponent's vulnerabilities</li>\n  <li><strong>Well-coordinated:</strong> Pieces work together, supporting each other</li>\n  <li><strong>Mobile:</strong> Pieces that can quickly shift from one area to another</li>\n</ul>\n\n<h3>Signs of Passive Pieces</h3>\n<ul>\n  <li><strong>Restricted:</strong> Blocked by own pawns or hemmed in</li>\n  <li><strong>Defensive only:</strong> Tied to defending weaknesses</li>\n  <li><strong>Out of play:</strong> On the edge of the board, far from the action</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Principle of Two Weaknesses</div>\n  <p>One weakness can often be defended. But creating a <strong>second weakness</strong> stretches the defense to the breaking point. This is why strong players probe different parts of the position before committing to an attack.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r2qr1k1/ppp2ppp/2nb1n2/3pp3/3PP3/2NB1N2/PPP2PPP/R1BQR1K1 w - - 0 10",
+            "title": "Symmetric but Different",
+            "description": "The positions look similar but piece activity differences determine who has the advantage."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the most important positional factor?",
+            "options": [
+              "Material count",
+              "Pawn structure",
+              "Piece activity",
+              "King safety"
+            ],
+            "answer": 2,
+            "explanation": "Piece activity is the most important factor. Active pieces create threats, control squares, and win games."
+          }
+        ]
+      },
+      {
+        "id": "prophylaxis",
+        "title": "Prophylactic Thinking",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Prophylaxis — Thinking About Your Opponent's Plans</h2>\n<p>Prophylaxis is the art of <strong>preventing your opponent's plans</strong> before executing your own. It was championed by Petrosian and Karpov, two of the greatest positional players in history.</p>\n\n<h3>The Prophylactic Question</h3>\n<p>Before every move, ask yourself: <strong>\"What does my opponent want to do?\"</strong> If their plan is dangerous, address it first. If not, proceed with your own plans.</p>\n\n<h3>Types of Prophylaxis</h3>\n<ul>\n  <li><strong>Positional prophylaxis:</strong> Preventing the opponent from improving their pieces or pawn structure</li>\n  <li><strong>Tactical prophylaxis:</strong> Preventing tactical threats (pins, forks, discoveries)</li>\n  <li><strong>Strategic prophylaxis:</strong> Preventing long-term plans (pawn breaks, piece maneuvers)</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Petrosian's Rule</div>\n  <p>Tigran Petrosian, the 9th World Champion, was the master of prophylaxis. His famous principle: <strong>\"In order to win, you must first learn not to lose.\"</strong> By neutralizing the opponent's plans, you create the conditions for your own success.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/ppp2ppp/2n1pn2/3p4/3P1B2/2N1PN2/PP3PPP/R2QKB1R w KQ - 0 7",
+            "title": "Prophylactic h3",
+            "description": "Before continuing, White plays h3 to prevent ...Bg4 pinning the knight. A classic prophylactic move."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What question should you ask before every move?",
+            "options": [
+              "How can I attack?",
+              "What does my opponent want to do?",
+              "Which piece should I trade?",
+              "Should I push a pawn?"
+            ],
+            "answer": 1,
+            "explanation": "Before each move, ask 'What does my opponent want to do?' — this is the foundation of prophylactic thinking."
+          }
+        ]
+      },
+      {
+        "id": "attacking-play",
+        "title": "Attacking the King",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Attacking the King — The Ultimate Goal</h2>\n<p>The ultimate goal in chess is checkmate. Learning to <strong>build and execute an attack against the enemy king</strong> is one of the most important skills in the middlegame.</p>\n\n<h3>Prerequisites for a Successful Attack</h3>\n<ul>\n  <li><strong>Piece superiority:</strong> You need more pieces aimed at the king than the defender has</li>\n  <li><strong>Open lines:</strong> Files, diagonals, or ranks leading to the king must be open or openable</li>\n  <li><strong>Weakened king position:</strong> Pawn moves (h6, g6, f6) create permanent weaknesses</li>\n  <li><strong>Central control:</strong> A strong center prevents counterplay and supports the attack</li>\n</ul>\n\n<h3>Attacking Techniques</h3>\n<ul>\n  <li><strong>Pawn storm:</strong> h4-h5, g4-g5 to tear open the kingside</li>\n  <li><strong>Piece sacrifice:</strong> Bxh7+, Bxg7, Nxf7 to open the king's fortress</li>\n  <li><strong>Battery creation:</strong> Q+B on a diagonal or Q+R on a file aimed at the king</li>\n  <li><strong>Transfer pieces:</strong> Bring pieces from the queenside to the kingside attack</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Greek Gift Sacrifice</div>\n  <p>Bxh7+! is the most famous attacking pattern. After Kxh7, Ng5+ Kg8 (or Kg6), Qh5 — White builds a devastating attack. This works when White has a bishop on d3, knight on f3, and queen available.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/ppppnppp/4p3/8/1bBP4/2N1BN2/PPP2PPP/R2QK2R w KQ - 0 7",
+            "title": "Attacking Buildup",
+            "description": "White has multiple pieces aimed at the kingside. The conditions for a successful attack are in place."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the most important prerequisite for a king attack?",
+            "options": [
+              "Having the queen",
+              "Piece superiority near the king",
+              "Being ahead in material",
+              "Having castled on the other side"
+            ],
+            "answer": 1,
+            "explanation": "You need more attacking pieces near the king than the opponent has defenders. Quantity matters in attacks."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "att_01",
+            "fen": "r1bq1rk1/ppp2ppp/2n1pn2/3p4/3P4/2NBPN2/PPP2PPP/R1BQ1RK1 w - - 0 8",
+            "solution": "Bxh7+",
+            "theme": "Greek Gift",
+            "difficulty": "expert",
+            "explanation": "The famous Greek Gift sacrifice! Bxh7+ Kxh7, Ng5+ Kg8, Qh5 — a devastating kingside attack."
+          }
+        ]
+      },
+      {
+        "id": "defense-technique",
+        "title": "Defensive Techniques",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Defensive Technique — How to Hold Difficult Positions</h2>\n<p>Defense is just as important as attack. Many games are lost not because of a bad position, but because of <strong>poor defensive technique</strong>.</p>\n\n<h3>Key Defensive Principles</h3>\n<ul>\n  <li><strong>Keep pieces active:</strong> Even in defense, try to maintain active pieces</li>\n  <li><strong>Exchange attacking pieces:</strong> Trade the opponent's most dangerous pieces</li>\n  <li><strong>Create counterplay:</strong> The best defense is often a counter-threat elsewhere</li>\n  <li><strong>Fortress formation:</strong> Set up a defensive setup that cannot be penetrated</li>\n  <li><strong>Avoid panic:</strong> Calm assessment is more effective than desperate measures</li>\n</ul>\n\n<h3>Practical Defensive Tips</h3>\n<ul>\n  <li><strong>Keep the king safe:</strong> Don't weaken the pawn shield unnecessarily</li>\n  <li><strong>Don't waste tempo:</strong> Every defensive move should serve a purpose</li>\n  <li><strong>Find the most resilient defense:</strong> Look for the move that makes things hardest for the attacker</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Lasker's Defense</div>\n  <p>Emanuel Lasker, the 2nd World Champion, was a master defender. His principle: <strong>set the maximum number of problems for the attacker.</strong> Even if objectively lost, making the win difficult often leads to mistakes.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r2q1rk1/pp2bppp/2n1pn2/2pp4/3P4/2NBPN2/PPP2PPP/R1BQ1RK1 b - - 0 8",
+            "title": "Active Defense",
+            "description": "Black defends with active pieces while creating counterplay on the queenside."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is the best defense against an attack?",
+            "options": [
+              "Move the king away",
+              "Sacrifice pieces",
+              "Create counterplay elsewhere",
+              "Wait and hope"
+            ],
+            "answer": 2,
+            "explanation": "The best defense is often a counter-threat elsewhere on the board, forcing the attacker to divert resources."
+          }
+        ]
+      },
+      {
+        "id": "transformation",
+        "title": "Transformation of Advantages",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Transformation of Advantages</h2>\n<p>One of the most sophisticated skills in chess is the ability to <strong>transform one type of advantage into another</strong>. This is what separates masters from amateurs.</p>\n\n<h3>Types of Advantages</h3>\n<ul>\n  <li><strong>Material:</strong> Having more pieces or pawns</li>\n  <li><strong>Positional:</strong> Better piece placement, pawn structure, space</li>\n  <li><strong>Dynamic:</strong> Initiative, attack, development lead</li>\n  <li><strong>Time:</strong> Being ahead on the clock (practical advantage)</li>\n</ul>\n\n<h3>Transformation Examples</h3>\n<ul>\n  <li><strong>Development → Initiative → Attack → Material</strong></li>\n  <li><strong>Space → Piece activity → Pawn breakthrough → Passed pawn</strong></li>\n  <li><strong>Better pawn structure → Better endgame → Win</strong></li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Steinitz's Principle</div>\n  <p>Wilhelm Steinitz, the 1st World Champion, established: <strong>an accumulation of small advantages</strong> eventually leads to a decisive one. You don't need a spectacular combination — just gradually improve your position until the advantage becomes overwhelming.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+            "title": "Accumulating Advantages",
+            "description": "White gradually accumulates small advantages — better development, central pressure — before transforming into a direct attack."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is 'transformation of advantages'?",
+            "options": [
+              "Trading queens",
+              "Converting one type of advantage into another",
+              "Promoting a pawn",
+              "Castling on the opposite side"
+            ],
+            "answer": 1,
+            "explanation": "Transformation means converting a temporary advantage (like initiative) into a permanent one (like better pawn structure or material)."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "master-games",
+    "title": "Master Game Academy",
+    "icon": "🏆",
+    "description": "Study the greatest chess games ever played. Learn from world champions across all eras — from Morphy's brilliance to Carlsen's endgame mastery.",
+    "difficulty": "advanced",
+    "modules": [
+      {
+        "id": "morphy-era",
+        "title": "Paul Morphy — The First Genius",
+        "difficulty": "beginner",
+        "theory": "\n<h2>Paul Morphy (1837-1884) — The Mozart of Chess</h2>\n<p>Paul Morphy was the <strong>first true chess prodigy</strong>, dominating every opponent in an era before formal world championships. His games teach us the most fundamental principles of chess.</p>\n\n<h3>Morphy's Key Principles</h3>\n<ul>\n  <li><strong>Rapid development:</strong> Develop ALL pieces before launching an attack</li>\n  <li><strong>Open lines:</strong> Open files and diagonals for your pieces to use</li>\n  <li><strong>Center control:</strong> Claim the center with pawns and pieces</li>\n  <li><strong>Don't move the same piece twice:</strong> in the opening without reason</li>\n  <li><strong>Castle early:</strong> Connect the rooks and protect the king</li>\n</ul>\n\n<h3>Famous Morphy Games</h3>\n<ul>\n  <li><strong>Opera Game (1858):</strong> Morphy vs Duke + Count — the most famous chess game ever</li>\n  <li><strong>Morphy vs Paulsen:</strong> Brilliant queen sacrifice</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 The Morphy Principle</div>\n  <p>\"Help your pieces so that they can help you.\" Morphy's chess was revolutionary because he understood that <strong>piece activity is worth more than material</strong>. He would sacrifice pawns and even pieces for rapid development and open lines.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rn2kb1r/p3qppp/2p2n2/1p2p1B1/4P3/1B6/PPP2PPP/RN1QK2R w KQkq - 0 9",
+            "title": "Opera Game - Critical Moment",
+            "description": "Morphy's legendary Opera Game. White's pieces are perfectly developed, ready for a devastating attack."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What was Morphy's most important principle?",
+            "options": [
+              "Material advantage",
+              "Rapid piece development",
+              "Endgame technique",
+              "Opening memorization"
+            ],
+            "answer": 1,
+            "explanation": "Morphy's greatest insight was that rapid development and piece activity is more important than material."
+          }
+        ],
+        "puzzles": [
+          {
+            "id": "mg_morphy_01",
+            "fen": "rn2kb1r/p3qppp/2p2n2/1p2p1B1/4P3/1B6/PPP2PPP/RN1QK2R w KQkq - 0 9",
+            "solution": "Bxb5",
+            "theme": "Morphy Development Attack",
+            "difficulty": "intermediate",
+            "explanation": "Bxb5! continues the attack by opening lines. After cxb5, Nxb5 threatens devastating Nc7+."
+          }
+        ]
+      },
+      {
+        "id": "fischer-era",
+        "title": "Bobby Fischer — American Legend",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Bobby Fischer (1943-2008) — The Greatest Prodigy</h2>\n<p>Bobby Fischer became the <strong>11th World Champion</strong> in 1972 by defeating Boris Spassky in the legendary 'Match of the Century.' His games combine deep preparation with brilliant tactical execution.</p>\n\n<h3>Fischer's Playing Style</h3>\n<ul>\n  <li><strong>Universal player:</strong> Equally strong in all phases of the game</li>\n  <li><strong>Deep opening preparation:</strong> Pioneer of modern opening theory</li>\n  <li><strong>Perfect technique:</strong> Could convert small advantages with machine-like precision</li>\n  <li><strong>Fighting spirit:</strong> Always played for a win, even with Black</li>\n</ul>\n\n<h3>Key Contributions</h3>\n<ul>\n  <li><strong>The Fischer Clock:</strong> Invented the time increment system used worldwide</li>\n  <li><strong>Fischer Random (Chess960):</strong> A variant to reduce the importance of opening memorization</li>\n  <li><strong>Najdorf Sicilian:</strong> Elevated the Najdorf to the most popular opening at the top level</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Fischer's Game of the Century</div>\n  <p>At age 13, Fischer played the 'Game of the Century' against Donald Byrne, featuring a stunning queen sacrifice. The game demonstrated that a young prodigy could outplay experienced masters with pure brilliance.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bqkb1r/pp3ppp/2n1pn2/2ppN3/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq - 0 5",
+            "title": "Fischer's Italian Attack",
+            "description": "Fischer often played the Italian Game with devastating effect, combining classical development with modern ideas."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What did Fischer invent for competitive chess?",
+            "options": [
+              "The chess clock",
+              "The time increment system",
+              "The rating system",
+              "The Swiss tournament format"
+            ],
+            "answer": 1,
+            "explanation": "Fischer invented the increment time control, where players gain extra time after each move — now standard worldwide."
+          }
+        ]
+      },
+      {
+        "id": "kasparov-era",
+        "title": "Garry Kasparov — The Greatest Attacker",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Garry Kasparov (1963-) — The 13th World Champion</h2>\n<p>Kasparov is widely considered the <strong>greatest chess player of all time</strong>. His aggressive, uncompromising style and incredible preparation revolutionized modern chess.</p>\n\n<h3>Kasparov's Style</h3>\n<ul>\n  <li><strong>Deep preparation:</strong> Spent hours analyzing with his team (pre-computer era)</li>\n  <li><strong>Aggressive play:</strong> Always sought the initiative and attacking chances</li>\n  <li><strong>Energy on the board:</strong> His pieces were always active, always threatening</li>\n  <li><strong>Competitive fire:</strong> Famous for his fighting spirit and determination</li>\n</ul>\n\n<h3>Famous Games</h3>\n<ul>\n  <li><strong>Kasparov vs Topalov, Wijk aan Zee 1999:</strong> Possibly the greatest game ever played — a queen sacrifice followed by a king hunt across the entire board</li>\n  <li><strong>Kasparov vs Karpov matches:</strong> Five world championship matches — the greatest rivalry in chess history</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Kasparov's Legacy</div>\n  <p>Kasparov showed that the highest level of chess requires <strong>both preparation and creativity</strong>. He was the first to seriously use computers for preparation, changing the game forever.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "rn1qkb1r/4pp1p/3p1np1/2pP4/4P3/2N3P1/PP3P1P/R1BQ1KNR b kq - 0 9",
+            "title": "Kasparov's Dynamic Style",
+            "description": "Kasparov specialized in creating dynamic positions where his superior calculation gave him the edge."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What was Kasparov's greatest contribution to modern chess?",
+            "options": [
+              "The Sicilian Defense",
+              "Combining deep computer preparation with creative play",
+              "Endgame technique",
+              "Blitz chess"
+            ],
+            "answer": 1,
+            "explanation": "Kasparov pioneered the use of computers for opening preparation, combining technology with creativity."
+          }
+        ]
+      },
+      {
+        "id": "carlsen-era",
+        "title": "Magnus Carlsen — The Universal Champion",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Magnus Carlsen (1990-) — The Highest-Rated Player Ever</h2>\n<p>Magnus Carlsen, the <strong>16th World Champion</strong>, reached a peak rating of 2882 — the highest in history. His style is uniquely versatile, combining deep strategic understanding with relentless practical play.</p>\n\n<h3>Carlsen's Style</h3>\n<ul>\n  <li><strong>Universal play:</strong> Equally dangerous in all positions and time controls</li>\n  <li><strong>Endgame mastery:</strong> Perhaps the greatest endgame player ever — he can squeeze wins from positions others would draw</li>\n  <li><strong>Practical chess:</strong> Prioritizes winning chances over theoretical perfection</li>\n  <li><strong>Grinding technique:</strong> Puts constant pressure, never letting opponents relax</li>\n</ul>\n\n<h3>Key Achievements</h3>\n<ul>\n  <li><strong>Youngest #1 in history:</strong> Became world #1 at age 19</li>\n  <li><strong>Highest rating ever:</strong> 2882 peak rating</li>\n  <li><strong>5-time World Champion:</strong> Dominated from 2013-2023</li>\n  <li><strong>Triple crown:</strong> Simultaneous classical, rapid, and blitz world champion</li>\n</ul>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Carlsen's Endgame Approach</div>\n  <p>Carlsen's endgame technique is legendary. He often steers games into slightly better endgames, then applies relentless pressure until opponents crack. His mantra: <strong>\"There's always a move. The opponent has to be perfect.\"</strong></p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "8/5pk1/6p1/8/5P2/6K1/8/8 w - - 0 1",
+            "title": "Carlsen's Endgame Precision",
+            "description": "Carlsen excels in seemingly drawn endgames where precise king play creates winning chances."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What is Carlsen's peak rating — the highest in chess history?",
+            "options": [
+              "2820",
+              "2851",
+              "2882",
+              "2900"
+            ],
+            "answer": 2,
+            "explanation": "Carlsen reached a peak rating of 2882 in 2014, the highest ever recorded."
+          }
+        ]
+      },
+      {
+        "id": "karpov-era",
+        "title": "Anatoly Karpov — The Positional Genius",
+        "difficulty": "advanced",
+        "theory": "\n<h2>Anatoly Karpov (1951-) — The 12th World Champion</h2>\n<p>Karpov's style is the epitome of <strong>positional mastery</strong>. He could slowly squeeze the life out of any position with impeccable technique, earning the nickname 'The Boa Constrictor.'</p>\n\n<h3>Karpov's Style</h3>\n<ul>\n  <li><strong>Prophylaxis:</strong> Master of preventing the opponent's plans</li>\n  <li><strong>Small advantages:</strong> Could win with the tiniest positional edge</li>\n  <li><strong>Technique:</strong> Perfect conversion of advantages into wins</li>\n  <li><strong>Economy of means:</strong> Never used more force than necessary</li>\n</ul>\n\n<h3>Learning from Karpov</h3>\n<p>Study Karpov to learn how to <strong>gradually improve your position</strong> without taking risks. His games teach patience, prophylaxis, and the art of making small moves that create big problems for the opponent.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Karpov's Technique</div>\n  <p>Karpov's secret: he didn't seek brilliant combinations. Instead, he made <strong>each piece slightly better placed</strong> on every move. Eventually, the cumulative improvement became overwhelming.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r2q1rk1/pp2bppp/2n1pn2/3p4/3P1B2/2NBPN2/PPQ2PPP/R3K2R w KQ - 0 10",
+            "title": "Karpov's Positional Squeeze",
+            "description": "A typical Karpov position. Every piece is optimally placed, creating subtle pressure across the board."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What was Karpov's nickname?",
+            "options": [
+              "The Tiger",
+              "The Magician",
+              "The Boa Constrictor",
+              "The Professor"
+            ],
+            "answer": 2,
+            "explanation": "Karpov was called 'The Boa Constrictor' because he slowly squeezed opponents positionally until they couldn't move."
+          }
+        ]
+      },
+      {
+        "id": "tal-era",
+        "title": "Mikhail Tal — The Magician from Riga",
+        "difficulty": "intermediate",
+        "theory": "\n<h2>Mikhail Tal (1936-1992) — The 8th World Champion</h2>\n<p>Tal was the most <strong>brilliant attacking player</strong> in chess history. His sacrificial style created positions of such complexity that opponents frequently crumbled under the pressure.</p>\n\n<h3>Tal's Style</h3>\n<ul>\n  <li><strong>Sacrificial attacks:</strong> Famous for unsound but practically devastating sacrifices</li>\n  <li><strong>Psychological pressure:</strong> Created the most complex positions possible</li>\n  <li><strong>Intuition over calculation:</strong> Often sacrificed based on intuition rather than concrete analysis</li>\n  <li><strong>The Tal stare:</strong> His famous piercing gaze intimidated opponents at the board</li>\n</ul>\n\n<h3>Learning from Tal</h3>\n<p>Tal teaches us that chess is not just about correctness — it's about <strong>practical difficulty</strong>. A sacrifice that's technically unsound but creates enormous complexity is often the best practical choice.</p>\n\n<div class=\"key-concept\">\n  <div class=\"key-concept-title\">💡 Tal's Wisdom</div>\n  <p>\"You must take your opponent into a deep dark forest where 2+2=5, and the path leading out is only wide enough for one.\" — Mikhail Tal. This encapsulates his philosophy: create positions so complex that only you can navigate them.</p>\n</div>\n",
+        "examples": [
+          {
+            "fen": "r1bq1rk1/pp2ppbp/2np1np1/8/3NP3/2N1BP2/PPPQ2PP/R3KB1R w KQ - 0 8",
+            "title": "Tal's Attacking Setup",
+            "description": "A typical Tal position. Multiple pieces are aimed at the kingside, ready for a devastating sacrifice."
+          }
+        ],
+        "exercises": [
+          {
+            "type": "quiz",
+            "question": "What made Tal's style so effective?",
+            "options": [
+              "Perfect endgame technique",
+              "Creating maximum practical complexity with sacrifices",
+              "Deep opening preparation",
+              "Defensive skill"
+            ],
+            "answer": 1,
+            "explanation": "Tal created such complex positions that opponents couldn't navigate them, even if the sacrifice was technically unsound."
+          }
+        ]
+      }
+    ]
   }
 ]
