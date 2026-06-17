@@ -139,7 +139,9 @@ export const CalculationTrainer: React.FC = () => {
         try {
           const m = chessTemp.move(labMoves[0]);
           userMoveAlgebraic = m.from + m.to;
-        } catch {}
+        } catch {
+          // ignore invalid moves
+        }
 
         if (userMoveAlgebraic !== bestFirstMove) {
           accuracy = 65;

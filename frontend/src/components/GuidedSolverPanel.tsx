@@ -170,7 +170,9 @@ export const GuidedSolverPanel: React.FC<GuidedSolverPanelProps> = ({
             game.move(solutionMoves[0]);
             game.move(solutionMoves[1]);
             onChangeFen(game.fen());
-          } catch {}
+          } catch {
+            // ignore setup errors
+          }
         }, 1200);
       }
     }
@@ -260,7 +262,9 @@ export const GuidedSolverPanel: React.FC<GuidedSolverPanelProps> = ({
           game.move(opponentMove);
           onChangeFen(game.fen());
           setFeedback({ isCorrect: true, text: `Opponent plays ${opponentMove}. Solve the final follow-up move!` });
-        } catch {}
+        } catch {
+          // ignore move errors
+        }
         setStep(5);
       }
     } else if (step === 5) {

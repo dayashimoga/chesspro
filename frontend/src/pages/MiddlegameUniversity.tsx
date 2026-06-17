@@ -54,7 +54,7 @@ const MIDDLEGAME_LABS: MiddlegameLab[] = [
     icon: '🛡️',
     theory: `
       <h3>Preventive Thinking</h3>
-      <p>Prophylaxis is the act of stopping your opponent\'s plans before they can execute them. It\'s the hallmark of positional mastery.</p>
+      <p>Prophylaxis is the act of stopping your opponent's plans before they can execute them. It's the hallmark of positional mastery.</p>
     `,
     fen: 'r1bq1rk1/pp2bppp/2n1pn2/2pp4/2PP4/2N1PN2/PP1BBPPP/R2Q1RK1 w - - 4 8',
     bestPlan: 'Play h3 to prevent Bg4 pins or knight sorties.',

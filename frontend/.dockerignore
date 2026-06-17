@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+.svelte-kit
+.next
+out
+build
+test-results
+playwright-report
+.git
+.github
+*.log

@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+**/build/
+android/android/.gradle/
+android/android/local.properties
+
+# Logs and local environment
+*.log
+.env
+.env.*
+.wrangler/
+.idea/
+.vscode/
+
+# Flutter specific
+.dart_tool/
+**/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.apk
+*.aab

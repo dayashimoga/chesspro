@@ -1,4 +1,4 @@
-package com.example.chessos_mobile
+package com.chessos.pro
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -22,6 +22,8 @@ export const AICoachDashboard: React.FC = () => {
     timeUsage: 15
   });
 
+  const [planTab, setPlanTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -181,8 +183,6 @@ export const AICoachDashboard: React.FC = () => {
 
         {/* Dynamic Schedule Plan */}
         {(() => {
-          const [planTab, setPlanTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
-
           const weeklySchedule = [
             { time: 'Mon / Tue', task: 'Openings: Build & practice custom repertoire lines', duration: '30m / day' },
             { time: 'Wed / Thu', task: 'Tactics: Solve 10 intermediate puzzles in Guided Solve Mode', duration: '40m / day' },

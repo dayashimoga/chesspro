@@ -123,7 +123,9 @@ export const Puzzles: React.FC = () => {
             // Move expectation to final move
             setLastMove(null);
             // Alert or notify
-          } catch {}
+          } catch {
+            // ignore invalid move attempts during transition
+          }
         }
       } else {
         // Check if final move matches

@@ -114,12 +114,12 @@ class ChessEngine {
 
   /// Get all legal moves as SAN strings
   List<String> getLegalMoves() {
-    return _game.moves();
+    return List<String>.from(_game.moves());
   }
 
   /// Get legal moves for a specific square
   List<String> getLegalMovesFrom(String square) {
-    return _game.moves({'square': square});
+    return List<String>.from(_game.moves({'square': square}));
   }
 
   /// Get legal move target squares from a source square
@@ -137,7 +137,7 @@ class ChessEngine {
   /// Make a move (SAN notation like "e4", "Nf3", "O-O")
   bool makeMove(String san) {
     final result = _game.move(san);
-    if (result != null) {
+    if (result == true) {
       _moveHistory.add(MoveRecord(
         san: san,
         fen: _game.fen,
@@ -154,8 +154,10 @@ class ChessEngine {
     final moveData = <String, String>{'from': from, 'to': to};
     if (promotion != null) moveData['promotion'] = promotion;
     final result = _game.move(moveData);
-    if (result != null) {
-      final san = result['san'] ?? '$from$to';
+    if (result == true) {
+      final history = _game.getHistory({'verbose': true});
+      final lastMove = history.isNotEmpty ? history.last : null;
+      final san = (lastMove is Map) ? (lastMove['san'] ?? '$from$to') : '$from$to';
       _moveHistory.add(MoveRecord(
         san: san.toString(),
         fen: _game.fen,

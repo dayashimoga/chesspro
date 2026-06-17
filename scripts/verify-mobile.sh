@@ -10,7 +10,7 @@ android/pubspec.yaml
 android/lib/main.dart
 android/android/app/build.gradle
 android/android/app/src/main/AndroidManifest.xml
-android/android/app/src/main/kotlin/com/example/chessos_mobile/MainActivity.kt
+android/android/app/src/main/kotlin/com/chessos/pro/MainActivity.kt
 android/android/app/src/main/res/values/styles.xml
 android/android/app/src/main/res/drawable/launch_background.xml
 android/android/app/src/main/res/drawable/ic_launcher.xml

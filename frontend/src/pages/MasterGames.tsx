@@ -3,11 +3,66 @@ import { Board } from '../components/Board';
 import { ReplayPanel } from '../components/ReplayPanel';
 import { VariationExplorer } from '../components/VariationExplorer';
 import { Chess } from 'chess.js';
-import { MASTER_GAMES, MasterGame, MoveDetails } from '../content/master-games-db';
+import { ALL_MASTER_GAMES, MasterGame } from '../content/master-games-db';
 import { useAppStore } from '../store/useAppStore';
 
+export interface MoveDetails {
+  move: string;
+  eval: string;
+  comment: string;
+  alternatives?: string[];
+}
+
+export interface UIMasterGame {
+  id: string;
+  white: string;
+  black: string;
+  result: string;
+  event: string;
+  date: string;
+  initialFen: string;
+  moves: MoveDetails[];
+}
+
+const parsePgnToMoves = (pgn: string, annotations: Record<number, string>): MoveDetails[] => {
+  const tokens = pgn.split(/\s+/).filter(t => t.length > 0);
+  const moves: MoveDetails[] = [];
+  
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    if (token.match(/^\d+\.+\.?$/)) {
+      continue;
+    }
+    
+    const isWhite = moves.length % 2 === 0;
+    const currentMoveNum = Math.ceil((moves.length + 1) / 2);
+    let comment = '';
+    if (isWhite && annotations[currentMoveNum]) {
+      comment = annotations[currentMoveNum];
+    }
+    
+    moves.push({
+      move: token,
+      eval: '0.00',
+      comment: comment || 'Analyzed master line move.'
+    });
+  }
+  return moves;
+};
+
+const MASTER_GAMES_UI: UIMasterGame[] = ALL_MASTER_GAMES.map(g => ({
+  id: g.id,
+  white: g.white,
+  black: g.black,
+  result: g.result,
+  event: g.event,
+  date: String(g.year),
+  initialFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+  moves: parsePgnToMoves(g.pgn, g.annotations)
+}));
+
 export const MasterGames: React.FC = () => {
-  const [games, setGames] = useState<MasterGame[]>(MASTER_GAMES);
+  const [games, setGames] = useState<UIMasterGame[]>(MASTER_GAMES_UI);
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [currentMoveIdx, setCurrentMoveIdx] = useState<number>(-1);
   const [flipped, setFlipped] = useState<boolean>(false);
@@ -19,7 +74,7 @@ export const MasterGames: React.FC = () => {
   const [toast, setToast] = useState<string | null>(null);
 
   const addXP = useAppStore(state => state.addXP);
-  const currentGame = games[selectedIdx] || MASTER_GAMES[0];
+  const currentGame = games[selectedIdx] || MASTER_GAMES_UI[0];
 
   // Fetch games from Worker API on mount with local fallback
   useEffect(() => {
@@ -51,7 +106,7 @@ export const MasterGames: React.FC = () => {
               }
               return null;
             }));
-            const filtered = fullGames.filter(g => g !== null) as MasterGame[];
+            const filtered = fullGames.filter(g => g !== null) as UIMasterGame[];
             if (filtered.length > 0) {
               setGames(filtered);
               return;
@@ -61,7 +116,7 @@ export const MasterGames: React.FC = () => {
       } catch {
         // Fallback
       }
-      setGames(MASTER_GAMES);
+      setGames(MASTER_GAMES_UI);
     };
     fetchGames();
   }, []);
