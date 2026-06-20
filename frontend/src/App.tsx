@@ -25,6 +25,8 @@ const EndgameUniversity = React.lazy(() => import('./pages/EndgameUniversity'));
 const MasterGameUniversity = React.lazy(() => import('./pages/MasterGameUniversity'));
 const OpeningUniversity = React.lazy(() => import('./pages/OpeningUniversity'));
 const TournamentPrep = React.lazy(() => import('./pages/TournamentPrep'));
+const PositionAnalysis = React.lazy(() => import('./pages/PositionAnalysis'));
+const GameImport = React.lazy(() => import('./pages/GameImport'));
 import { useAppStore } from './store/useAppStore';
 import { Storage } from './core/storage';
 import { Gamification } from './core/gamification';
@@ -70,6 +72,8 @@ const NAV_SECTIONS: NavSection[] = [
       { path: '/blindfold', label: 'Blindfold Lab', icon: '🙈' },
       { path: '/endgames', label: 'Endgame Drills', icon: '♔' },
       { path: '/tournament-prep', label: 'Tournament Prep', icon: '🏅' },
+      { path: '/analysis', label: 'Position Analysis', icon: '🔬' },
+      { path: '/import', label: 'Game Import', icon: '📋' },
     ],
   },
   {
@@ -337,6 +341,8 @@ const AppShell: React.FC = () => {
               <Route path="/master-games" element={<Suspense fallback={<PageSkeleton />}><MasterGameUniversity /></Suspense>} />
               <Route path="/opening-university" element={<Suspense fallback={<PageSkeleton />}><OpeningUniversity /></Suspense>} />
               <Route path="/tournament-prep" element={<Suspense fallback={<PageSkeleton />}><TournamentPrep /></Suspense>} />
+              <Route path="/analysis" element={<Suspense fallback={<PageSkeleton />}><PositionAnalysis /></Suspense>} />
+              <Route path="/import" element={<Suspense fallback={<PageSkeleton />}><GameImport /></Suspense>} />
               {/* Catch-all */}
               <Route path="*" element={<Dashboard />} />
             </Routes>

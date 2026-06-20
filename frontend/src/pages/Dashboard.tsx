@@ -186,25 +186,111 @@ export const Dashboard: React.FC = () => {
 
         {/* Right Column */}
         <div className="flex flex-col gap-4">
-          {/* Coach Insights */}
+          {/* Skill Radar Chart */}
           <Card hoverEffect={false}>
-            <h3 className="text-sm font-bold text-white mb-3">🎙️ Coach Insights</h3>
-            {profile.weakAreas.length > 0 ? (
-              <div className="text-xs text-slate-400 space-y-2">
-                <p className="font-semibold text-amber-400 mb-2">Areas to improve:</p>
-                {profile.weakAreas.slice(0, 4).map(w => (
-                  <div key={w} className="flex items-center gap-2.5 bg-amber-500/5 border border-amber-500/10 p-2.5 rounded-xl">
-                    <span>⚠️</span>
-                    <span className="capitalize font-medium">{w.replace('_', ' ')}</span>
+            <h3 className="text-sm font-bold text-white mb-3">📊 Skill Radar</h3>
+            {(() => {
+              const ratings = profile.trends;
+              const skills = [
+                { key: 'tactical', label: 'Tactical', icon: '⚔️' },
+                { key: 'strategic', label: 'Strategic', icon: '📈' },
+                { key: 'opening', label: 'Opening', icon: '🌳' },
+                { key: 'middlegame', label: 'Middlegame', icon: '♟️' },
+                { key: 'endgame', label: 'Endgame', icon: '👑' },
+                { key: 'calculation', label: 'Calculation', icon: '🧠' },
+                { key: 'visualization', label: 'Vision', icon: '👁️' },
+                { key: 'patternRecognition', label: 'Patterns', icon: '🔍' },
+              ];
+              const allRatings = AdaptiveEngine.getRatings();
+              const cx = 90, cy = 90, r = 70;
+              const n = skills.length;
+              const points = skills.map((s, i) => {
+                const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+                const rating = allRatings[s.key as keyof typeof allRatings] || 800;
+                const normalized = Math.min(1, Math.max(0.1, (rating - 400) / 1600));
+                return {
+                  x: cx + r * normalized * Math.cos(angle),
+                  y: cy + r * normalized * Math.sin(angle),
+                  lx: cx + (r + 14) * Math.cos(angle),
+                  ly: cy + (r + 14) * Math.sin(angle),
+                  rating,
+                  ...s,
+                };
+              });
+              const polygonPoints = points.map(p => `${p.x},${p.y}`).join(' ');
+              const gridLevels = [0.25, 0.5, 0.75, 1.0];
+
+              return (
+                <svg viewBox="0 0 180 180" className="w-full max-w-[200px] mx-auto">
+                  {/* Grid */}
+                  {gridLevels.map(level => (
+                    <polygon
+                      key={level}
+                      points={skills.map((_, i) => {
+                        const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+                        return `${cx + r * level * Math.cos(angle)},${cy + r * level * Math.sin(angle)}`;
+                      }).join(' ')}
+                      fill="none"
+                      stroke="rgba(255,255,255,0.06)"
+                      strokeWidth="0.5"
+                    />
+                  ))}
+                  {/* Axes */}
+                  {skills.map((_, i) => {
+                    const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+                    return (
+                      <line key={i} x1={cx} y1={cy}
+                        x2={cx + r * Math.cos(angle)} y2={cy + r * Math.sin(angle)}
+                        stroke="rgba(255,255,255,0.05)" strokeWidth="0.5"
+                      />
+                    );
+                  })}
+                  {/* Data polygon */}
+                  <polygon
+                    points={polygonPoints}
+                    fill="rgba(16,185,129,0.15)"
+                    stroke="#10b981"
+                    strokeWidth="1.5"
+                    className="animate-fadeIn"
+                  />
+                  {/* Data points */}
+                  {points.map((p, i) => (
+                    <circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#10b981" stroke="#06060b" strokeWidth="1" />
+                  ))}
+                  {/* Labels */}
+                  {points.map((p, i) => (
+                    <text key={i} x={p.lx} y={p.ly} textAnchor="middle" dominantBaseline="middle"
+                      fill="#94a3b8" fontSize="5" fontWeight="600">
+                      {p.label}
+                    </text>
+                  ))}
+                </svg>
+              );
+            })()}
+            {/* Condensed skill list */}
+            <div className="grid grid-cols-2 gap-1.5 mt-2">
+              {[
+                { label: 'Tactical', key: 'tactical' as const, icon: '⚔️' },
+                { label: 'Endgame', key: 'endgame' as const, icon: '👑' },
+                { label: 'Calculation', key: 'calculation' as const, icon: '🧠' },
+                { label: 'Opening', key: 'opening' as const, icon: '🌳' },
+              ].map(s => {
+                const rating = AdaptiveEngine.getRatings()[s.key];
+                return (
+                  <div key={s.key} className="flex items-center gap-1.5 text-[10px] bg-white/3 border border-white/5 rounded-lg px-2 py-1.5">
+                    <span>{s.icon}</span>
+                    <span className="text-slate-400 flex-1">{s.label}</span>
+                    <span className="font-bold font-mono text-emerald-400">{rating}</span>
                   </div>
-                ))}
+                );
+              })}
+            </div>
+            {profile.weakAreas.length > 0 && (
+              <div className="mt-3 p-2 bg-amber-500/5 border border-amber-500/10 rounded-lg">
+                <p className="text-[10px] text-amber-400 font-bold">💡 Focus: {profile.weakAreas.slice(0, 2).map(w => w.replace('_', ' ')).join(', ')}</p>
               </div>
-            ) : (
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Complete more puzzles and lessons to unlock personalized coaching insights.
-              </p>
             )}
-            <Button variant="ghost" size="sm" onClick={() => navigate('/aicoach')} className="mt-3 text-emerald-400 hover:text-emerald-300 p-0 hover:bg-transparent justify-start">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/aicoach')} className="mt-2 text-emerald-400 hover:text-emerald-300 p-0 hover:bg-transparent justify-start text-xs">
               View Full Report →
             </Button>
           </Card>
