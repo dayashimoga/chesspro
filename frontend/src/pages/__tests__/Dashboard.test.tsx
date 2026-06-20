@@ -31,6 +31,17 @@ vi.mock('../../core/adaptive-engine', () => ({
       overallRating: 1200,
       confidence: 0.85,
       weakAreas: ['calculation'],
+      trends: [],
+    }),
+    getRatings: () => ({
+      tactical: 1250,
+      strategic: 1000,
+      opening: 1100,
+      middlegame: 1050,
+      endgame: 950,
+      calculation: 850,
+      visualization: 900,
+      patternRecognition: 1150,
     }),
   },
 }));
