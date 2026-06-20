@@ -36,6 +36,11 @@ describe('useAppStore Zustand Store', () => {
         level: 1,
         puzzleRating: 800,
         streak: 0,
+        tacticalRating: 800,
+        strategicRating: 800,
+        openingRating: 800,
+        middlegameRating: 800,
+        endgameRating: 800,
       },
       completedLessons: [],
       activePuzzleId: null,
@@ -114,5 +119,12 @@ describe('useAppStore Zustand Store', () => {
     expect(state.user.puzzleRating).toBe(950);
     expect(state.user.streak).toBe(5);
     expect(state.completedLessons).toContain('lesson1');
+  });
+
+  it('should set and switch themes successfully', () => {
+    expect(useAppStore.getState().theme).toBe('dark');
+    useAppStore.getState().setTheme('tournament');
+    expect(useAppStore.getState().theme).toBe('tournament');
+    expect(localStorageMock.getItem('chessos_theme')).toBe('tournament');
   });
 });

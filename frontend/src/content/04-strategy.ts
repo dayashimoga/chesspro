@@ -133,6 +133,335 @@ export const strategyContent = {
         { type: 'quiz', question: 'Dynamic advantages should be...', options: ['Ignored', 'Converted to static advantages', 'Traded for material', 'Maintained forever'], answer: 1, explanation: 'Dynamic advantages (initiative, activity) are temporary and should be converted to lasting static advantages.' }
       ]
     }
+    ,
+    {
+      id: 'weak-squares-deep',
+      title: 'Weak Squares & Color Complexes',
+      difficulty: 'intermediate',
+      theory: `
+<h2>Weak Squares — The Foundation of Positional Play</h2>
+<p>A weak square is one that can no longer be defended by pawns. Once a pawn advances past a square, that square can become a permanent weakness exploitable by the opponent's pieces — especially knights.</p>
+
+<h3>Creating Weak Squares</h3>
+<ul>
+  <li><strong>Pawn advances:</strong> e.g., f3 weakens e3 and g3</li>
+  <li><strong>Pawn exchanges:</strong> Opening a file may expose weak squares</li>
+  <li><strong>Piece pressure:</strong> Forcing pawn moves that create weaknesses</li>
+</ul>
+
+<h3>Exploiting Weak Squares</h3>
+<p>Knights are the best pieces for exploiting weak squares because they can occupy outposts permanently. Bishops can also exploit weak color complexes — if your opponent has weakened all squares of one color, your bishop on that color becomes dominant.</p>
+
+<h3>Color Complex Weakness</h3>
+<p>When multiple squares of the same color are weak (e.g., after trading the dark-squared bishop and pushing pawns off dark squares), the remaining bishop of that color for the opponent becomes "bad" while yours becomes dominant.</p>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Nimzowitsch's Rule</div>
+  <p>"First restrain, then blockade, then destroy." When you identify a weakness, restrain the opponent's ability to eliminate it, blockade it with a piece (ideally a knight), then attack it.</p>
+</div>
+`,
+      examples: [
+        { fen: 'r1bq1rk1/pp2ppbp/2np2p1/8/2BNP3/2N1B3/PPP2PPP/R2Q1RK1 w - - 0 9', title: 'Weak d5 Square', description: 'Black has weakened d5 with ...d6 and ...g6. White can plant a knight on d5.' },
+        { fen: 'r1bq1rk1/ppp2pp1/2n1p2p/3pP3/3P1B2/2N2N2/PPP2PPP/R2QR1K1 w - - 0 9', title: 'Dark Square Weakness', description: 'After exchanging the dark-squared bishop, all of Black\'s dark squares are vulnerable.' }
+      ],
+      exercises: [
+        { type: 'quiz', question: 'What piece is best at exploiting weak squares?', options: ['Queen', 'Rook', 'Knight', 'Bishop'], answer: 2, explanation: 'Knights are ideal for exploiting weak squares because they can permanently occupy outposts that can\'t be attacked by pawns.' },
+        { type: 'quiz', question: 'A "color complex" weakness occurs when...', options: ['You lose your queen', 'Multiple squares of one color are weak', 'Pawns are doubled', 'The king is exposed'], answer: 1, explanation: 'A color complex weakness means multiple squares of the same color have become permanently weak, often after trading the bishop of that color.' }
+      ]
+    },
+    {
+      id: 'bishop-pair',
+      title: 'The Bishop Pair Advantage',
+      difficulty: 'intermediate',
+      theory: `
+<h2>The Power of Two Bishops</h2>
+<p>The two bishops together are stronger than bishop + knight or two knights, especially in open positions. Steinitz estimated the bishop pair as worth approximately half a pawn extra.</p>
+
+<h3>Why the Bishop Pair is Strong</h3>
+<ul>
+  <li><strong>Coverage:</strong> Together they control squares of both colors</li>
+  <li><strong>Long diagonals:</strong> In open positions, bishops dominate from distance</li>
+  <li><strong>Coordination:</strong> They support each other and create mating patterns</li>
+  <li><strong>Endgame power:</strong> The bishop pair is especially strong in endgames with pawns on both sides</li>
+</ul>
+
+<h3>When to Trade a Bishop</h3>
+<p>Trade one of your opponent's bishops if:</p>
+<ul>
+  <li>The position is becoming closed (knights > bishops)</li>
+  <li>You can get the bishop pair yourself</li>
+  <li>The traded bishop was particularly active</li>
+</ul>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Fischer's View</div>
+  <p>"I always liked the bishop pair. The two bishops can create a deadly crossfire that is hard to defend against." — Bobby Fischer</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'The bishop pair is estimated to be worth...', options: ['Nothing extra', 'Half a pawn extra', 'A full pawn extra', 'Two pawns extra'], answer: 1, explanation: 'Steinitz and modern analysis suggest the bishop pair is worth approximately half a pawn in open positions.' },
+        { type: 'quiz', question: 'In what type of position is the bishop pair strongest?', options: ['Closed positions', 'Symmetric positions', 'Open positions', 'Endgames without pawns'], answer: 2, explanation: 'In open positions, bishops have long diagonals and maximum range, making the pair most powerful.' }
+      ]
+    },
+    {
+      id: 'minority-attack',
+      title: 'The Minority Attack',
+      difficulty: 'advanced',
+      theory: `
+<h2>The Minority Attack</h2>
+<p>A minority attack uses fewer pawns (typically 2) against more (typically 3) to create weaknesses in the opponent's pawn structure. It's one of the most important strategic concepts in chess.</p>
+
+<h3>The Classic b4-b5 Break</h3>
+<p>In the Queen's Gambit structures (Carlsbad structure), White often plays a4-b4-b5 to attack Black's c6-d5 pawn chain. After b5 cxb5, Black gets an isolated c-pawn or backward c-pawn, which becomes a long-term target.</p>
+
+<h3>Steps of the Minority Attack</h3>
+<ol>
+  <li>Secure the kingside — ensure your king is safe</li>
+  <li>Place a rook on the b-file</li>
+  <li>Advance the a and b pawns</li>
+  <li>Exchange with bxc6 or wait for ...cxb5</li>
+  <li>Target the resulting weak pawn</li>
+</ol>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Patience is Key</div>
+  <p>The minority attack is a long-term plan. Don't rush the pawn advance — prepare it carefully and be ready to switch plans if the opponent counter-attacks on the other wing.</p>
+</div>
+`,
+      examples: [
+        { fen: 'r1bq1rk1/pp1nbppp/2p1pn2/3p4/2PP4/2NBPN2/PP3PPP/R1BQ1RK1 w - - 0 8', title: 'Carlsbad Structure', description: 'The typical Carlsbad pawn structure where White plays a minority attack with b4-b5.' }
+      ],
+      exercises: [
+        { type: 'quiz', question: 'A minority attack typically involves...', options: ['4 pawns vs 3', '2 pawns vs 3', '1 pawn vs 2', 'Sacrificing a pawn'], answer: 1, explanation: 'A minority attack uses 2 pawns against 3 to create structural weaknesses.' }
+      ]
+    },
+    {
+      id: 'piece-exchanges',
+      title: 'The Art of Piece Exchanges',
+      difficulty: 'advanced',
+      theory: `
+<h2>When to Exchange Pieces</h2>
+<p>Knowing when to exchange and when to maintain pieces is a crucial skill. Wrong exchanges can transform a winning position into a draw or even a loss.</p>
+
+<h3>Exchange When:</h3>
+<ul>
+  <li>You have a material advantage — fewer pieces = easier to convert</li>
+  <li>Your opponent has an active piece that you can eliminate</li>
+  <li>Exchanging leads to a favorable pawn structure</li>
+  <li>You are under attack — exchanges reduce attacking potential</li>
+  <li>You want to reach a winning endgame</li>
+</ul>
+
+<h3>Avoid Exchanging When:</h3>
+<ul>
+  <li>You have the initiative — more pieces = more attacking chances</li>
+  <li>Your pieces are more active than the opponent's</li>
+  <li>The exchange gives your opponent open lines</li>
+  <li>You have a space advantage — cramped positions are harder to hold with more pieces</li>
+</ul>
+
+<h3>The Capablanca Method</h3>
+<p>Capablanca was the master of simplification. He would exchange the "right" pieces to reach technically won endgames. The key: exchange your opponent's active pieces and keep your strong ones.</p>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Exchange Your Opponent's Best Piece</div>
+  <p>Identify your opponent's best piece — the one creating the most problems — and exchange it. This often transforms the position dramatically.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'When ahead in material, you should generally...', options: ['Avoid all exchanges', 'Exchange pieces to simplify', 'Only exchange pawns', 'Keep all pieces on the board'], answer: 1, explanation: 'When ahead in material, exchanging pieces (not pawns) makes the advantage easier to convert.' },
+        { type: 'quiz', question: 'When should you avoid exchanges?', options: ['When you are under attack', 'When you have the initiative', 'When your opponent is passive', 'When you are ahead in material'], answer: 1, explanation: 'When you have the initiative, keep pieces on the board to maintain attacking chances. More pieces = more threats.' }
+      ]
+    },
+    {
+      id: 'restriction-technique',
+      title: 'Restriction & Prophylactic Thinking',
+      difficulty: 'advanced',
+      theory: `
+<h2>The Art of Restriction</h2>
+<p>Restriction means limiting your opponent's pieces and pawns from achieving their ideal positions. It's the first step of Nimzowitsch's famous "restrain, blockade, destroy" principle.</p>
+
+<h3>Methods of Restriction</h3>
+<ul>
+  <li><strong>Pawn chains:</strong> Control key squares to prevent piece maneuvers</li>
+  <li><strong>Piece placement:</strong> A knight on e5 restricts the bishop on c8</li>
+  <li><strong>Prophylactic moves:</strong> Small preventing moves (h3, a3) that stop counterplay</li>
+  <li><strong>Control of open files:</strong> Occupy the file to prevent rook activity</li>
+</ul>
+
+<h3>Petrosian's Prophylaxis</h3>
+<p>Petrosian would ask three questions before every move:</p>
+<ol>
+  <li>What is my opponent threatening?</li>
+  <li>What is my opponent's ideal plan?</li>
+  <li>How can I prevent it without worsening my position?</li>
+</ol>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 "Do Nothing" Moves</div>
+  <p>Sometimes the best strategy is a quiet move that improves your position while preventing your opponent's plans. These "do nothing" moves are often the hardest to find but the most effective.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'The three steps of Nimzowitsch\'s principle are...', options: ['Attack, defend, draw', 'Develop, attack, checkmate', 'Restrain, blockade, destroy', 'Open, invade, convert'], answer: 2, explanation: 'Nimzowitsch\'s famous principle: first restrain the opponent\'s counterplay, then blockade their weaknesses, then destroy them.' }
+      ]
+    },
+    {
+      id: 'pawn-majority',
+      title: 'Pawn Majorities & Breakthroughs',
+      difficulty: 'advanced',
+      theory: `
+<h2>Pawn Majority Strategy</h2>
+<p>A pawn majority (more pawns than your opponent on one side of the board) is a strategic asset because it can create a passed pawn.</p>
+
+<h3>Healthy vs Unhealthy Majority</h3>
+<ul>
+  <li><strong>Healthy majority:</strong> All pawns on adjacent files, no doubled pawns</li>
+  <li><strong>Unhealthy majority:</strong> Doubled pawns, isolated pawns, or backward pawns in the majority</li>
+</ul>
+
+<h3>Using the Majority</h3>
+<p>Advance the majority to create a passed pawn. The key technical rule: advance the pawn that does NOT have an opponent directly in front of it first. This prevents blockade.</p>
+
+<h3>Queenside Majority</h3>
+<p>A queenside majority is generally more valuable because the king usually castles kingside, making it harder to stop a queenside passed pawn.</p>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Botvinnik's Rule</div>
+  <p>"A queenside pawn majority is a valuable endgame asset because the king is far away from the passed pawn." — Mikhail Botvinnik</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'When advancing a pawn majority, which pawn should you push first?', options: ['The one closest to the center', 'The one WITHOUT an opponent directly ahead', 'The one on the edge', 'The one already most advanced'], answer: 1, explanation: 'Push the pawn that has no direct opponent first — this prevents blockade and creates a passed pawn more efficiently.' }
+      ]
+    },
+    {
+      id: 'blockade-technique',
+      title: 'Blockade Strategy',
+      difficulty: 'advanced',
+      theory: `
+<h2>The Blockade</h2>
+<p>A blockade means placing a piece (ideally a knight) directly in front of an enemy passed pawn to stop it from advancing. The blockading piece gains tremendous power because it sits on a permanently secure square.</p>
+
+<h3>The Ideal Blockader</h3>
+<ul>
+  <li><strong>Knight:</strong> The best blockader — it radiates power in all directions while stopping the pawn</li>
+  <li><strong>Bishop:</strong> Good blockader if it controls important diagonals from the square</li>
+  <li><strong>King:</strong> Excellent blockader in the endgame</li>
+  <li><strong>Rook:</strong> Worst blockader — its long-range power is wasted on blockading duty</li>
+</ul>
+
+<h3>Breaking a Blockade</h3>
+<p>To break a blockade, exchange the blockading piece. Use piece pressure to force the blockader away, or create a second threat elsewhere.</p>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Nimzowitsch's Legacy</div>
+  <p>Nimzowitsch wrote extensively about blockade in "My System." His key insight: the blockader doesn't just stop the pawn — it becomes a powerful piece because the pawn underneath it provides a natural anchor.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'The best piece for blockading a passed pawn is usually...', options: ['Queen', 'Rook', 'Bishop', 'Knight'], answer: 3, explanation: 'The knight is the ideal blockader — it radiates power in all directions while sitting on a secure square in front of the pawn.' }
+      ]
+    },
+    {
+      id: 'good-knight-bad-bishop',
+      title: 'Good Knight vs Bad Bishop',
+      difficulty: 'advanced',
+      theory: `
+<h2>Knight Superiority Over Bishop</h2>
+<p>While bishops are generally considered slightly better than knights (especially in open positions), there are many positions where the knight clearly dominates.</p>
+
+<h3>When Knight > Bishop</h3>
+<ul>
+  <li><strong>Closed positions:</strong> Pawns block bishop diagonals, knight hops over</li>
+  <li><strong>Central outposts:</strong> A knight on a secure central square dominates</li>
+  <li><strong>Same-color pawns:</strong> If an opponent has pawns on the bishop's color</li>
+  <li><strong>Both flanks engaged:</strong> Knight can reach both sides of the board</li>
+</ul>
+
+<h3>The Bad Bishop</h3>
+<p>A bishop blocked by its own pawns (most pawns on the same color as the bishop) is "bad." Ways to deal with a bad bishop:</p>
+<ul>
+  <li>Trade it for the opponent's knight or good bishop</li>
+  <li>Place it outside the pawn chain (e.g., Bc8-a6 in the French Defense)</li>
+  <li>Change the pawn structure to free the bishop</li>
+</ul>
+`,
+      exercises: [
+        { type: 'quiz', question: 'A "bad" bishop is one that...', options: ['Has been recently moved', 'Is blocked by its own pawns', 'Is on the edge of the board', 'Has no pawns to defend'], answer: 1, explanation: 'A bad bishop is blocked by its own pawns on the same color squares, limiting its mobility and influence.' }
+      ]
+    },
+    {
+      id: 'centralization',
+      title: 'The Principle of Centralization',
+      difficulty: 'intermediate',
+      theory: `
+<h2>Centralization — Control the Center</h2>
+<p>Pieces in the center control the maximum number of squares and can be redeployed to either flank quickly. Centralization is one of the most fundamental strategic principles.</p>
+
+<h3>Piece Centralization</h3>
+<ul>
+  <li><strong>Knights:</strong> A knight on e4 or d5 controls 8 squares; on a1 it controls only 2</li>
+  <li><strong>Bishops:</strong> A bishop on e4 controls both long diagonals</li>
+  <li><strong>Queen:</strong> A centralized queen is powerful but can be attacked</li>
+  <li><strong>King (endgame):</strong> In the endgame, centralize the king — it becomes a fighting piece</li>
+</ul>
+
+<h3>Central Pawn Control</h3>
+<p>The classical ideal is e4+d4 (or e5+d5 for Black), but hypermodern theory shows you can also control the center with pieces while letting the opponent overextend with pawns.</p>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Steinitz's Principle</div>
+  <p>"The right to attack belongs to the side with a positional advantage." Centralized pieces give you the positional advantage that justifies an attack.</p>
+</div>
+`,
+      examples: [
+        { fen: 'r1bqkb1r/pppppppp/2n2n2/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3', title: 'Classical Center', description: 'White\'s pawns on d4 and e4 form the ideal classical center, controlling key squares.' }
+      ],
+      exercises: [
+        { type: 'quiz', question: 'A knight on d5 controls how many squares?', options: ['4', '6', '8', '12'], answer: 2, explanation: 'A centralized knight controls up to 8 squares, making it maximally powerful.' },
+        { type: 'quiz', question: 'In the endgame, the king should...', options: ['Stay safe in the corner', 'Be centralized', 'Protect the rook', 'Stay behind pawns'], answer: 1, explanation: 'In the endgame, the king becomes a fighting piece and should be centralized to support pawns and attack the opponent\'s position.' }
+      ]
+    },
+    {
+      id: 'positional-evaluation',
+      title: 'Positional Evaluation Checklist',
+      difficulty: 'expert',
+      theory: `
+<h2>How to Evaluate Any Position</h2>
+<p>Strong players can assess a position quickly using a systematic checklist. Master this, and you'll always know who stands better and what plans to pursue.</p>
+
+<h3>The Evaluation Checklist</h3>
+<ol>
+  <li><strong>Material:</strong> Count the pieces — who has more? Any imbalances?</li>
+  <li><strong>King Safety:</strong> Are both kings safe? Any attacking chances?</li>
+  <li><strong>Pawn Structure:</strong> Weak pawns? Passed pawns? Pawn islands?</li>
+  <li><strong>Piece Activity:</strong> Which pieces are active? Which are passive?</li>
+  <li><strong>Space:</strong> Who controls more territory?</li>
+  <li><strong>Development:</strong> (In the opening) Who is further developed?</li>
+  <li><strong>Initiative:</strong> Who is dictating the play?</li>
+  <li><strong>Files/Diagonals:</strong> Open files for rooks? Long diagonals for bishops?</li>
+</ol>
+
+<h3>Making a Plan</h3>
+<p>After evaluating, identify the most important imbalance and create a plan around it. For example:</p>
+<ul>
+  <li>If you have a better structure → aim for an endgame</li>
+  <li>If you have more piece activity → attack before the advantage fades</li>
+  <li>If you have a space advantage → maneuver pieces and create threats on both flanks</li>
+  <li>If you have a passed pawn → support it and push for promotion</li>
+</ul>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Silman's Imbalance Theory</div>
+  <p>Every chess position contains imbalances: material, piece activity, pawn structure, space, initiative. Identify the key imbalance and build your plan around it. Don't play random moves — every move should serve the plan dictated by the position's imbalances.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'The first thing to check when evaluating a position is...', options: ['Tactics', 'Material', 'King safety', 'Pawn structure'], answer: 1, explanation: 'Material is the most concrete factor — always check material balance first before evaluating positional elements.' },
+        { type: 'quiz', question: 'If you have a space advantage, you should...', options: ['Trade all pieces', 'Maneuver and create threats on both flanks', 'Sacrifice material', 'Offer a draw'], answer: 1, explanation: 'A space advantage allows you to maneuver freely. Use it to create threats on both flanks, stretching the opponent\'s defense.' }
+      ]
+    }
   ]
 };
 

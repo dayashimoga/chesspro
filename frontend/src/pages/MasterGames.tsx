@@ -5,6 +5,8 @@ import { VariationExplorer } from '../components/VariationExplorer';
 import { Chess } from 'chess.js';
 import { ALL_MASTER_GAMES, MasterGame } from '../content/master-games-db';
 import { useAppStore } from '../store/useAppStore';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 export interface MoveDetails {
   move: string;
@@ -232,42 +234,40 @@ export const MasterGames: React.FC = () => {
     <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Master Game University</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500 font-mono">Master Game University</span>
           <h2 className="text-2xl font-black text-white font-serif">Master Game Study System</h2>
         </div>
 
         <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl gap-1">
-          <button
+          <Button
             onClick={() => setPlayMode('study')}
-            className={`py-1 px-3.5 text-xs font-bold rounded-lg transition-all ${
-              playMode === 'study' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
-            }`}
+            variant={playMode === 'study' ? 'primary' : 'ghost'}
+            size="sm"
           >
             Study Mode
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setPlayMode('guess')}
-            className={`py-1 px-3.5 text-xs font-bold rounded-lg transition-all ${
-              playMode === 'guess' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
-            }`}
+            variant={playMode === 'guess' ? 'primary' : 'ghost'}
+            size="sm"
           >
             Guess Move Mode
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setShowVariations(!showVariations)}
-            className={`py-1 px-3.5 text-xs font-bold rounded-lg transition-all ${
-              showVariations ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'text-slate-400'
-            }`}
+            variant={showVariations ? 'primary' : 'ghost'}
+            size="sm"
+            className="flex items-center gap-1.5"
           >
             🌳 Tree View
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Game list sidebar */}
         <div className="flex flex-col gap-3">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">Game Library</span>
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1 font-mono">Game Library</span>
           <div className="max-h-[380px] overflow-y-auto flex flex-col gap-2 pr-1 scrollbar-thin">
             {games.map((g, idx) => (
               <button
@@ -279,18 +279,18 @@ export const MasterGames: React.FC = () => {
               >
                 <div className="flex justify-between items-center w-full">
                   <h4 className="font-bold text-xs text-white leading-tight">{g.white} vs {g.black}</h4>
-                  <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded font-bold text-slate-400">
+                  <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded font-bold text-slate-400 font-mono">
                     {g.result}
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1">{g.event} • {g.date}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-semibold">{g.event} • {g.date}</p>
               </button>
             ))}
           </div>
         </div>
 
         {/* Center: Board */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5">
+        <Card className="flex flex-col gap-4 items-center justify-center p-6" hoverEffect={false}>
           <Board
             fen={currentFen}
             interactive={playMode === 'guess'}
@@ -303,23 +303,23 @@ export const MasterGames: React.FC = () => {
               🎯 {guessMsg}
             </div>
           ) : (
-            <div className="text-xs text-slate-400 font-mono mt-2 bg-[#06060b] px-3 py-1 rounded-full border border-white/5 max-w-full truncate">
+            <div className="text-xs text-slate-400 font-mono mt-2 bg-[#06060b] px-3 py-1 rounded-full border border-white/5 max-w-full truncate font-semibold">
               {currentGame.white} vs {currentGame.black} • Move {currentMoveIdx + 1}/{currentGame.moves.length}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Right Panel: Replay Controls & Commentaries */}
         <div className="flex flex-col gap-4">
-          <div className="glass-panel p-5 rounded-2xl border border-white/5 flex flex-col gap-3">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Coach Commentary</span>
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl text-xs text-slate-300 leading-normal min-h-[100px]">
+          <Card className="flex flex-col gap-3" hoverEffect={false}>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block font-mono">Coach Commentary</span>
+            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl text-xs text-slate-300 leading-normal min-h-[100px] font-semibold">
               <strong className="block text-white mb-1">
                 Move {currentMoveIdx + 1}: {currentGame.moves[currentMoveIdx]?.move || 'Start'} (Eval: {currentGame.moves[currentMoveIdx]?.eval || 'N/A'})
               </strong>
               {currentGame.moves[currentMoveIdx]?.comment || 'Study the opening development and pawn structure alignments of this master match.'}
             </div>
-          </div>
+          </Card>
 
           <ReplayPanel
             moves={currentGame.moves}
@@ -338,7 +338,7 @@ export const MasterGames: React.FC = () => {
       </div>
 
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-500/90 border border-emerald-400/30 px-5 py-3 rounded-xl shadow-2xl text-xs font-bold animate-fadeIn text-white">
+        <div className="fixed bottom-6 right-6 z-50 bg-emerald-500/90 border border-emerald-400/30 px-5 py-3 rounded-xl shadow-2xl text-xs font-bold animate-fadeIn text-white font-semibold">
           {toast}
         </div>
       )}

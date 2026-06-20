@@ -122,6 +122,230 @@ export const advancedContent = {
       exercises: [
         { type: 'quiz', question: 'When analyzing with an engine, you should first...', options: ['Turn on the engine immediately', 'Analyze on your own first', 'Skip to the endgame', 'Look at opening theory'], answer: 1, explanation: 'Always analyze on your own first, then check with the engine. This develops your analytical skills rather than creating dependency.' }
       ]
+    },
+    {
+      id: 'dynamic-vs-static',
+      title: 'Dynamic vs Static Advantages',
+      difficulty: 'expert',
+      theory: `
+<h2>Understanding Advantage Types</h2>
+<p>Every chess advantage falls into one of two categories, and understanding the difference is critical for correct decision-making.</p>
+
+<h3>Static Advantages (Permanent)</h3>
+<ul>
+  <li><strong>Material advantage:</strong> Extra pieces or pawns</li>
+  <li><strong>Better pawn structure:</strong> Fewer weaknesses, passed pawns</li>
+  <li><strong>Bishop pair:</strong> Long-term piece advantage</li>
+  <li><strong>Permanent outposts:</strong> Squares that can't be challenged</li>
+</ul>
+
+<h3>Dynamic Advantages (Temporary)</h3>
+<ul>
+  <li><strong>Development lead:</strong> More pieces in play (fades as opponent catches up)</li>
+  <li><strong>Initiative:</strong> Tempo advantage (fades if not converted)</li>
+  <li><strong>King safety imbalance:</strong> One king exposed (can be resolved)</li>
+  <li><strong>Piece activity:</strong> Better-placed pieces (opponent can regroup)</li>
+</ul>
+
+<h3>The Conversion Process</h3>
+<p>The art of chess strategy is converting dynamic advantages into static ones before they evaporate. A development lead should be converted into a structural advantage or material gain. Initiative should be converted into a lasting positional plus.</p>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Steinitz's Accumulation Theory</div>
+  <p>Small advantages accumulate. You don't need one big advantage — many small ones (slightly better structure + slightly more active pieces + slightly safer king) combine into a decisive advantage.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'A development lead is what type of advantage?', options: ['Static', 'Dynamic', 'Permanent', 'Material'], answer: 1, explanation: 'A development lead is dynamic — it fades as the opponent catches up. You must act quickly to convert it.' },
+        { type: 'quiz', question: 'To convert a dynamic advantage, you should...', options: ['Wait patiently', 'Act quickly before it fades', 'Exchange all pieces', 'Move your king to safety'], answer: 1, explanation: 'Dynamic advantages are temporary. You must act decisively to convert them into permanent (static) advantages.' }
+      ]
+    },
+    {
+      id: 'fortress-concepts',
+      title: 'Fortress & Drawing Techniques',
+      difficulty: 'expert',
+      theory: `
+<h2>The Fortress — Drawing From Inferior Positions</h2>
+<p>A fortress is a defensive setup that cannot be broken, even against a significant material advantage. Recognizing fortress patterns can save many "lost" games.</p>
+
+<h3>Common Fortress Types</h3>
+<ul>
+  <li><strong>Rook + pawn vs Queen:</strong> The rook stays close to the king, creating a drawing mechanism</li>
+  <li><strong>Wrong-color bishop + rook pawn:</strong> The bishop doesn't control the promotion square corner</li>
+  <li><strong>Opposite-colored bishops:</strong> The defender blockades on the opposite color</li>
+  <li><strong>Rook + bishop vs Rook:</strong> Theoretical draw with correct defense (Philidor position)</li>
+</ul>
+
+<h3>Creating a Fortress</h3>
+<ol>
+  <li>Identify if a fortress pattern exists in your position</li>
+  <li>Exchange attacking pieces to reach the fortress structure</li>
+  <li>Place your pieces on their fortress squares</li>
+  <li>Never deviate from the fortress unless forced</li>
+</ol>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Practical Importance</div>
+  <p>At the top level, fortress knowledge saves many half-points. Knowing when a position is theoretically drawn gives confidence to defend actively rather than passively surrendering.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'A fortress is...', options: ['An attacking formation', 'A defensive setup that cannot be broken', 'A pawn structure', 'An opening system'], answer: 1, explanation: 'A fortress is a defensive position that holds a draw even against a material advantage, because the opponent cannot make progress.' }
+      ]
+    },
+    {
+      id: 'opposite-color-bishops',
+      title: 'Opposite-Colored Bishop Strategies',
+      difficulty: 'expert',
+      theory: `
+<h2>Opposite-Colored Bishops — The Great Equalizer</h2>
+<p>Opposite-colored bishops (each side has a bishop on a different color) create unique dynamics that every advanced player must understand.</p>
+
+<h3>In the Middlegame: Attacking Advantage</h3>
+<p>With queens and rooks still on the board, opposite-colored bishops FAVOR the attacker because:</p>
+<ul>
+  <li>The defender's bishop cannot block the attacker's bishop</li>
+  <li>The attacker can create threats on squares the defender's bishop doesn't control</li>
+  <li>It's like playing with an extra piece on the attack</li>
+</ul>
+
+<h3>In the Endgame: Drawing Tendency</h3>
+<p>In pure bishop endgames (no other pieces), opposite-colored bishops strongly favor a draw because:</p>
+<ul>
+  <li>The defender can blockade on the opposite color</li>
+  <li>Even two extra pawns may not be enough to win</li>
+  <li>The defender's bishop covers squares the attacker's pawns need</li>
+</ul>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 The Rule of Two Pawns</div>
+  <p>In opposite-colored bishop endings, even a two-pawn advantage may not be enough to win. The defender places the bishop on the correct color and creates a blockade. However, if the pawns are far apart (both flanks), winning chances increase.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'In the middlegame, opposite-colored bishops favor...', options: ['The defender', 'The attacker', 'Neither side', 'The side with more pawns'], answer: 1, explanation: 'In the middlegame with queens and rooks, opposite-colored bishops favor the attacker because the defender\'s bishop cannot block the attacker\'s threats.' },
+        { type: 'quiz', question: 'In a pure opposite-colored bishop endgame, two extra pawns...', options: ['Always win', 'May not be enough to win', 'Guarantee a draw', 'Are meaningless'], answer: 1, explanation: 'Two extra pawns may not win if the defender can blockade on the right color. However, widely separated pawns give better winning chances.' }
+      ]
+    },
+    {
+      id: 'rook-endgame-mastery',
+      title: 'Rook Endgame Mastery',
+      difficulty: 'expert',
+      theory: `
+<h2>Rook Endgames — The Most Common Endgame</h2>
+<p>Approximately 50% of all endgames are rook endgames. Mastering them is essential for competitive chess.</p>
+
+<h3>Key Principles</h3>
+<ul>
+  <li><strong>Activity over material:</strong> An active rook is worth more than a passive rook + extra pawn</li>
+  <li><strong>King centralization:</strong> The king must be active in rook endgames</li>
+  <li><strong>Rook behind passed pawns:</strong> Place your rook behind passed pawns (yours or opponent's)</li>
+  <li><strong>7th rank:</strong> A rook on the 7th rank is enormously powerful</li>
+  <li><strong>Cut off the king:</strong> Use your rook to cut off the enemy king from the action</li>
+</ul>
+
+<h3>Critical Positions</h3>
+<ul>
+  <li><strong>Lucena Position:</strong> K+R+P vs K+R where the pawn side wins by "building the bridge"</li>
+  <li><strong>Philidor Position:</strong> The drawing technique — keep the rook on the 3rd rank, then check from behind</li>
+  <li><strong>Vancura Position:</strong> Drawing with rook pawn using lateral rook</li>
+</ul>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Tarrasch's Rule</div>
+  <p>"Rooks belong behind passed pawns." Whether it's your own passed pawn or your opponent's, place the rook behind it. Your rook gains space as your pawn advances; against the enemy's pawn, your rook gains mobility as the pawn advances.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'The most important principle in rook endgames is...', options: ['Material count', 'Rook activity', 'Pawn structure', 'King safety'], answer: 1, explanation: 'Activity is the most important factor in rook endgames. An active rook can be worth more than a passive rook plus an extra pawn.' },
+        { type: 'quiz', question: 'Where should you place your rook relative to a passed pawn?', options: ['In front of it', 'Behind it', 'Next to it', 'Anywhere'], answer: 1, explanation: 'Tarrasch\'s rule: rooks belong behind passed pawns, whether it\'s your own or the opponent\'s.' }
+      ]
+    },
+    {
+      id: 'practical-decision-making',
+      title: 'Practical Decision-Making at the Board',
+      difficulty: 'expert',
+      theory: `
+<h2>Making Better Decisions Under Pressure</h2>
+<p>Tournament chess requires making dozens of critical decisions under time pressure. Developing a systematic decision-making process improves accuracy.</p>
+
+<h3>The Candidate Moves Method (Kotov)</h3>
+<ol>
+  <li><strong>Identify candidates:</strong> List 3-5 promising moves</li>
+  <li><strong>Analyze each:</strong> Calculate the main line for each candidate</li>
+  <li><strong>Evaluate:</strong> Compare the resulting positions</li>
+  <li><strong>Choose:</strong> Select the move leading to the best position</li>
+  <li><strong>Verify:</strong> Double-check for blunders before playing</li>
+</ol>
+
+<h3>The Blunder-Check</h3>
+<p>Before making ANY move, perform a quick blunder-check:</p>
+<ul>
+  <li>Does my move leave any piece undefended?</li>
+  <li>Does my move allow a check, capture, or threat?</li>
+  <li>Am I forgetting about any of my opponent's pieces?</li>
+  <li>Is there a forcing sequence my opponent can play?</li>
+</ul>
+
+<h3>Clock Management</h3>
+<p>Spend time proportionally to the importance of the position:</p>
+<ul>
+  <li><strong>Known positions:</strong> Move quickly, save time</li>
+  <li><strong>Critical moments:</strong> Invest time — these moves decide the game</li>
+  <li><strong>Equal positions:</strong> Make reasonable moves at moderate speed</li>
+  <li><strong>Time trouble:</strong> Simplify, avoid complications, trust your instincts</li>
+</ul>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 The Two-Minute Rule</div>
+  <p>If you can't see a clear forced win, limit your think time to 2-3 minutes per move. Prolonged thinking rarely finds solutions that initial analysis missed, and it creates dangerous time pressure later.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'The Candidate Moves method starts with...', options: ['Calculating one move deeply', 'Listing 3-5 promising moves', 'Checking the clock', 'Evaluating the position'], answer: 1, explanation: 'The Candidate Moves method begins by identifying 3-5 promising moves, then analyzing each systematically before choosing.' },
+        { type: 'quiz', question: 'Before making any move, you should always...', options: ['Check the evaluation', 'Perform a blunder-check', 'Look at your opponent', 'Write the move down'], answer: 1, explanation: 'A quick blunder-check before every move prevents the most common cause of losses — overlooking simple tactics.' }
+      ]
+    },
+    {
+      id: 'competitive-mindset',
+      title: 'The Competitive Mindset',
+      difficulty: 'advanced',
+      theory: `
+<h2>Developing a Champion's Mindset</h2>
+<p>The difference between good players and great players often comes down to psychology and mental fortitude, not chess knowledge.</p>
+
+<h3>Before the Game</h3>
+<ul>
+  <li><strong>Preparation:</strong> Study your opponent's recent games and known weaknesses</li>
+  <li><strong>Physical readiness:</strong> Good sleep, proper nutrition, light exercise</li>
+  <li><strong>Mental warm-up:</strong> Solve a few puzzles to activate your chess brain</li>
+  <li><strong>Confidence:</strong> Remind yourself of your best games and training</li>
+</ul>
+
+<h3>During the Game</h3>
+<ul>
+  <li><strong>Stay in the present:</strong> Focus on the current position, not past mistakes</li>
+  <li><strong>Maintain objectivity:</strong> Evaluate honestly, don't fall in love with bad plans</li>
+  <li><strong>Manage emotions:</strong> Don't let frustration or excitement cloud judgment</li>
+  <li><strong>Use your opponent's time:</strong> Think during their turn</li>
+</ul>
+
+<h3>After the Game</h3>
+<ul>
+  <li><strong>Win or lose, analyze:</strong> Always review the game, ideally with your opponent</li>
+  <li><strong>Learn, don't blame:</strong> Focus on lessons, not excuses</li>
+  <li><strong>Recover mentally:</strong> Take a break before the next round</li>
+</ul>
+
+<div class="key-concept">
+  <div class="key-concept-title">💡 Kasparov's Philosophy</div>
+  <p>"Chess is mental torture." The best players embrace the difficulty and find motivation in the challenge. Every game is an opportunity to learn and grow stronger.</p>
+</div>
+`,
+      exercises: [
+        { type: 'quiz', question: 'During a game, the most important mental skill is...', options: ['Confidence', 'Objectivity', 'Aggression', 'Speed'], answer: 1, explanation: 'Objectivity is crucial — you must honestly evaluate the position and adjust your plans accordingly, not persist with flawed ideas.' },
+        { type: 'quiz', question: 'After losing a game, you should...', options: ['Stop playing for a week', 'Analyze the game to learn from mistakes', 'Ignore it and move on', 'Change your entire opening repertoire'], answer: 1, explanation: 'Always analyze lost games — they are your best learning opportunities. Find the critical moments and understand what went wrong.' }
+      ]
     }
   ]
 };

@@ -126,12 +126,12 @@ class _PlayAIPageState extends State<PlayAIPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Play vs AI')),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Spacer(),
+              const SizedBox(height: 20),
               Center(
                 child: Column(
                   children: [
@@ -254,7 +254,7 @@ class _PlayAIPageState extends State<PlayAIPage> {
                   ),
                 );
               }),
-              const Spacer(),
+              const SizedBox(height: 40),
 
               // Start button
               SizedBox(

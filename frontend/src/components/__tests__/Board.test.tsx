@@ -1,7 +1,7 @@
 // ChessOS — Board Component Unit Tests
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, createEvent } from '@testing-library/react';
 import { Board } from '../Board';
 
 describe('Board', () => {
@@ -10,6 +10,13 @@ describe('Board', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
+
+  const dispatchPointerEvent = (element: Element, type: 'pointerdown' | 'pointerup', clientX: number, clientY: number) => {
+    const event = type === 'pointerdown' ? createEvent.pointerDown(element) : createEvent.pointerUp(element);
+    Object.defineProperty(event, 'clientX', { value: clientX, enumerable: true });
+    Object.defineProperty(event, 'clientY', { value: clientY, enumerable: true });
+    fireEvent(element, event);
+  };
 
   it('renders starting position board successfully', () => {
     const { container } = render(<Board fen={startingFen} />);
@@ -69,17 +76,27 @@ describe('Board', () => {
   it('handles square clicks and triggers onSquareClick callback', () => {
     const onSquareClickMock = vi.fn();
     const { container } = render(
-      <Board fen={startingFen} onSquareClick={onSquareClickMock} interactive={true} />
+      <Board fen={startingFen} onSquareClick={onSquareClickMock} interactive={true} size={400} />
     );
 
-    // Click on e2 square (which is columns/files e = index 4, ranks 2 = index 6 from top (8-7-6-5-4-3-2-1))
-    // A simple way is to find the rect index corresponding to e2
-    // file 'e' is index 4, rank '2' is index 6. In a flat array of 64: rIdx * 8 + fIdx = 6 * 8 + 4 = 52
-    const rects = container.querySelectorAll('rect');
-    // First rect is background (index 0). Squares start from index 1.
-    // So flat index is 1 + 52 = 53
-    const e2Square = rects[53];
-    fireEvent.click(e2Square);
+    const svg = container.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    
+    vi.spyOn(svg!, 'getBoundingClientRect').mockReturnValue({
+      left: 0,
+      top: 0,
+      right: 400,
+      bottom: 400,
+      width: 400,
+      height: 400,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    } as DOMRect);
+
+    // e2 square: file 'e' (index 4) -> x = 4*50 + 25 = 225. rank '2' (index 6) -> y = 6*50 + 25 = 325.
+    dispatchPointerEvent(svg!, 'pointerdown', 225, 325);
+    dispatchPointerEvent(svg!, 'pointerup', 225, 325);
 
     expect(onSquareClickMock).toHaveBeenCalledWith('e2');
   });
@@ -87,17 +104,31 @@ describe('Board', () => {
   it('handles piece movement and triggers onMove callback', () => {
     const onMoveMock = vi.fn();
     const { container } = render(
-      <Board fen={startingFen} onMove={onMoveMock} interactive={true} />
+      <Board fen={startingFen} onMove={onMoveMock} interactive={true} size={400} />
     );
 
-    const rects = container.querySelectorAll('rect');
-    // Click on e2 (index 53)
-    const e2Square = rects[53];
-    fireEvent.click(e2Square);
+    const svg = container.querySelector('svg');
+    expect(svg).toBeInTheDocument();
 
-    // Click on e4 (file 'e' index 4, rank '4' index 4: 4 * 8 + 4 = 36. flat index: 37)
-    const e4Square = rects[37];
-    fireEvent.click(e4Square);
+    vi.spyOn(svg!, 'getBoundingClientRect').mockReturnValue({
+      left: 0,
+      top: 0,
+      right: 400,
+      bottom: 400,
+      width: 400,
+      height: 400,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    } as DOMRect);
+
+    // Press down and release on e2 (index 4, 6) -> x=225, y=325
+    dispatchPointerEvent(svg!, 'pointerdown', 225, 325);
+    dispatchPointerEvent(svg!, 'pointerup', 225, 325);
+
+    // Press down and release on e4 (index 4, 4) -> x=225, y=225
+    dispatchPointerEvent(svg!, 'pointerdown', 225, 225);
+    dispatchPointerEvent(svg!, 'pointerup', 225, 225);
 
     expect(onMoveMock).toHaveBeenCalledWith('e2', 'e4', 'e4');
   });
@@ -111,14 +142,75 @@ describe('Board', () => {
         onSquareClick={onSquareClickMock} 
         onMove={onMoveMock} 
         interactive={false} 
+        size={400}
       />
     );
 
-    const rects = container.querySelectorAll('rect');
-    const e2Square = rects[53];
-    fireEvent.click(e2Square);
+    const svg = container.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+
+    vi.spyOn(svg!, 'getBoundingClientRect').mockReturnValue({
+      left: 0,
+      top: 0,
+      right: 400,
+      bottom: 400,
+      width: 400,
+      height: 400,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    } as DOMRect);
+
+    dispatchPointerEvent(svg!, 'pointerdown', 225, 325);
+    dispatchPointerEvent(svg!, 'pointerup', 225, 325);
 
     expect(onSquareClickMock).not.toHaveBeenCalled();
     expect(onMoveMock).not.toHaveBeenCalled();
   });
+
+  it('supports right-click highlights and clears on left click', () => {
+    const { container } = render(<Board fen={startingFen} interactive={true} size={400} />);
+    const svg = container.querySelector('svg');
+    expect(svg).toBeInTheDocument();
+    
+    vi.spyOn(svg!, 'getBoundingClientRect').mockReturnValue({
+      left: 0,
+      top: 0,
+      right: 400,
+      bottom: 400,
+      width: 400,
+      height: 400,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    } as DOMRect);
+
+    // Simulate right-click (button: 2) on e2 (x: 225, y: 325)
+    const rightClickDown = createEvent.pointerDown(svg!);
+    Object.defineProperty(rightClickDown, 'button', { value: 2, enumerable: true });
+    Object.defineProperty(rightClickDown, 'clientX', { value: 225, enumerable: true });
+    Object.defineProperty(rightClickDown, 'clientY', { value: 325, enumerable: true });
+    fireEvent(svg!, rightClickDown);
+
+    const rightClickUp = createEvent.pointerUp(svg!);
+    Object.defineProperty(rightClickUp, 'button', { value: 2, enumerable: true });
+    Object.defineProperty(rightClickUp, 'clientX', { value: 225, enumerable: true });
+    Object.defineProperty(rightClickUp, 'clientY', { value: 325, enumerable: true });
+    fireEvent(svg!, rightClickUp);
+
+    // Expecting 1 user-drawn highlight rectangle
+    const highlightsAfterRightClick = container.querySelectorAll('rect[fill="rgba(245, 158, 11, 0.35)"]');
+    expect(highlightsAfterRightClick.length).toBe(1);
+
+    // Simulate left-click down to clear highlights
+    const leftClickDown = createEvent.pointerDown(svg!);
+    Object.defineProperty(leftClickDown, 'button', { value: 0, enumerable: true });
+    Object.defineProperty(leftClickDown, 'clientX', { value: 225, enumerable: true });
+    Object.defineProperty(leftClickDown, 'clientY', { value: 325, enumerable: true });
+    fireEvent(svg!, leftClickDown);
+
+    const highlightsCleared = container.querySelectorAll('rect[fill="rgba(245, 158, 11, 0.35)"]');
+    expect(highlightsCleared.length).toBe(0);
+  });
 });
+

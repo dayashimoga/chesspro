@@ -4,8 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ChessOS Pro — Premium Chess Mastery Platform</title>
-  <meta name="description" content="Master chess with interactive coaching, deliberate practice, calculations, blindfold training, endgame opposition, opening repertoire, and personalized AI mentoring." />
+  <meta name="description" content="Master chess with interactive coaching, 10,000+ puzzles, adaptive daily plans, interactive labs, blindfold training, endgame mastery, and personalized AI mentoring. Free cross-platform chess university." />
   <meta name="theme-color" content="#10b981" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ChessOS Pro" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="ChessOS Pro — Premium Chess Mastery Platform" />
+  <meta property="og:description" content="Complete chess learning ecosystem with adaptive coaching, interactive labs, and personalized daily training." />
+  <meta property="og:type" content="website" />
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -14,5 +23,14 @@
 <body class="bg-[#06060b] text-[#e2e8f0] font-sans antialiased overflow-x-hidden">
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+  <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>
+

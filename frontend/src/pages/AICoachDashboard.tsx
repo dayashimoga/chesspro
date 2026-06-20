@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import { Storage } from '../core/storage';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 export const AICoachDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const user = useAppStore(state => state.user);
   const completedLessons = useAppStore(state => state.completedLessons);
-  const setActivePage = useAppStore(state => state.setActivePage);
 
   // Analyze actual user weaknesses & strengths
   const analysis = Storage.analyzeWeaknesses();
@@ -42,12 +45,21 @@ export const AICoachDashboard: React.FC = () => {
     fetchStats();
   }, [user]);
 
+  // Extract Elo sub-ratings from Zustand store user model
+  const subRatings = {
+    tactics: user.tacticalRating || 800,
+    openings: user.openingRating || 800,
+    strategy: user.strategicRating || 800,
+    middlegame: user.middlegameRating || 800,
+    endgame: user.endgameRating || 800,
+  };
+
   const weaknesses = [
-    { id: 'calculation', name: 'Tactical Calculation', score: Math.round(stats.tacticalAccuracy * 100), desc: 'Deep visualization & variations' },
-    { id: 'endgames', name: 'Endgame Opposition', score: Math.round(stats.endgameKnowledge * 100), desc: 'Zugzwang, Lucena, Philidor' },
-    { id: 'foundations', name: 'King Safety Assessment', score: Math.round(stats.puzzleAccuracy * 100), desc: 'Evaluating check threats & defense' },
-    { id: 'openings', name: 'Opening Principles', score: Math.round(stats.openingKnowledge * 100), desc: 'Central control & developmental tempo' },
-    { id: 'deflection', name: 'Deflection Recognition', score: Math.round(stats.strategicUnderstanding * 100), desc: 'Luring defenders away from key tasks' }
+    { id: 'calculation', name: 'Tactical Calculation', score: Math.round(stats.tacticalAccuracy * 100), desc: 'Deep visualization & variations', rating: subRatings.tactics },
+    { id: 'endgames', name: 'Endgame Opposition', score: Math.round(stats.endgameKnowledge * 100), desc: 'Zugzwang, Lucena, Philidor', rating: subRatings.endgame },
+    { id: 'foundations', name: 'King Safety Assessment', score: Math.round(stats.puzzleAccuracy * 100), desc: 'Evaluating check threats & defense', rating: subRatings.strategy },
+    { id: 'openings', name: 'Opening Principles', score: Math.round(stats.openingKnowledge * 100), desc: 'Central control & developmental tempo', rating: subRatings.openings },
+    { id: 'deflection', name: 'Deflection Recognition', score: Math.round(stats.strategicUnderstanding * 100), desc: 'Luring defenders away from key tasks', rating: subRatings.middlegame }
   ];
 
   // Map weaknesses to tailored suggestions
@@ -99,10 +111,36 @@ export const AICoachDashboard: React.FC = () => {
 
   const dailySchedule = getDailySchedule();
 
+  // Radar Chart Trigonometry helper
+  const getRadarPoints = () => {
+    const cx = 150;
+    const cy = 150;
+    const r = 90;
+    const values = [
+      subRatings.tactics,
+      subRatings.openings,
+      subRatings.strategy,
+      subRatings.middlegame,
+      subRatings.endgame,
+    ];
+    return values.map((val, i) => {
+      const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+      const normalized = Math.max(0.15, Math.min(1.0, (val - 400) / 1600)); // Range: 400 to 2000 Elo
+      const x = cx + r * normalized * Math.cos(angle);
+      const y = cy + r * normalized * Math.sin(angle);
+      return `${x},${y}`;
+    }).join(' ');
+  };
+
+  const cx = 150;
+  const cy = 150;
+  const r = 90;
+  const labels = ['Tactics', 'Openings', 'Strategy', 'Middlegame', 'Endgame'];
+
   return (
     <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-500/15 via-indigo-500/10 to-transparent border border-white/5 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-gradient-to-r from-emerald-500/15 via-indigo-500/10 to-transparent border border-white/5 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-2xl shadow-glow">
             🤖
@@ -112,31 +150,123 @@ export const AICoachDashboard: React.FC = () => {
             <p className="text-xs text-slate-400 mt-1">Analyzing playing habits, tactical errors, and calculation depth for {user.email}.</p>
           </div>
         </div>
-        <div className="bg-[#0c0c14] border border-white/5 py-2 px-4 rounded-xl text-center text-xs font-mono text-emerald-400 font-semibold">
+        <div className="bg-[#0c0c14] border border-white/5 py-2 px-4 rounded-xl text-center text-xs font-mono text-emerald-400 font-semibold shadow-inner">
           AI Status: Ready & Syncing
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Weakness Profiler */}
-        <div className="glass-panel p-5 rounded-2xl flex flex-col gap-4 border border-white/5">
+        
+        {/* Radar Skill Chart Visualizer */}
+        <Card className="flex flex-col gap-4 items-center justify-center p-5" hoverEffect={false}>
+          <div className="w-full text-left">
+            <span className="text-[10px] uppercase font-bold text-slate-500 font-mono">Visual Profiler</span>
+            <h3 className="text-sm font-bold text-white mt-0.5">Sub-Rating Radar Chart</h3>
+          </div>
+          
+          {/* SVG Radar Chart */}
+          <div className="relative w-[300px] h-[300px] my-2 select-none">
+            <svg width="300" height="300" className="overflow-visible">
+              {/* Background circular grids */}
+              {[0.2, 0.4, 0.6, 0.8, 1.0].map((scale, sIdx) => {
+                const points = Array.from({ length: 5 }).map((_, i) => {
+                  const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+                  const x = cx + r * scale * Math.cos(angle);
+                  const y = cy + r * scale * Math.sin(angle);
+                  return `${x},${y}`;
+                }).join(' ');
+                return (
+                  <polygon
+                    key={sIdx}
+                    points={points}
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.05)"
+                    strokeWidth="1"
+                  />
+                );
+              })}
+
+              {/* Grid spokes */}
+              {Array.from({ length: 5 }).map((_, i) => {
+                const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+                const x = cx + r * Math.cos(angle);
+                const y = cy + r * Math.sin(angle);
+                return (
+                  <line
+                    key={i}
+                    x1={cx}
+                    y1={cy}
+                    x2={x}
+                    y2={y}
+                    stroke="rgba(255, 255, 255, 0.05)"
+                    strokeWidth="1.5"
+                  />
+                );
+              })}
+
+              {/* Data Polygon overlay */}
+              <polygon
+                points={getRadarPoints()}
+                fill="rgba(16, 185, 129, 0.15)"
+                stroke="#10b981"
+                strokeWidth="2"
+                className="transition-all duration-500"
+              />
+
+              {/* Radar labels */}
+              {labels.map((label, i) => {
+                const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+                const labelDist = r + 20;
+                const x = cx + labelDist * Math.cos(angle);
+                const y = cy + labelDist * Math.sin(angle) + 4; // slight vertical correction
+                let anchor: 'inherit' | 'end' | 'start' | 'middle' = 'middle';
+                if (Math.cos(angle) > 0.1) anchor = 'start';
+                if (Math.cos(angle) < -0.1) anchor = 'end';
+                return (
+                  <text
+                    key={i}
+                    x={x}
+                    y={y}
+                    fill="#94a3b8"
+                    fontSize="10"
+                    fontWeight="bold"
+                    textAnchor={anchor}
+                    className="font-mono font-bold"
+                  >
+                    {label}
+                  </text>
+                );
+              })}
+            </svg>
+          </div>
+
+          <div className="text-[10px] text-slate-500 text-center font-mono mt-1 font-semibold leading-relaxed">
+            Ratings span from 400 to 2000 Elo. Solves calibrate skill vectors automatically.
+          </div>
+        </Card>
+
+        {/* Skill Profiler Detail List */}
+        <Card className="flex flex-col gap-4 p-5" hoverEffect={false}>
           <div>
-            <span className="text-[10px] uppercase font-bold text-slate-500">Skill Profiler</span>
+            <span className="text-[10px] uppercase font-bold text-slate-500 font-mono">Skill Profiler</span>
             <h3 className="text-sm font-bold text-white mt-0.5">Weakness & Strengths Tracker</h3>
           </div>
           <div className="flex flex-col gap-3.5">
             {weaknesses.map((w, idx) => (
-              <div key={idx} className="flex flex-col gap-1.5">
+              <div key={idx} className="flex flex-col gap-1.5 font-semibold">
                 <div className="flex justify-between items-center text-xs">
                   <div>
-                    <span className="text-slate-300 font-semibold block">{w.name}</span>
-                    <span className="text-[9px] text-slate-500 block mt-0.5">{w.desc}</span>
+                    <span className="text-slate-300 font-bold block">{w.name}</span>
+                    <span className="text-[9px] text-slate-500 block mt-0.5 font-normal">{w.desc}</span>
                   </div>
-                  <span className={`font-mono font-bold ${
-                    w.score < 50 ? 'text-red-400' : w.score < 75 ? 'text-amber-400' : 'text-emerald-400'
-                  }`}>
-                    {w.score}%
-                  </span>
+                  <div className="text-right">
+                    <span className={`font-mono font-bold text-xs block ${
+                      w.score < 50 ? 'text-red-400' : w.score < 75 ? 'text-amber-400' : 'text-emerald-400'
+                    }`}>
+                      {w.score}%
+                    </span>
+                    <span className="text-[8.5px] font-mono text-slate-500 font-bold block">{w.rating} Elo</span>
+                  </div>
                 </div>
                 <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/5">
                   <div 
@@ -149,29 +279,29 @@ export const AICoachDashboard: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Personalized Recommendations */}
-        <div className="glass-panel p-5 rounded-2xl flex flex-col gap-4 border border-white/5">
+        <Card className="flex flex-col gap-4 p-5" hoverEffect={false}>
           <div>
-            <span className="text-[10px] uppercase font-bold text-slate-500">Coach Suggestions</span>
+            <span className="text-[10px] uppercase font-bold text-slate-500 font-mono">Coach Suggestions</span>
             <h3 className="text-sm font-bold text-white mt-0.5">Tailored Action Pathways</h3>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-1">
             {recommendations.map((rec, idx) => (
-              <div key={idx} className="bg-white/5 hover:bg-white/10 transition-all border border-white/5 p-3 rounded-xl flex flex-col gap-2">
+              <div key={idx} className="bg-white/5 hover:bg-white/10 transition-all border border-white/5 p-3 rounded-xl flex flex-col gap-2 font-semibold">
                 <div className="flex justify-between items-center">
-                  <span className="text-[9px] uppercase font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
+                  <span className="text-[9px] uppercase font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 font-mono">
                     {rec.type}
                   </span>
                   <span className="text-xs font-mono font-bold text-amber-500">{rec.reward}</span>
                 </div>
                 <h4 className="font-bold text-xs text-white leading-snug">{rec.title}</h4>
-                <div className="flex justify-between items-center text-[10px] text-slate-400 mt-1">
+                <div className="flex justify-between items-center text-[10px] text-slate-400 mt-1 font-semibold">
                   <span>Difficulty: {rec.difficulty}</span>
                   <button 
-                    onClick={() => setActivePage(rec.page as any)} 
-                    className="text-emerald-400 hover:text-emerald-300 font-semibold hover:underline"
+                    onClick={() => navigate('/' + rec.page)} 
+                    className="text-emerald-400 hover:text-emerald-300 font-bold hover:underline"
                   >
                     Start Study ➔
                   </button>
@@ -179,8 +309,11 @@ export const AICoachDashboard: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 mt-2">
         {/* Dynamic Schedule Plan */}
         {(() => {
           const weeklySchedule = [
@@ -200,10 +333,10 @@ export const AICoachDashboard: React.FC = () => {
           const currentSchedule = planTab === 'daily' ? dailySchedule : planTab === 'weekly' ? weeklySchedule : monthlySchedule;
 
           return (
-            <div className="glass-panel p-5 rounded-2xl flex flex-col gap-4 border border-white/5">
+            <Card className="flex flex-col gap-4 p-5" hoverEffect={false}>
               <div className="flex justify-between items-center border-b border-white/5 pb-2">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-slate-500">Practice Plan</span>
+                  <span className="text-[10px] uppercase font-bold text-slate-500 font-mono">Practice Plan</span>
                   <h3 className="text-sm font-bold text-white mt-0.5">
                     {planTab === 'daily' ? 'Daily Routine' : planTab === 'weekly' ? 'Weekly Outlook' : 'Monthly Roadmap'}
                   </h3>
@@ -215,9 +348,9 @@ export const AICoachDashboard: React.FC = () => {
                     <button
                       key={tab}
                       onClick={() => setPlanTab(tab)}
-                      className={`px-2 py-1 text-[10px] font-bold rounded capitalize transition-all ${
+                      className={`px-3 py-1.5 text-[10px] font-bold rounded-lg capitalize transition-all ${
                         planTab === tab 
-                          ? 'bg-emerald-500 text-bg-primary shadow-glow' 
+                          ? 'bg-emerald-500 text-bg-primary shadow-glow font-bold' 
                           : 'text-slate-400 hover:text-slate-200'
                       }`}
                     >
@@ -227,11 +360,11 @@ export const AICoachDashboard: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex flex-col gap-3 border-l border-emerald-500/20 pl-4 py-1 relative">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-l border-emerald-500/20 pl-4 py-1 relative">
                 {currentSchedule.map((sch, idx) => (
                   <div key={idx} className="relative flex flex-col gap-1 pb-3 last:pb-0">
                     <div className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-emerald-500 border border-bg-primary shadow-glow" />
-                    <div className="flex justify-between items-center text-[9px] text-slate-500 font-mono">
+                    <div className="flex justify-between items-center text-[9px] text-slate-500 font-mono font-bold">
                       <span>{sch.time}</span>
                       <span className="bg-white/5 px-2 py-0.5 rounded text-slate-300">{sch.duration}</span>
                     </div>
@@ -239,7 +372,7 @@ export const AICoachDashboard: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           );
         })()}
       </div>

@@ -3,6 +3,8 @@ import { Board } from '../components/Board';
 import { useAppStore } from '../store/useAppStore';
 import { Chess } from 'chess.js';
 import { stockfishService } from '../core/stockfishService';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 interface EndgameDrill {
   id: string;
@@ -228,31 +230,28 @@ export const EndgameTrainer: React.FC = () => {
         </div>
 
         {/* Mode Selector */}
-        <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl gap-1">
-          <button
+        <div className="flex bg-bg-secondary border border-white/5 p-1 rounded-xl gap-1 shrink-0">
+          <Button
             onClick={() => setTrainerMode('theory')}
-            className={`py-1 px-3 text-xs font-bold rounded-lg transition-all ${
-              trainerMode === 'theory' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
-            }`}
+            variant={trainerMode === 'theory' ? 'primary' : 'ghost'}
+            size="sm"
           >
             📖 Step Theory
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setTrainerMode('conversion')}
-            className={`py-1 px-3 text-xs font-bold rounded-lg transition-all ${
-              trainerMode === 'conversion' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
-            }`}
+            variant={trainerMode === 'conversion' ? 'primary' : 'ghost'}
+            size="sm"
           >
             🔥 Conversion Practice
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setTrainerMode('defense')}
-            className={`py-1 px-3 text-xs font-bold rounded-lg transition-all ${
-              trainerMode === 'defense' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
-            }`}
+            variant={trainerMode === 'defense' ? 'primary' : 'ghost'}
+            size="sm"
           >
             🛡️ Active Defense
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -282,7 +281,7 @@ export const EndgameTrainer: React.FC = () => {
         </div>
 
         {/* Center: Board & Eval Bar */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5 relative">
+        <Card className="flex flex-col gap-4 items-center justify-center p-6 relative" hoverEffect={false}>
           {/* Eval Bar */}
           <div className="w-full max-w-[340px] bg-slate-800 h-2.5 rounded-full overflow-hidden flex relative mb-2">
             <div 
@@ -300,10 +299,10 @@ export const EndgameTrainer: React.FC = () => {
           <div className="text-[11px] text-slate-500 mt-2 font-mono">
             {engineIsThinking ? '🤖 Engine thinking...' : 'Make moves on the board to practice.'}
           </div>
-        </div>
+        </Card>
 
         {/* Right Panel: Guided Strategy details */}
-        <div className="glass-panel p-6 rounded-3xl border border-white/5 flex flex-col justify-between">
+        <Card className="flex flex-col justify-between" hoverEffect={false}>
           <div className="flex flex-col gap-4">
             <div>
               <span className="text-[10px] uppercase font-bold text-emerald-500">Endgame Guide</span>
@@ -314,30 +313,30 @@ export const EndgameTrainer: React.FC = () => {
               <span className="text-xs font-bold text-slate-400">Key Concepts:</span>
               <ul className="list-disc pl-4 flex flex-col gap-1 text-[11px] text-slate-300">
                 {currentDrill.keyConcepts.map((concept, i) => (
-                  <li key={i}>{concept}</li>
+                  <li key={i} className="font-semibold">{concept}</li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl text-xs text-slate-300 leading-normal">
+            <div className="bg-bg-primary border border-white/5 p-4 rounded-xl text-xs text-slate-300 leading-normal font-semibold">
               <strong className="block text-white mb-0.5">Objective:</strong>
               {currentDrill.desc}
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mt-4">
             {feedback && (
-              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 rounded-xl animate-fadeIn">
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-emerald-400 rounded-xl animate-fadeIn">
                 {feedback}
               </div>
             )}
 
-            <div className="bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-xl text-xs text-amber-400 leading-normal">
+            <div className="bg-amber-500/10 border border-amber-500/20 p-3.5 rounded-xl text-xs text-amber-400 leading-normal font-semibold">
               <strong className="block text-white mb-0.5">Theoretical Solution:</strong>
               {currentDrill.solutionText}
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

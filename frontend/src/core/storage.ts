@@ -15,6 +15,11 @@ export interface ProgressData {
   puzzleHistory: Array<{ id: string; correct: boolean; timestamp: number; category: string }>;
   weaknesses: string[];
   strengths: string[];
+  tacticalRating?: number;
+  strategicRating?: number;
+  openingRating?: number;
+  middlegameRating?: number;
+  endgameRating?: number;
 }
 
 export interface SRSCard {
@@ -42,7 +47,21 @@ const createDefaultProgress = (): ProgressData => ({
   puzzleHistory: [],
   weaknesses: [],
   strengths: [],
+  tacticalRating: 800,
+  strategicRating: 800,
+  openingRating: 800,
+  middlegameRating: 800,
+  endgameRating: 800,
 });
+
+const getSubRatingField = (category: string): 'tacticalRating' | 'strategicRating' | 'openingRating' | 'middlegameRating' | 'endgameRating' => {
+  const cat = (category || '').toLowerCase();
+  if (['openings', 'opening', 'repertoire'].includes(cat)) return 'openingRating';
+  if (['endgames', 'endgame'].includes(cat)) return 'endgameRating';
+  if (['middlegames', 'middlegame', 'strategy', 'positional'].includes(cat)) return 'middlegameRating';
+  if (['calculation', 'visualization'].includes(cat)) return 'strategicRating';
+  return 'tacticalRating';
+};
 
 export class Storage {
   static getProgress(): ProgressData {
@@ -51,6 +70,24 @@ export class Storage {
       if (raw) return { ...createDefaultProgress(), ...JSON.parse(raw) };
     } catch { /* noop */ }
     return createDefaultProgress();
+  }
+
+  static getOfflineQueue(): Array<{ type: string; data: any; timestamp: number }> {
+    try {
+      const raw = localStorage.getItem('chessos_offline_queue');
+      if (raw) return JSON.parse(raw);
+    } catch { /* noop */ }
+    return [];
+  }
+
+  static enqueueSync(type: 'completeLesson' | 'recordPuzzleAttempt' | 'addXP', data: any): void {
+    const queue = this.getOfflineQueue();
+    queue.push({ type, data, timestamp: Date.now() });
+    localStorage.setItem('chessos_offline_queue', JSON.stringify(queue));
+  }
+
+  static clearOfflineQueue(): void {
+    localStorage.removeItem('chessos_offline_queue');
   }
 
   static saveProgress(data: Partial<ProgressData>): void {
@@ -66,12 +103,15 @@ export class Storage {
       p.xp += 50;
       p.level = Math.floor(p.xp / 250) + 1;
       this.saveProgress(p);
+      this.enqueueSync('completeLesson', { lessonId });
     }
   }
 
   static recordPuzzleAttempt(puzzleId: string, correct: boolean, category: string): void {
     const p = this.getProgress();
     p.puzzlesAttempted++;
+    
+    // Update main rating
     if (correct) {
       p.puzzlesSolved++;
       p.puzzleRating = Math.min(3000, p.puzzleRating + Math.round(15 * (1 - p.puzzleRating / 3000)));
@@ -79,11 +119,22 @@ export class Storage {
     } else {
       p.puzzleRating = Math.max(100, p.puzzleRating - 10);
     }
+    
+    // Update sub rating
+    const field = getSubRatingField(category);
+    const currentSubRating = p[field] ?? 800;
+    if (correct) {
+      p[field] = Math.min(3000, currentSubRating + Math.round(15 * (1 - currentSubRating / 3000)));
+    } else {
+      p[field] = Math.max(100, currentSubRating - 10);
+    }
+
     p.level = Math.floor(p.xp / 250) + 1;
     p.puzzleHistory.push({ id: puzzleId, correct, timestamp: Date.now(), category });
     // Keep only last 500 entries
     if (p.puzzleHistory.length > 500) p.puzzleHistory = p.puzzleHistory.slice(-500);
     this.saveProgress(p);
+    this.enqueueSync('recordPuzzleAttempt', { puzzleId, correct, category });
   }
 
   static addXP(amount: number): void {
@@ -91,6 +142,7 @@ export class Storage {
     p.xp += amount;
     p.level = Math.floor(p.xp / 250) + 1;
     this.saveProgress(p);
+    this.enqueueSync('addXP', { amount });
   }
 
   static updateStreak(): void {

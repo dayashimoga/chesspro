@@ -1,0 +1,19 @@
+{
+  "name": "ChessOS Pro — Premium Chess Mastery Platform",
+  "short_name": "ChessOS Pro",
+  "description": "Complete chess learning ecosystem with adaptive coaching, 10,000+ puzzles, interactive labs, and personalized daily training plans.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06060b",
+  "theme_color": "#10b981",
+  "orientation": "any",
+  "categories": ["education", "games"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♚</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

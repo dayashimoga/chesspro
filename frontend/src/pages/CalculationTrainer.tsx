@@ -3,6 +3,8 @@ import { Board } from '../components/Board';
 import { useAppStore } from '../store/useAppStore';
 import { Chess } from 'chess.js';
 import { stockfishService } from '../core/stockfishService';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 interface CalcExercise {
   id: string;
@@ -169,7 +171,7 @@ export const CalculationTrainer: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto py-4 animate-fadeIn text-slate-200">
+    <div className="flex flex-col gap-8 w-full max-w-6xl mx-auto py-4 animate-fadeIn text-slate-200 font-semibold">
       {/* Tab Switcher */}
       <div className="flex border-b border-white/10 gap-6">
         <button
@@ -197,7 +199,7 @@ export const CalculationTrainer: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Interactive Board View */}
-        <div className="lg:col-span-2 flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-8 border border-white/5">
+        <Card className="lg:col-span-2 flex flex-col gap-4 items-center justify-center" hoverEffect={false}>
           <Board 
             fen={activeTab === 'lab' ? labFen : currentDrill.fen} 
             interactive={activeTab === 'lab'} 
@@ -215,10 +217,10 @@ export const CalculationTrainer: React.FC = () => {
               </div>
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Right Panel */}
-        <div className="glass-panel p-6 rounded-2xl flex flex-col gap-6 w-full text-slate-200 justify-between">
+        <Card className="flex flex-col gap-6 w-full text-slate-200 justify-between" hoverEffect={false}>
           
           {activeTab === 'lab' ? (
             // Calculation Lab Output Panel
@@ -267,19 +269,23 @@ export const CalculationTrainer: React.FC = () => {
               </div>
 
               <div className="flex gap-2 mt-4">
-                <button
+                <Button
                   onClick={resetLab}
-                  className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-xs transition-all"
+                  variant="secondary"
+                  size="sm"
+                  className="flex-1"
                 >
                   Reset Board
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={submitLabLine}
                   disabled={labMoves.length === 0 || isAnalyzing}
-                  className="flex-1 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-bg-primary font-bold py-2 rounded-lg text-xs transition-all"
+                  variant="primary"
+                  size="sm"
+                  className="flex-1"
                 >
                   {isAnalyzing ? 'Analyzing...' : 'Critique Line'}
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
@@ -295,7 +301,7 @@ export const CalculationTrainer: React.FC = () => {
                   </h3>
                 </div>
                 
-                <p className="text-sm text-slate-300 font-medium leading-relaxed">
+                <p className="text-sm text-slate-300 font-semibold leading-relaxed">
                   {currentDrill.question}
                 </p>
 
@@ -333,26 +339,28 @@ export const CalculationTrainer: React.FC = () => {
                 )}
 
                 {!isSubmitted ? (
-                  <button
+                  <Button
                     onClick={handleSubmit}
                     disabled={userAnswer === null}
-                    className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 disabled:hover:bg-emerald-500 text-bg-primary font-bold py-3 rounded-xl transition-all shadow-glow text-center"
+                    variant="primary"
+                    fullWidth
                   >
                     Submit Answer
-                  </button>
+                  </Button>
                 ) : (
-                  <button
+                  <Button
                     onClick={handleNext}
-                    className="bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-3 rounded-xl transition-all text-center"
+                    variant="secondary"
+                    fullWidth
                   >
                     Next Exercise
-                  </button>
+                  </Button>
                 )}
               </div>
             </>
           )}
 
-        </div>
+        </Card>
       </div>
     </div>
   );

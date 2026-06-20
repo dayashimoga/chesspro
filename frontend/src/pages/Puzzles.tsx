@@ -6,6 +6,10 @@ import { ThinkingModePanel } from '../components/ThinkingModePanel';
 import { VariationExplorer } from '../components/VariationExplorer';
 import { ALL_PUZZLES, PUZZLE_CATEGORIES, Puzzle, getRandomPuzzle, queryPuzzles } from '../content/puzzle-db';
 import { useAppStore } from '../store/useAppStore';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { Toast } from '../components/ui/Toast';
 
 type SolveMode = 'guided' | 'practice' | 'coach' | 'examination' | 'analysis' | 'thinking';
 
@@ -68,7 +72,6 @@ export const Puzzles: React.FC = () => {
 
   const showToast = (type: 'success' | 'error' | 'info', text: string) => {
     setToast({ type, text });
-    setTimeout(() => setToast(null), 3500);
   };
 
   const handleSolved = () => {
@@ -120,9 +123,7 @@ export const Puzzles: React.FC = () => {
             const reply = currentPuzzle.solution[1];
             tempGame.move(reply);
             setPuzzleFen(tempGame.fen());
-            // Move expectation to final move
             setLastMove(null);
-            // Alert or notify
           } catch {
             // ignore invalid move attempts during transition
           }
@@ -178,8 +179,8 @@ export const Puzzles: React.FC = () => {
           <h2 className="text-2xl font-black text-white font-serif">Tactical Solver Labs</h2>
         </div>
 
-        {/* 5 Solve Modes Switcher */}
-        <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl flex-wrap gap-1">
+        {/* solve Modes Switcher */}
+        <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl flex-wrap gap-1 shadow-inner">
           {([
             { id: 'guided', label: 'Guided Coach' },
             { id: 'thinking', label: '🧠 GM Thinking' },
@@ -191,10 +192,10 @@ export const Puzzles: React.FC = () => {
             <button
               key={m.id}
               onClick={() => changeMode(m.id)}
-              className={`py-1.5 px-3.5 text-xs font-bold rounded-lg transition-all ${
+              className={`py-1.5 px-3.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                 activeMode === m.id 
                   ? 'bg-emerald-500 text-bg-primary font-bold shadow-glow' 
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]'
               }`}
             >
               {m.label}
@@ -212,54 +213,54 @@ export const Puzzles: React.FC = () => {
               <button
                 key={cat.id}
                 onClick={() => selectCategory(cat.id)}
-                className={`p-3 rounded-xl border text-left text-xs font-semibold flex justify-between items-center transition-all ${
+                className={`p-3 rounded-xl border text-left text-xs font-semibold flex justify-between items-center transition-all duration-300 ${
                   selectedCategory === cat.id 
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-white' 
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-white shadow-sm' 
                     : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-400 hover:text-slate-200'
                 }`}
               >
                 <span className="flex items-center gap-2">
-                  <span>{cat.icon}</span>
+                  <span className="text-base">{cat.icon}</span>
                   <span>{cat.label}</span>
                 </span>
-                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-slate-500 font-mono">
+                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-slate-500 font-mono font-bold">
                   {cat.count}
                 </span>
               </button>
             ))}
           </div>
 
-          <div className="glass-panel p-4 rounded-xl border border-white/5 leading-relaxed mt-2 text-xs flex justify-between items-center text-slate-400">
+          <Card className="!p-4 flex justify-between items-center text-xs text-slate-400 font-semibold" hoverEffect={false}>
             <span>🔥 Puzzles Solved:</span>
-            <span className="text-emerald-400 font-bold text-sm">{solvedCount}</span>
-          </div>
+            <span className="text-emerald-400 font-extrabold text-sm">{solvedCount}</span>
+          </Card>
         </div>
 
         {/* Board View */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5">
+        <Card className="flex flex-col gap-4 items-center justify-center" hoverEffect={false}>
           <Board 
             fen={puzzleFen} 
             interactive={isBoardInteractive} 
             highlights={activeHighlights}
             onMove={handleBoardMove}
           />
-          <div className="text-[11px] text-slate-500 mt-2 font-mono text-center flex flex-col gap-1">
+          <div className="text-[11px] text-slate-500 mt-2 font-mono text-center flex flex-col gap-2 w-full">
             <div>
-              Difficulty: <span className="text-amber-400 uppercase font-semibold">{currentPuzzle.difficulty}</span> • Theme: {currentPuzzle.theme}
-              • <span className="text-slate-400">{activePuzzleIdx + 1}/{filteredPuzzles.length}</span>
+              Difficulty: <Badge variant="amber" className="ml-1">{currentPuzzle.difficulty}</Badge> • Theme: <Badge variant="slate" className="ml-1">{currentPuzzle.theme}</Badge>
+              <div className="text-slate-400 font-bold mt-1">Position {activePuzzleIdx + 1} of {filteredPuzzles.length}</div>
             </div>
             {/* Puzzle Navigation */}
-            <div className="flex items-center justify-center gap-2 mt-1">
-              <button onClick={() => navigatePuzzle('prev')} className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1 rounded-lg border border-white/5 transition-all">◀ Prev</button>
-              <button onClick={() => navigatePuzzle('next')} className="text-xs bg-white/5 hover:bg-white/10 text-slate-300 px-3 py-1 rounded-lg border border-white/5 transition-all">Next ▶</button>
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <Button variant="secondary" size="sm" onClick={() => navigatePuzzle('prev')}>◀ Prev</Button>
+              <Button variant="secondary" size="sm" onClick={() => navigatePuzzle('next')}>Next ▶</Button>
             </div>
             {activeMode === 'analysis' && (
-              <div className="text-emerald-400 text-xs mt-1 bg-emerald-500/5 px-3 py-1 rounded-full border border-emerald-500/10">
+              <div className="text-emerald-400 text-xs mt-2 bg-emerald-500/5 px-3 py-1.5 rounded-xl border border-emerald-500/10 font-bold">
                 📊 FREE PLAY: Make moves for either color to explore variants
               </div>
             )}
           </div>
-        </div>
+        </Card>
 
         {/* Solver Panel or Mode Panel */}
         <div className="flex justify-center">
@@ -276,76 +277,77 @@ export const Puzzles: React.FC = () => {
           )}
 
           {activeMode === 'practice' && (
-            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+            <Card className="w-full max-w-md flex flex-col gap-4" hoverEffect={false}>
               <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
                 <span>🎯</span> Standard Practice Mode
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed font-semibold">
                 Solve the tactical combination directly on the board. No guidance, just pure chess execution.
               </p>
-              <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl text-center my-2">
-                <span className="text-[10px] text-slate-500 uppercase block">Expected moves</span>
+              <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl text-center my-2 shadow-inner">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-1">Expected moves</span>
                 <span className="text-sm font-mono text-white font-bold">{currentPuzzle.solution.length} move sequence</span>
               </div>
-              <button 
+              <Button 
+                variant="secondary"
                 onClick={() => setPuzzleFen(currentPuzzle.fen)}
-                className="bg-white/5 hover:bg-white/10 text-white font-semibold py-2 rounded-xl text-xs transition-all border border-white/10"
+                fullWidth
               >
                 Reset Position
-              </button>
-            </div>
+              </Button>
+            </Card>
           )}
 
           {activeMode === 'coach' && (
-            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+            <Card className="w-full max-w-md flex flex-col gap-4" hoverEffect={false}>
               <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
                 <span>💡</span> AI Hint Helper
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed font-semibold">
                 Need a hand? The AI Coach has analyzed the position and provides the following coaching pointers:
               </p>
-              <div className="flex flex-col gap-3 bg-[#0c0c14] border border-white/5 p-4 rounded-xl">
+              <div className="flex flex-col gap-3 bg-[#0c0c14] border border-white/5 p-4 rounded-xl shadow-inner">
                 <div className="text-xs">
-                  <span className="font-semibold text-emerald-400 block mb-1">🔑 Core Motif:</span>
-                  <span className="text-slate-300">{currentPuzzle.theme}</span>
+                  <span className="font-bold text-emerald-400 block mb-1">🔑 Core Motif:</span>
+                  <span className="text-slate-300 font-semibold">{currentPuzzle.theme}</span>
                 </div>
                 <div className="text-xs">
-                  <span className="font-semibold text-amber-400 block mb-1">📢 Coach Tip:</span>
-                  <span className="text-slate-300">{currentPuzzle.coachNotes}</span>
+                  <span className="font-bold text-amber-400 block mb-1">📢 Coach Tip:</span>
+                  <span className="text-slate-300 font-semibold">{currentPuzzle.coachNotes}</span>
                 </div>
                 <div className="text-xs">
-                  <span className="font-semibold text-slate-400 block mb-1">🔍 Target coordinates:</span>
-                  <span className="text-slate-300">Look closely at pieces defending the 8th rank or overloaded files.</span>
+                  <span className="font-bold text-slate-400 block mb-1">🔍 Target coordinates:</span>
+                  <span className="text-slate-300 font-semibold">Look closely at pieces defending the 8th rank or overloaded files.</span>
                 </div>
               </div>
-              <button 
+              <Button 
                 onClick={() => showToast('info', `First move hint: ${currentPuzzle.solution[0]}`)}
-                className="bg-emerald-500 hover:bg-emerald-600 text-bg-primary font-bold py-2 rounded-xl text-xs transition-all"
+                fullWidth
               >
                 Reveal First Move SAN
-              </button>
-            </div>
+              </Button>
+            </Card>
           )}
 
           {activeMode === 'examination' && (
-            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+            <Card className="w-full max-w-md flex flex-col gap-4" hoverEffect={false}>
               <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
                 <span>⏰</span> Tournament Stress Test
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed font-semibold">
                 Simulate real chess tournament stress. Solve the puzzle within the time limit. Incorrect moves decrease rating instantly.
               </p>
               
               <div className="flex justify-between gap-3 my-2">
-                <div className="flex-1 bg-[#0c0c14] border border-white/5 p-3 rounded-xl text-center">
-                  <span className="text-[10px] text-slate-500 block uppercase">Time Remaining</span>
-                  <span className={`text-lg font-mono font-bold ${examTimer <= 15 ? 'text-red-500 animate-pulse' : 'text-amber-500'}`}>
+                <div className="flex-1 bg-[#0c0c14] border border-white/5 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold mb-1">Time Remaining</span>
+                  <span className={`text-lg font-mono font-black ${examTimer <= 15 ? 'text-red-500 animate-pulse' : 'text-amber-500'}`}>
                     {examTimer}s
                   </span>
                 </div>
-                <div className="flex-1 bg-[#0c0c14] border border-white/5 p-3 rounded-xl text-center">
-                  <span className="text-[10px] text-slate-500 block uppercase">Reward</span>
-                  <span className="text-lg font-mono font-bold text-emerald-400">+20 XP</span>
+                <div className="flex-1 bg-[#0c0c14] border border-white/5 p-3 rounded-xl text-center shadow-inner">
+                  <span className="text-[10px] text-slate-500 block uppercase font-bold mb-1">Reward</span>
+                  <span className="text-lg font-mono font-black text-emerald-400">+20 XP</span>
                 </div>
               </div>
 
@@ -358,7 +360,9 @@ export const Puzzles: React.FC = () => {
                   {examResult === 'success' 
                     ? '🎉 EXAM PASSED! (+20 XP, +15 Rating)' 
                     : '❌ EXAM FAILED! (-8 Rating)'}
-                  <button 
+                  <Button 
+                    variant="secondary"
+                    size="sm"
                     onClick={() => {
                       setExamSubmitted(false);
                       setExamResult(null);
@@ -369,13 +373,14 @@ export const Puzzles: React.FC = () => {
                         setActivePuzzleIdx(0);
                       }
                     }}
-                    className="mt-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold py-1.5 px-4 rounded-lg text-xs w-full block"
+                    className="mt-3"
+                    fullWidth
                   >
                     Load Next Position
-                  </button>
+                  </Button>
                 </div>
               )}
-            </div>
+            </Card>
           )}
 
           {activeMode === 'thinking' && (
@@ -396,84 +401,85 @@ export const Puzzles: React.FC = () => {
                   }}
                 />
               ) : (
-                <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full text-slate-200 border border-white/5">
+                <Card className="w-full flex flex-col gap-4" hoverEffect={false}>
                   <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
                     <span>🧠</span> Play Your Calculated Move
                   </h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-slate-400 leading-relaxed font-semibold">
                     You've completed your analysis. Now play the move you calculated on the board. The board is interactive.
                   </p>
-                  <div className="bg-violet-500/10 border border-violet-500/20 p-3 rounded-xl text-xs text-violet-400">
+                  <div className="bg-violet-500/10 border border-violet-500/20 p-3 rounded-xl text-xs text-violet-400 font-bold">
                     ✅ GM Thinking process complete. Board is now interactive.
                   </div>
-                  <button 
+                  <Button 
+                    variant="secondary"
                     onClick={() => setPuzzleFen(currentPuzzle.fen)}
-                    className="bg-white/5 hover:bg-white/10 text-white font-semibold py-2 rounded-xl text-xs transition-all border border-white/10"
+                    fullWidth
                   >
                     Reset Position
-                  </button>
-                </div>
+                  </Button>
+                </Card>
               )}
             </div>
           )}
 
           {activeMode === 'analysis' && (
-            <div className="glass-panel p-6 rounded-2xl flex flex-col gap-4 w-full max-w-md text-slate-200 border border-white/5">
+            <Card className="w-full max-w-md flex flex-col gap-4" hoverEffect={false}>
               <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 flex items-center gap-1.5">
                 <span>📊</span> Free Analysis Mode
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed font-semibold">
                 Free analysis mode allows exploring multiple candidate options and analyzing branching variations on the board.
               </p>
 
-              <div className="bg-[#0c0c14] border border-white/5 p-3 rounded-xl min-h-[100px] flex flex-col justify-between">
-                <span className="text-[10px] text-slate-500 uppercase block mb-1">Played Moves</span>
+              <div className="bg-[#0c0c14] border border-white/5 p-3 rounded-xl min-h-[100px] flex flex-col justify-between shadow-inner">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-1">Played Moves</span>
                 <div className="flex flex-wrap gap-1.5 text-xs font-mono max-h-[80px] overflow-y-auto">
                   {analysisMoves.length > 0 ? (
                     analysisMoves.map((m, idx) => (
-                      <span key={idx} className="bg-white/5 px-2 py-0.5 rounded border border-white/5 text-slate-300">
+                      <span key={idx} className="bg-white/5 px-2 py-0.5 rounded border border-white/5 text-slate-300 font-bold">
                         {idx + 1}. {m}
                       </span>
                     ))
                   ) : (
-                    <span className="text-slate-500 italic">No moves entered yet...</span>
+                    <span className="text-slate-500 italic font-semibold">No moves entered yet...</span>
                   )}
                 </div>
               </div>
 
               <div className="flex gap-2">
-                <button 
+                <Button 
+                  variant="secondary"
                   onClick={() => {
                     setPuzzleFen(currentPuzzle.fen);
                     setAnalysisMoves([]);
                   }}
-                  className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-2 rounded-xl text-xs transition-all text-center"
+                  className="flex-1"
                 >
                   Reset Board
-                </button>
-                <button 
+                </Button>
+                <Button 
+                  variant="secondary"
                   onClick={() => {
                     showToast('info', 'Use board reset to return to the starting position.');
                   }}
-                  className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-2 rounded-xl text-xs transition-all text-center"
+                  className="flex-1"
                 >
                   Undo Move
-                </button>
+                </Button>
               </div>
-            </div>
+            </Card>
           )}
         </div>
       </div>
 
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl border text-sm font-semibold animate-fadeIn max-w-md ${
-          toast.type === 'success' ? 'bg-emerald-500/90 border-emerald-400/30 text-white' :
-          toast.type === 'error' ? 'bg-red-500/90 border-red-400/30 text-white' :
-          'bg-slate-700/90 border-slate-500/30 text-white'
-        }`}>
-          {toast.text}
-        </div>
+        <Toast
+          message={toast.text}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );

@@ -3,6 +3,9 @@ import { Board } from '../components/Board';
 import { SpacedRepetition } from '../core/storage';
 import { Chess } from 'chess.js';
 import { useAppStore } from '../store/useAppStore';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Toast } from '../components/ui/Toast';
 
 interface OpeningItem {
   id: string;
@@ -197,23 +200,21 @@ export const OpeningTrainer: React.FC = () => {
         </div>
 
         {/* Explore vs Guess Mode */}
-        <div className="flex bg-[#0c0c14] border border-white/5 p-1 rounded-xl gap-1">
-          <button
+        <div className="flex bg-bg-secondary border border-white/5 p-1 rounded-xl gap-1 shrink-0">
+          <Button
             onClick={() => setTrainMode('explore')}
-            className={`py-1 px-3 text-xs font-bold rounded-lg transition-all ${
-              trainMode === 'explore' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
-            }`}
+            variant={trainMode === 'explore' ? 'primary' : 'ghost'}
+            size="sm"
           >
             Explore Mode
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setTrainMode('guess')}
-            className={`py-1 px-3 text-xs font-bold rounded-lg transition-all ${
-              trainMode === 'guess' ? 'bg-emerald-500 text-bg-primary shadow-glow' : 'text-slate-400'
-            }`}
+            variant={trainMode === 'guess' ? 'primary' : 'ghost'}
+            size="sm"
           >
             Guess Move Mode
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -243,7 +244,7 @@ export const OpeningTrainer: React.FC = () => {
         </div>
 
         {/* Center: Interactive Board */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5">
+        <Card className="flex flex-col gap-4 items-center justify-center p-6" hoverEffect={false}>
           <Board
             fen={displayFen}
             interactive={true}
@@ -259,53 +260,55 @@ export const OpeningTrainer: React.FC = () => {
               {exploringFen ? (
                 <>
                   <span className="text-emerald-400 truncate max-w-[280px]">Exploring: {moveHistory.join(' ')}</span>
-                  <button onClick={resetExploration} className="bg-white/5 hover:bg-white/10 px-3 py-1 rounded text-[10px] border border-white/5 transition-all">
+                  <Button onClick={resetExploration} variant="secondary" size="sm">
                     ↩ Reset Line
-                  </button>
+                  </Button>
                 </>
               ) : (
                 <span>Explore variations on the board directly.</span>
               )}
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Right: Strategy details */}
-        <div className="glass-panel p-6 rounded-3xl border border-white/5 flex flex-col justify-between">
+        <Card className="flex flex-col justify-between" hoverEffect={false}>
           <div className="flex flex-col gap-4">
             <div>
               <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Opening Strategy</span>
               <h3 className="text-base font-extrabold text-white mt-0.5">{currentOpening.name}</h3>
             </div>
 
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-1">
+            <div className="bg-bg-primary border border-white/5 p-4 rounded-xl flex flex-col gap-1 font-semibold">
               <strong className="text-[11px] text-emerald-400 uppercase font-mono tracking-wider">⚡ Core Trap:</strong>
               <p className="text-[11px] text-slate-300 leading-normal">{currentOpening.trap}</p>
             </div>
 
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-1">
+            <div className="bg-bg-primary border border-white/5 p-4 rounded-xl flex flex-col gap-1 font-semibold">
               <strong className="text-[11px] text-amber-400 uppercase font-mono tracking-wider">🛡️ Middlegame Goals:</strong>
               <p className="text-[11px] text-slate-300 leading-normal">{currentOpening.middlegameTheme}</p>
             </div>
 
-            <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-xl flex flex-col gap-1">
+            <div className="bg-bg-primary border border-white/5 p-4 rounded-xl flex flex-col gap-1 font-semibold">
               <strong className="text-[11px] text-slate-400 uppercase font-mono tracking-wider">🏁 Endings structure:</strong>
               <p className="text-[11px] text-slate-300 leading-normal">{currentOpening.endgameTransition}</p>
             </div>
 
-            <button
+            <Button
               onClick={addToSRS}
-              className="bg-emerald-500 text-bg-primary font-extrabold py-2.5 rounded-xl text-xs transition-all w-full mt-2"
+              fullWidth
+              size="sm"
+              className="mt-2"
             >
               Add to Repertoire Spaced Repetition 📚
-            </button>
-            
-            {practiceToast && (
-              <p className="text-[10px] text-emerald-400 text-center animate-fadeIn">{practiceToast}</p>
-            )}
+            </Button>
           </div>
-        </div>
+        </Card>
       </div>
+
+      {practiceToast && (
+        <Toast message={practiceToast} type="success" onClose={() => setPracticeToast(null)} />
+      )}
     </div>
   );
 };

@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 // ============================================================================
 // Tournament Preparation Center
@@ -33,7 +36,7 @@ const NERVES_TIPS = [
   { icon: '🎯', title: 'Process Focus', desc: 'Don\'t think about the result. Focus ONLY on finding the best move in the current position.' },
   { icon: '💪', title: 'Power Posture', desc: 'Sit up straight, shoulders back. Body language affects your confidence and thinking.' },
   { icon: '⏰', title: 'Time Management', desc: 'Use 1/3 of your time for the first 20 moves. Save time for the critical middle game.' },
-  { icon: '🧠', title: 'Blunder Check', desc: 'Before every move, ask: "Can my opponent take anything for free?" This prevents 90% of blunders.' },
+  { icon: '🧠', title: 'Blunder Check', desc: 'Before every move, ask: "Can my opponent take anything for free?" This prevents 90% of blunder.' },
   { icon: '📝', title: 'Write It Down', desc: 'Write your move on the scoresheet BEFORE playing it. This extra second catches mistakes.' },
   { icon: '🚶', title: 'Walk Away', desc: 'When stuck, stand up and walk around. Fresh perspective often reveals the best move.' },
   { icon: '💧', title: 'Stay Hydrated', desc: 'Dehydration reduces calculation ability by 20%. Drink water every 15 minutes.' },
@@ -51,6 +54,7 @@ const PRE_GAME_ROUTINE = [
 ];
 
 export const TournamentPrep: React.FC = () => {
+  const navigate = useNavigate();
   const [phase, setPhase] = useState<PrepPhase>('overview');
   const [clockSettings, setClockSettings] = useState<ClockSettings>(TIME_CONTROLS[4]); // 5+0
   const [whiteTime, setWhiteTime] = useState(300);
@@ -107,7 +111,7 @@ export const TournamentPrep: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
+    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200 font-semibold">
       {/* Header */}
       <div className="border-b border-white/5 pb-4">
         <span className="text-xs font-bold uppercase tracking-wider text-orange-500">Tournament Center</span>
@@ -197,20 +201,20 @@ export const TournamentPrep: React.FC = () => {
 
             {/* Controls */}
             <div className="flex gap-3">
-              <button
+              <Button
                 onClick={() => setIsRunning(!isRunning)}
-                className={`px-6 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                  isRunning ? 'bg-red-500 text-white' : 'bg-orange-500 text-white'
-                }`}
+                variant={isRunning ? 'danger' : 'primary'}
+                size="md"
               >
                 {isRunning ? '⏸ Pause' : '▶ Start'}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => resetClock(clockSettings)}
-                className="bg-white/5 border border-white/5 hover:bg-white/10 px-6 py-2.5 rounded-xl text-xs font-bold text-white"
+                variant="secondary"
+                size="md"
               >
                 🔄 Reset
-              </button>
+              </Button>
             </div>
 
             <div className="text-xs text-slate-500">
@@ -221,7 +225,7 @@ export const TournamentPrep: React.FC = () => {
           </div>
 
           {/* Time Control Selector */}
-          <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14]">
+          <Card className="p-5" hoverEffect={false}>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">Time Controls</h4>
             <div className="flex flex-col gap-2">
               {TIME_CONTROLS.map(tc => (
@@ -238,7 +242,7 @@ export const TournamentPrep: React.FC = () => {
                 </button>
               ))}
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -246,25 +250,25 @@ export const TournamentPrep: React.FC = () => {
       {phase === 'nerves' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {NERVES_TIPS.map((tip, idx) => (
-            <div key={idx} className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14] flex gap-4 items-start">
+            <Card key={idx} className="flex gap-4 items-start" hoverEffect={false}>
               <span className="text-2xl">{tip.icon}</span>
               <div>
                 <h4 className="text-sm font-bold text-white mb-1">{tip.title}</h4>
                 <p className="text-[11px] text-slate-400 leading-relaxed">{tip.desc}</p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}
 
       {/* Pre-Game Routine */}
       {phase === 'routine' && (
-        <div className="glass-panel p-6 rounded-2xl border border-white/5 bg-[#0c0c14]">
+        <Card hoverEffect={false}>
           <h4 className="text-sm font-bold text-white mb-4">Your Tournament Day Timeline</h4>
           <div className="border-l-2 border-orange-500/30 pl-6 flex flex-col gap-4 relative">
             {PRE_GAME_ROUTINE.map((item, idx) => (
               <div key={idx} className="relative">
-                <div className="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-orange-500 border-2 border-[#0c0c14]" />
+                <div className="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-orange-500 border-2 border-bg-secondary" />
                 <div className="flex items-start gap-3">
                   <span className="text-xl">{item.icon}</span>
                   <div>
@@ -275,28 +279,25 @@ export const TournamentPrep: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Opening Prep */}
       {phase === 'openings' && (
-        <div className="glass-panel p-6 rounded-2xl border border-white/5 bg-[#0c0c14] text-center">
+        <Card className="text-center" hoverEffect={false}>
           <span className="text-5xl block mb-4">📖</span>
           <h3 className="text-lg font-bold text-white mb-2">Opening Repertoire Review</h3>
           <p className="text-xs text-slate-400 mb-4 max-w-md mx-auto">
             Review your prepared lines under simulated time pressure. Focus on the critical branching points
             where your opponent might deviate.
           </p>
-          <button
-            onClick={() => {
-              const store = useAppStore.getState();
-              store.setActivePage('opening-university');
-            }}
-            className="bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold py-3 px-8 rounded-xl text-xs transition-all hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]"
+          <Button
+            onClick={() => navigate('/opening-university')}
+            variant="primary"
           >
             Go to Opening University →
-          </button>
-        </div>
+          </Button>
+        </Card>
       )}
     </div>
   );

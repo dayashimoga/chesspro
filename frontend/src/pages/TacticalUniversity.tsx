@@ -4,6 +4,9 @@ import { Board } from '../components/Board';
 import { GuidedSolverPanel } from '../components/GuidedSolverPanel';
 import { Puzzle, queryPuzzles, ALL_PUZZLES } from '../content/puzzle-db';
 import { useAppStore } from '../store/useAppStore';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Toast } from '../components/ui/Toast';
 
 const TACTICAL_THEMES = [
   { id: 'forks', label: 'Forks', icon: '⚔️', desc: 'Attack two pieces simultaneously with a single move.' },
@@ -148,7 +151,7 @@ export const TacticalUniversity: React.FC = () => {
         </div>
 
         {/* Center: Interactive Board */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5">
+        <Card className="flex flex-col gap-4 items-center justify-center p-6" hoverEffect={false}>
           <Board
             fen={boardFen}
             interactive={isInteractive}
@@ -163,24 +166,26 @@ export const TacticalUniversity: React.FC = () => {
               Exercise {puzzleIdx + 1} of {puzzles.length} • Difficulty: <span className="text-amber-500 uppercase font-semibold">{currentPuzzle?.difficulty || 'N/A'}</span>
             </div>
             {/* Nav controls */}
-            <div className="flex justify-center gap-2 mt-2">
-              <button
+            <div className="flex justify-center gap-2 mt-3">
+              <Button
                 onClick={() => setPuzzleIdx(prev => Math.max(0, prev - 1))}
                 disabled={puzzleIdx === 0}
-                className="bg-white/5 border border-white/5 hover:bg-white/10 text-[10px] font-bold px-3 py-1 rounded disabled:opacity-40"
+                variant="secondary"
+                size="sm"
               >
                 ◀ Prev
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setPuzzleIdx(prev => Math.min(puzzles.length - 1, prev + 1))}
                 disabled={puzzleIdx === puzzles.length - 1}
-                className="bg-white/5 border border-white/5 hover:bg-white/10 text-[10px] font-bold px-3 py-1 rounded disabled:opacity-40"
+                variant="secondary"
+                size="sm"
               >
                 Next ▶
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Right: 8-Step Guided Solver */}
         <div className="flex justify-center">
@@ -199,9 +204,7 @@ export const TacticalUniversity: React.FC = () => {
       </div>
 
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-500/90 border border-emerald-400/30 px-5 py-3 rounded-xl shadow-2xl text-xs font-bold animate-fadeIn text-white">
-          {toast}
-        </div>
+        <Toast message={toast} type="success" onClose={() => setToast(null)} />
       )}
     </div>
   );

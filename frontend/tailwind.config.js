@@ -8,10 +8,18 @@ export default {
     extend: {
       colors: {
         bg: {
-          primary: '#06060b',
-          secondary: '#0c0c14',
-          tertiary: '#12121e',
-          card: '#16162a',
+          primary: 'var(--color-bg-primary)',
+          secondary: 'var(--color-bg-secondary)',
+          tertiary: 'var(--color-bg-tertiary)',
+          card: 'var(--color-bg-card)',
+        },
+        text: {
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+        },
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          hover: 'var(--color-accent-hover)',
         },
         emerald: {
           500: '#10b981',

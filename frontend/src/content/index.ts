@@ -7,6 +7,8 @@ import { openingsContent } from './05-openings';
 import { masterGamesContent } from './06-master-games';
 import { middlegameContent } from './07-middlegame';
 import { advancedContent } from './08-advanced';
+import { getEndgamePuzzles, ENDGAME_CATEGORIES } from './puzzle-endgame';
+import { GRANDMASTER_GAMES, GRANDMASTER_PLAYERS } from './master-games-grandmaster';
 
 export interface LessonExercise {
   type: string;
@@ -63,4 +65,9 @@ export {
   masterGamesContent,
   middlegameContent,
   advancedContent,
+  getEndgamePuzzles,
+  ENDGAME_CATEGORIES,
+  GRANDMASTER_GAMES,
+  GRANDMASTER_PLAYERS,
 };
+

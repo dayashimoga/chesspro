@@ -1,0 +1,23 @@
+{
+  "name": "ChessOS Premium Development Container",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {},
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "Dart-Code.flutter",
+        "Dart-Code.dart-code"
+      ]
+    }
+  },
+  "forwardPorts": [3105, 8787],
+  "postCreateCommand": "cd frontend && npm install",
+  "remoteUser": "node"
+}
