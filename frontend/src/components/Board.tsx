@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Chess, Square } from 'chess.js';
+import { useAppStore } from '../store/useAppStore';
 
 // SVG piece paths (CBurnett-style)
 const PIECE_SVG: Record<string, string> = {
@@ -20,11 +21,106 @@ const PIECE_SVG: Record<string, string> = {
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
 
-const LIGHT_COLOR = '#e8dcc8';
-const DARK_COLOR = '#7b945d';
+const BOARD_THEMES = {
+  green: { light: '#e8dcc8', dark: '#7b945d' },
+  brown: { light: '#f0d9b5', dark: '#b58863' },
+  blue: { light: '#dee3e6', dark: '#8ca2ad' },
+  tournament: { light: '#e1e1e1', dark: '#4b7399' },
+};
 const LAST_MOVE_COLOR = 'rgba(255, 255, 80, 0.25)';
 const SELECTED_COLOR = 'rgba(16, 185, 129, 0.5)';
 const CHECK_COLOR = 'rgba(239, 68, 68, 0.6)';
+
+// Sound effect synthesizer using Web Audio API
+class SoundEngine {
+  private static ctx: AudioContext | null = null;
+
+  private static getContext(): AudioContext | null {
+    if (!this.ctx) {
+      try { this.ctx = new AudioContext(); } catch { return null; }
+    }
+    return this.ctx;
+  }
+
+  static playMove() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.12);
+  }
+
+  static playCapture() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.2);
+  }
+
+  static playCheck() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    [800, 1000].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.1);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.15);
+      osc.start(ctx.currentTime + i * 0.1);
+      osc.stop(ctx.currentTime + i * 0.1 + 0.15);
+    });
+  }
+
+  static playCastle() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    [300, 400, 500].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.06);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime + i * 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.06 + 0.1);
+      osc.start(ctx.currentTime + i * 0.06);
+      osc.stop(ctx.currentTime + i * 0.06 + 0.1);
+    });
+  }
+
+  static playGameEnd() {
+    const ctx = this.getContext();
+    if (!ctx) return;
+    [523, 659, 784, 1047].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.3);
+      osc.start(ctx.currentTime + i * 0.12);
+      osc.stop(ctx.currentTime + i * 0.12 + 0.3);
+    });
+  }
+}
 
 export interface BoardProps {
   fen: string;
@@ -36,13 +132,89 @@ export interface BoardProps {
   highlights?: Array<{ square: string; color?: string }>;
   arrows?: Array<{ from: string; to: string; color?: string; dashed?: boolean; width?: number }>;
   lastMoveSquares?: { from: string; to: string } | null;
-  allowedMoves?: string[]; // squares that are legal targets for the selected piece
+  allowedMoves?: string[];
+  soundEnabled?: boolean;
+  boardTheme?: 'green' | 'brown' | 'blue' | 'tournament';
+  pieceSet?: 'standard' | 'neo' | 'alpha' | 'merida';
+}
+
+interface DragState {
+  piece: string;
+  from: string;
+  svgKey: string;
+  startX: number;
+  startY: number;
+  currentX: number;
+  currentY: number;
+  active: boolean;
+  alreadySelectedOnDown: boolean;
+}
+
+// Helpers for parsing FEN and detecting movement between FENs to animate pieces
+function parseFen(fen: string): Array<Array<{ type: string; color: string } | null>> {
+  const board: Array<Array<{ type: string; color: string } | null>> = Array(8)
+    .fill(null)
+    .map(() => Array(8).fill(null));
+  const parts = fen.split(' ');
+  const rows = parts[0].split('/');
+  for (let r = 0; r < 8; r++) {
+    let f = 0;
+    for (let c = 0; c < rows[r].length; c++) {
+      const char = rows[r][c];
+      if (isNaN(Number(char))) {
+        const color = char === char.toUpperCase() ? 'w' : 'b';
+        board[r][f] = { type: char.toLowerCase(), color };
+        f++;
+      } else {
+        f += Number(char);
+      }
+    }
+  }
+  return board;
+}
+
+function detectMoveDiff(prevFen: string, currentFen: string) {
+  try {
+    const prev = parseFen(prevFen);
+    const curr = parseFen(currentFen);
+    
+    let from: { r: number; f: number; piece: { type: string; color: string } } | null = null;
+    let to: { r: number; f: number; piece: { type: string; color: string } } | null = null;
+    
+    for (let r = 0; r < 8; r++) {
+      for (let f = 0; f < 8; f++) {
+        const pPiece = prev[r][f];
+        const cPiece = curr[r][f];
+        
+        if (pPiece && !cPiece) {
+          from = { r, f, piece: pPiece };
+        } else if (!pPiece && cPiece) {
+          to = { r, f, piece: cPiece };
+        } else if (pPiece && cPiece && (pPiece.type !== cPiece.type || pPiece.color !== cPiece.color)) {
+          to = { r, f, piece: cPiece };
+        }
+      }
+    }
+    
+    if (from && to) {
+      return {
+        fromFile: from.f,
+        fromRank: from.r,
+        toFile: to.f,
+        toRank: to.r,
+        piece: to.piece
+      };
+    }
+  } catch (e) {
+    // ignore parsing errors
+  }
+  return null;
 }
 
 export const Board: React.FC<BoardProps> = ({
   fen,
   interactive = true,
-  flipped = false,
+  flipped: propFlipped,
   size,
   onMove,
   onSquareClick,
@@ -50,11 +222,37 @@ export const Board: React.FC<BoardProps> = ({
   arrows = [],
   lastMoveSquares = null,
   allowedMoves = [],
+  soundEnabled = true,
+  boardTheme: propBoardTheme,
+  pieceSet: propPieceSet,
 }) => {
+  const globalBoardTheme = useAppStore(s => s.boardTheme);
+  const globalPieceSet = useAppStore(s => s.pieceSet);
+  const globalBoardFlipped = useAppStore(s => s.boardFlipped);
+
+  const boardTheme = propBoardTheme !== undefined ? propBoardTheme : globalBoardTheme;
+  const pieceSet = propPieceSet !== undefined ? propPieceSet : globalPieceSet;
+  const flipped = propFlipped !== undefined ? propFlipped : globalBoardFlipped;
   const [selectedSq, setSelectedSq] = useState<string | null>(null);
   const [legalMoves, setLegalMoves] = useState<Array<{ to: string; captured?: string }>>([]);
+  const [dragState, setDragState] = useState<DragState | null>(null);
+  const [animatingPiece, setAnimatingPiece] = useState<{
+    key: string; fromX: number; fromY: number; toX: number; toY: number; svgKey: string;
+  } | null>(null);
+
+  // Right-click interactive drawing states
+  const [rightDrag, setRightDrag] = useState<{ from: string; to: string } | null>(null);
+  const [drawnArrows, setDrawnArrows] = useState<Array<{ from: string; to: string; color?: string; dashed?: boolean; width?: number }>>([]);
+  const [drawnHighlights, setDrawnHighlights] = useState<string[]>([]);
+
   const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [boardSize, setBoardSize] = useState(size || 400);
+  const prevFenRef = useRef(fen);
+
+  const themeColors = BOARD_THEMES[boardTheme] || BOARD_THEMES.green;
+  const lightColor = themeColors.light;
+  const darkColor = themeColors.dark;
 
   // Responsive sizing
   useEffect(() => {
@@ -72,7 +270,6 @@ export const Board: React.FC<BoardProps> = ({
 
   const sqSize = boardSize / 8;
 
-  // Create a new Chess instance each render (cheap for board display)
   let game: Chess;
   try {
     game = new Chess(fen);
@@ -80,6 +277,34 @@ export const Board: React.FC<BoardProps> = ({
     game = new Chess();
   }
   const board = game.board();
+
+  // Detect piece animation on FEN change
+  useEffect(() => {
+    if (prevFenRef.current !== fen) {
+      const diff = detectMoveDiff(prevFenRef.current, fen);
+      if (diff) {
+        const dx = diff.fromFile - diff.toFile;
+        const dy = diff.fromRank - diff.toRank;
+        const multiplier = flipped ? -1 : 1;
+
+        setAnimatingPiece({
+          key: `piece-${diff.toFile}-${diff.toRank}`,
+          fromX: dx * sqSize * multiplier,
+          fromY: dy * sqSize * multiplier,
+          toX: 0,
+          toY: 0,
+          svgKey: diff.piece.color === 'w' ? diff.piece.type.toUpperCase() : diff.piece.type
+        });
+
+        const timer = setTimeout(() => {
+          setAnimatingPiece(null);
+        }, 150);
+        prevFenRef.current = fen;
+        return () => clearTimeout(timer);
+      }
+      prevFenRef.current = fen;
+    }
+  }, [fen, sqSize, flipped]);
 
   // Find check square
   let checkSquare: string | null = null;
@@ -104,47 +329,71 @@ export const Board: React.FC<BoardProps> = ({
     return { x: f * sqSize, y: r * sqSize };
   };
 
-  const handleSquareClick = useCallback((square: string) => {
-    if (!interactive) return;
+  const getSqFromPixel = (px: number, py: number): string | null => {
+    const f = Math.floor(px / sqSize);
+    const r = Math.floor(py / sqSize);
+    if (f < 0 || f > 7 || r < 0 || r > 7) return null;
+    const fileIdx = flipped ? 7 - f : f;
+    const rankIdx = flipped ? 7 - r : r;
+    return FILES[fileIdx] + RANKS[rankIdx];
+  };
+
+  // Execute move with sound
+  const executeMove = useCallback((from: string, to: string) => {
+    try {
+      const piece = game.get(from as Square);
+      let promotion: string | undefined;
+      if (piece?.type === 'p') {
+        const toRank = to[1];
+        if ((piece.color === 'w' && toRank === '8') || (piece.color === 'b' && toRank === '1')) {
+          promotion = 'q';
+        }
+      }
+      const move = game.move({ from, to, promotion: promotion as any });
+      if (move && onMove) {
+        if (soundEnabled) {
+          try {
+            if (game.isCheckmate() || game.isStalemate()) SoundEngine.playGameEnd();
+            else if (game.isCheck()) SoundEngine.playCheck();
+            else if (move.san.includes('O-O')) SoundEngine.playCastle();
+            else if (move.captured) SoundEngine.playCapture();
+            else SoundEngine.playMove();
+          } catch (soundError) {
+            // Audio context failed under test environment or without user gesture - safe to ignore
+          }
+        }
+        onMove(from, to, move.san);
+      }
+    } catch (err) {
+      console.error("executeMove error:", err);
+    }
+  }, [fen, onMove, soundEnabled]);
+
+  const handleSquareClick = useCallback((square: string, skipToggleOff = false) => {
+    if (!interactive || dragState?.active) return;
     onSquareClick?.(square);
 
     if (selectedSq) {
       if (selectedSq === square) {
-        setSelectedSq(null);
-        setLegalMoves([]);
+        if (!skipToggleOff) {
+          setSelectedSq(null);
+          setLegalMoves([]);
+        }
         return;
       }
-      // Check if this is a legal target
       const isLegal = legalMoves.some(m => m.to === square);
       if (isLegal) {
-        try {
-          const piece = game.get(selectedSq as Square);
-          let promotion: string | undefined;
-          if (piece?.type === 'p') {
-            const toRank = square[1];
-            if ((piece.color === 'w' && toRank === '8') || (piece.color === 'b' && toRank === '1')) {
-              promotion = 'q';
-            }
-          }
-          const move = game.move({ from: selectedSq, to: square, promotion: promotion as any });
-          if (move && onMove) {
-            onMove(selectedSq, square, move.san);
-          }
-        } catch { /* noop */ }
+        executeMove(selectedSq, square);
         setSelectedSq(null);
         setLegalMoves([]);
         return;
       }
-      // Clicking a different own piece
       const piece = game.get(square as Square);
       if (piece && piece.color === game.turn()) {
         setSelectedSq(square);
         const moves = game.moves({ square: square as Square, verbose: true });
         setLegalMoves(moves.map(m => ({ to: m.to, captured: m.captured })));
-        return;
       }
-      setSelectedSq(null);
-      setLegalMoves([]);
     } else {
       const piece = game.get(square as Square);
       if (piece && piece.color === game.turn()) {
@@ -153,12 +402,164 @@ export const Board: React.FC<BoardProps> = ({
         setLegalMoves(moves.map(m => ({ to: m.to, captured: m.captured })));
       }
     }
-  }, [interactive, selectedSq, legalMoves, fen, onMove, onSquareClick, flipped]);
+  }, [interactive, selectedSq, legalMoves, fen, onMove, onSquareClick, flipped, dragState, executeMove]);
+
+  // Drag and drop handlers
+  const getPointerPos = (e: React.PointerEvent): { x: number; y: number } | null => {
+    if (!svgRef.current) return null;
+    const rect = svgRef.current.getBoundingClientRect();
+    return {
+      x: rect.width ? ((e.clientX - rect.left) / rect.width) * boardSize : 0,
+      y: rect.height ? ((e.clientY - rect.top) / rect.height) * boardSize : 0,
+    };
+  };
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (!interactive) return;
+
+    // Handle right-click interaction for drawing arrows and highlighting squares
+    if (e.button === 2) {
+      const pos = getPointerPos(e);
+      if (!pos) return;
+      const sq = getSqFromPixel(pos.x, pos.y);
+      if (!sq) return;
+
+      setRightDrag({ from: sq, to: sq });
+      (e.target as Element)?.setPointerCapture?.(e.pointerId);
+      return;
+    }
+
+    // Left-click clears all right-click drawings
+    setDrawnArrows([]);
+    setDrawnHighlights([]);
+
+    const pos = getPointerPos(e);
+    if (!pos) return;
+    const sq = getSqFromPixel(pos.x, pos.y);
+    if (!sq) return;
+
+    const piece = game.get(sq as Square);
+    const isPlayerPiece = piece && piece.color === game.turn();
+
+    // If there is no player piece and no selectedSq, we don't need to track drag/click
+    if (!isPlayerPiece && !selectedSq) return;
+
+    const svgKey = isPlayerPiece ? (piece.color === 'w' ? piece.type.toUpperCase() : piece.type) : '';
+
+    // If clicking on player's own piece, update selectedSq and legalMoves
+    if (isPlayerPiece) {
+      const moves = game.moves({ square: sq as Square, verbose: true });
+      setSelectedSq(sq);
+      setLegalMoves(moves.map(m => ({ to: m.to, captured: m.captured })));
+    }
+
+    setDragState({
+      piece: isPlayerPiece ? piece.type : '',
+      from: sq,
+      svgKey,
+      startX: pos.x,
+      startY: pos.y,
+      currentX: pos.x,
+      currentY: pos.y,
+      active: false,
+      alreadySelectedOnDown: selectedSq === sq,
+    });
+
+    (e.target as Element)?.setPointerCapture?.(e.pointerId);
+  }, [interactive, fen, flipped, selectedSq]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (rightDrag) {
+      const pos = getPointerPos(e);
+      if (!pos) return;
+      const targetSq = getSqFromPixel(pos.x, pos.y);
+      if (targetSq && targetSq !== rightDrag.to) {
+        setRightDrag({ ...rightDrag, to: targetSq });
+      }
+      return;
+    }
+
+    if (!dragState) return;
+    const pos = getPointerPos(e);
+    if (!pos) return;
+
+    const dx = pos.x - dragState.startX;
+    const dy = pos.y - dragState.startY;
+    const threshold = sqSize * 0.2;
+
+    setDragState(prev => prev ? {
+      ...prev,
+      currentX: pos.x,
+      currentY: pos.y,
+      active: prev.active || Math.sqrt(dx * dx + dy * dy) > threshold,
+    } : null);
+  }, [dragState, rightDrag, sqSize]);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    if (rightDrag) {
+      const { from, to } = rightDrag;
+      if (from === to) {
+        // Toggle square highlight
+        setDrawnHighlights(prev =>
+          prev.includes(from) ? prev.filter(sq => sq !== from) : [...prev, from]
+        );
+      } else {
+        // Toggle arrow
+        const arrowExists = drawnArrows.some(arr => arr.from === from && arr.to === to);
+        if (arrowExists) {
+          setDrawnArrows(prev => prev.filter(arr => !(arr.from === from && arr.to === to)));
+        } else {
+          setDrawnArrows(prev => [...prev, { from, to, color: 'rgba(245, 158, 11, 0.85)' }]);
+        }
+      }
+      setRightDrag(null);
+      return;
+    }
+
+    if (!dragState) return;
+
+    if (dragState.active) {
+      if (dragState.piece) {
+        const pos = getPointerPos(e);
+        if (pos) {
+          const targetSq = getSqFromPixel(pos.x, pos.y);
+          if (targetSq && targetSq !== dragState.from) {
+            const isLegal = legalMoves.some(m => m.to === targetSq);
+            if (isLegal) {
+              executeMove(dragState.from, targetSq);
+            }
+          }
+        }
+      }
+      setSelectedSq(null);
+      setLegalMoves([]);
+    } else {
+      // It was a click, not a drag — handleSquareClick will handle it
+      const pos = getPointerPos(e);
+      if (pos) {
+        const sq = getSqFromPixel(pos.x, pos.y);
+        if (sq) {
+          const piece = game.get(sq as Square);
+          const isPlayerPiece = piece && piece.color === game.turn();
+          if (isPlayerPiece && sq === dragState.from && !dragState.alreadySelectedOnDown) {
+            handleSquareClick(sq, true);
+          } else {
+            handleSquareClick(sq);
+          }
+        }
+      }
+    }
+
+    setDragState(null);
+  }, [dragState, rightDrag, drawnArrows, legalMoves, executeMove, handleSquareClick]);
 
   // Reset selection when FEN changes
   useEffect(() => {
     setSelectedSq(null);
     setLegalMoves([]);
+    setDragState(null);
+    setDrawnArrows([]);
+    setDrawnHighlights([]);
   }, [fen]);
 
   const files = flipped ? [...FILES].reverse() : FILES;
@@ -168,14 +569,19 @@ export const Board: React.FC<BoardProps> = ({
     <div
       ref={containerRef}
       className="chessboard-container"
-      style={{ width: boardSize, height: boardSize }}
+      style={{ width: boardSize, height: boardSize, touchAction: 'none' }}
     >
       <svg
+        ref={svgRef}
         width={boardSize}
         height={boardSize}
         viewBox={`0 0 ${boardSize} ${boardSize}`}
         className="chess-board-svg"
         style={{ userSelect: 'none' }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onContextMenu={(e) => e.preventDefault()}
       >
         {/* Background */}
         <rect x={0} y={0} width={boardSize} height={boardSize} fill="#2a2a3a" rx={4} />
@@ -191,8 +597,7 @@ export const Board: React.FC<BoardProps> = ({
                 y={rIdx * sqSize}
                 width={sqSize}
                 height={sqSize}
-                fill={isLight ? LIGHT_COLOR : DARK_COLOR}
-                onClick={() => handleSquareClick(`${file}${rank}`)}
+                fill={isLight ? lightColor : darkColor}
                 style={{ cursor: interactive ? 'pointer' : 'default' }}
               />
             );
@@ -253,26 +658,92 @@ export const Board: React.FC<BoardProps> = ({
           );
         })}
 
+        {/* User-drawn highlights (right click) */}
+        {drawnHighlights.map(sq => {
+          const pos = toSVGCoords(getFileIdx(sq), getRankIdx(sq));
+          return (
+            <rect
+              key={`user-hl-${sq}`}
+              x={pos.x} y={pos.y}
+              width={sqSize} height={sqSize}
+              fill="rgba(245, 158, 11, 0.35)"
+              pointerEvents="none"
+            />
+          );
+        })}
+
         {/* Pieces */}
         {board.map((row, rIdx) =>
           row.map((piece, fIdx) => {
             if (!piece) return null;
             const svgKey = piece.color === 'w' ? piece.type.toUpperCase() : piece.type;
-            const svg = PIECE_SVG[svgKey];
+            let svg = PIECE_SVG[svgKey];
             if (!svg) return null;
+            const sq = FILES[fIdx] + RANKS[rIdx];
+            
+            // Apply piece set transformations
+            if (pieceSet === 'neo') {
+              if (piece.color === 'w') {
+                svg = svg
+                  .replace(/fill="#fff"/g, 'fill="#093325"')
+                  .replace(/stroke="#000"/g, 'stroke="#10b981" stroke-width="2"');
+              } else {
+                svg = svg
+                  .replace(/fill="#000"/g, 'fill="#1e1333"')
+                  .replace(/stroke="#fff"/g, 'stroke="#a78bfa" stroke-width="2"')
+                  .replace(/stroke="#000"/g, 'stroke="#a78bfa" stroke-width="2"');
+              }
+            } else if (pieceSet === 'alpha') {
+              if (piece.color === 'w') {
+                svg = svg
+                  .replace(/fill="#fff"/g, 'fill="#f8fafc"')
+                  .replace(/stroke="#000"/g, 'stroke="#334155"');
+              } else {
+                svg = svg
+                  .replace(/fill="#000"/g, 'fill="#0f172a"')
+                  .replace(/stroke="#fff"/g, 'stroke="#64748b"')
+                  .replace(/stroke="#000"/g, 'stroke="#0f172a"');
+              }
+            } else if (pieceSet === 'merida') {
+              if (piece.color === 'w') {
+                svg = svg
+                  .replace(/fill="#fff"/g, 'fill="#faecd8"')
+                  .replace(/stroke="#000"/g, 'stroke="#6b4c35"');
+              } else {
+                svg = svg
+                  .replace(/fill="#000"/g, 'fill="#4a2c11"')
+                  .replace(/stroke="#fff"/g, 'stroke="#faecd8"')
+                  .replace(/stroke="#000"/g, 'stroke="#4a2c11"');
+              }
+            }
+
+            // Don't render the piece being dragged at its original position
+            if (dragState?.active && dragState.from === sq) return null;
             const pos = toSVGCoords(fIdx, rIdx);
             const scale = sqSize / 45;
+
+            // Check if this piece is currently animating from a previous FEN position
+            const isAnimating = animatingPiece && animatingPiece.key === `piece-${fIdx}-${rIdx}`;
+
             return (
               <g
                 key={`piece-${fIdx}-${rIdx}`}
-                transform={`translate(${pos.x}, ${pos.y}) scale(${scale})`}
-                style={{ 
-                  cursor: interactive ? 'pointer' : 'default',
-                  transition: 'transform 0.2s ease-in-out'
-                }}
-                onClick={() => handleSquareClick(FILES[fIdx] + RANKS[rIdx])}
-                dangerouslySetInnerHTML={{ __html: svg }}
-              />
+                transform={`translate(${pos.x}, ${pos.y})`}
+                style={{ cursor: interactive ? 'grab' : 'default' }}
+              >
+                <g
+                  style={isAnimating ? {
+                    animation: 'pieceMove 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
+                    ['--from-x' as any]: `${animatingPiece.fromX}px`,
+                    ['--from-y' as any]: `${animatingPiece.fromY}px`,
+                  } : undefined}
+                >
+                  <g
+                    transform={`scale(${scale})`}
+                    dangerouslySetInnerHTML={{ __html: svg }}
+                  />
+                </g>
+              </g>
             );
           })
         )}
@@ -306,8 +777,85 @@ export const Board: React.FC<BoardProps> = ({
           );
         })}
 
-        {/* Arrows */}
-        {arrows.map((arrow, idx) => {
+        {/* Dragging piece ghost (at cursor position) */}
+        {dragState?.active && (() => {
+          let svg = PIECE_SVG[dragState.svgKey];
+          if (!svg) return null;
+
+          // Apply piece set transformations
+          const isWhite = dragState.svgKey === dragState.svgKey.toUpperCase();
+          if (pieceSet === 'neo') {
+            if (isWhite) {
+              svg = svg
+                .replace(/fill="#fff"/g, 'fill="#093325"')
+                .replace(/stroke="#000"/g, 'stroke="#10b981" stroke-width="2"');
+            } else {
+              svg = svg
+                .replace(/fill="#000"/g, 'fill="#1e1333"')
+                .replace(/stroke="#fff"/g, 'stroke="#a78bfa" stroke-width="2"')
+                .replace(/stroke="#000"/g, 'stroke="#a78bfa" stroke-width="2"');
+            }
+          } else if (pieceSet === 'alpha') {
+            if (isWhite) {
+              svg = svg
+                .replace(/fill="#fff"/g, 'fill="#f8fafc"')
+                .replace(/stroke="#000"/g, 'stroke="#334155"');
+            } else {
+              svg = svg
+                .replace(/fill="#000"/g, 'fill="#0f172a"')
+                .replace(/stroke="#fff"/g, 'stroke="#64748b"')
+                .replace(/stroke="#000"/g, 'stroke="#0f172a"');
+            }
+          } else if (pieceSet === 'merida') {
+            if (isWhite) {
+              svg = svg
+                .replace(/fill="#fff"/g, 'fill="#faecd8"')
+                .replace(/stroke="#000"/g, 'stroke="#6b4c35"');
+            } else {
+              svg = svg
+                .replace(/fill="#000"/g, 'fill="#4a2c11"')
+                .replace(/stroke="#fff"/g, 'stroke="#faecd8"')
+                .replace(/stroke="#000"/g, 'stroke="#4a2c11"');
+            }
+          }
+
+          const scale = (sqSize * 1.2) / 45; // Slightly larger while dragging
+          const offsetX = dragState.currentX - (sqSize * 1.2) / 2;
+          const offsetY = dragState.currentY - (sqSize * 1.2) / 2;
+          return (
+            <g
+              transform={`translate(${offsetX}, ${offsetY}) scale(${scale})`}
+              style={{ opacity: 0.9, filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))' }}
+              pointerEvents="none"
+              dangerouslySetInnerHTML={{ __html: svg }}
+            />
+          );
+        })()}
+
+        {/* Drag target highlight */}
+        {dragState?.active && (() => {
+          const sq = getSqFromPixel(dragState.currentX, dragState.currentY);
+          if (!sq || sq === dragState.from) return null;
+          const isLegal = legalMoves.some(m => m.to === sq);
+          if (!isLegal) return null;
+          const pos = toSVGCoords(getFileIdx(sq), getRankIdx(sq));
+          return (
+            <rect
+              x={pos.x} y={pos.y}
+              width={sqSize} height={sqSize}
+              fill="rgba(16, 185, 129, 0.35)"
+              rx={4}
+              pointerEvents="none"
+            />
+          );
+        })()}
+
+        {/* Arrows (combined static arrows and user drawn arrows) */}
+        {[
+          ...arrows,
+          ...drawnArrows,
+          ...(rightDrag && rightDrag.from !== rightDrag.to ? [{ from: rightDrag.from, to: rightDrag.to, color: 'rgba(245, 158, 11, 0.6)' }] : [])
+        ].map((arrow, idx) => {
           const fromPos = toSVGCoords(getFileIdx(arrow.from), getRankIdx(arrow.from));
           const toPos = toSVGCoords(getFileIdx(arrow.to), getRankIdx(arrow.to));
           const x1 = fromPos.x + sqSize / 2;
@@ -354,7 +902,7 @@ export const Board: React.FC<BoardProps> = ({
               fontSize={Math.max(9, sqSize * 0.18)}
               fontFamily="'JetBrains Mono', monospace"
               fontWeight={700}
-              fill={isLight ? DARK_COLOR : LIGHT_COLOR}
+              fill={isLight ? darkColor : lightColor}
               opacity={0.85}
               pointerEvents="none"
               textAnchor="end"
@@ -373,7 +921,7 @@ export const Board: React.FC<BoardProps> = ({
               fontSize={Math.max(9, sqSize * 0.18)}
               fontFamily="'JetBrains Mono', monospace"
               fontWeight={700}
-              fill={isLight ? DARK_COLOR : LIGHT_COLOR}
+              fill={isLight ? darkColor : lightColor}
               opacity={0.85}
               pointerEvents="none"
             >

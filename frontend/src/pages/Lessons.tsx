@@ -4,6 +4,8 @@ import { useAppStore } from '../store/useAppStore';
 import { ALL_COURSES, Course, LessonSubModule } from '../content/index';
 import { Chess } from 'chess.js';
 import { ReplayPanel } from '../components/ReplayPanel';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 export const Lessons: React.FC = () => {
   const [selectedCourseIdx, setSelectedCourseIdx] = useState<number>(0);
@@ -121,29 +123,27 @@ export const Lessons: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn">
+    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
       {/* Course Header/Tabs */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Interactive Curriculum</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-500 font-mono">Interactive Curriculum</span>
           <h2 className="text-2xl font-black text-white font-serif">Chess OS Curriculum</h2>
         </div>
         
         {/* Course Dropdown/Grid */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin max-w-full">
           {ALL_COURSES.map((course, idx) => (
-            <button
+            <Button
               key={course.id}
               onClick={() => changeCourse(idx)}
-              className={`px-4 py-2 rounded-xl border text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                idx === selectedCourseIdx
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                  : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-400'
-              }`}
+              variant={idx === selectedCourseIdx ? 'primary' : 'secondary'}
+              size="sm"
+              className="whitespace-nowrap flex items-center gap-1.5 shrink-0"
             >
               <span>{course.icon}</span>
               <span>{course.title}</span>
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -152,17 +152,17 @@ export const Lessons: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Submodules for the selected course */}
         <div className="flex flex-col gap-3">
-          <div className="bg-[#0c0c14] border border-white/5 p-4 rounded-2xl">
+          <Card className="flex flex-col gap-1.5" hoverEffect={false}>
             <h3 className="font-extrabold text-sm text-white flex items-center gap-2 mb-1">
               <span>{currentCourse.icon}</span>
               <span>{currentCourse.title}</span>
             </h3>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
+            <p className="text-[11px] text-slate-400 leading-relaxed font-semibold">
               {currentCourse.description}
             </p>
-          </div>
+          </Card>
 
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mt-2">Modules</span>
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mt-2 font-mono">Modules</span>
           <div className="flex flex-col gap-2 max-h-[450px] overflow-y-auto pr-1">
             {currentCourse.modules.map((m, idx) => (
               <button
@@ -177,12 +177,12 @@ export const Lessons: React.FC = () => {
                 <div className="flex justify-between items-center w-full">
                   <h4 className="font-bold text-xs text-white leading-tight">{m.title}</h4>
                   {isModuleCompleted(currentCourse.id, m.id) && (
-                    <span className="text-[8px] bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wider">
+                    <span className="text-[8px] bg-emerald-500/20 text-emerald-400 font-bold px-1.5 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wider font-mono">
                       Done
                     </span>
                   )}
                 </div>
-                <span className="text-[9px] uppercase font-bold text-slate-500">{m.difficulty}</span>
+                <span className="text-[9px] uppercase font-bold text-slate-500 font-mono">{m.difficulty}</span>
               </button>
             ))}
           </div>
@@ -216,7 +216,7 @@ export const Lessons: React.FC = () => {
           </div>
 
           {/* Tab Workspaces */}
-          <div className="glass-panel p-6 rounded-3xl min-h-[400px] flex flex-col justify-between border border-white/5">
+          <Card className="min-h-[400px] flex flex-col justify-between" hoverEffect={false}>
             {mode === 'theory' && (
               <div className="flex flex-col gap-4 animate-fadeIn">
                 <div className="border-b border-white/5 pb-2">
@@ -226,7 +226,7 @@ export const Lessons: React.FC = () => {
                   </span>
                 </div>
                 <div 
-                  className="text-sm text-slate-300 leading-relaxed space-y-4"
+                  className="text-sm text-slate-300 leading-relaxed space-y-4 font-semibold"
                   dangerouslySetInnerHTML={{ __html: currentModule.theory }} 
                 />
               </div>
@@ -260,10 +260,10 @@ export const Lessons: React.FC = () => {
                 </div>
                 <div className="flex flex-col gap-4 flex-1 w-full">
                   <div>
-                    <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider">Example {selectedExampleIdx + 1} of {currentModule.examples.length}</span>
+                    <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider font-mono">Example {selectedExampleIdx + 1} of {currentModule.examples.length}</span>
                     <h4 className="font-bold text-sm text-white mt-0.5">{currentModule.examples[selectedExampleIdx]?.title}</h4>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed bg-[#0c0c14] border border-white/5 p-4 rounded-xl">
+                  <p className="text-xs text-slate-300 leading-relaxed bg-[#0c0c14] border border-white/5 p-4 rounded-xl font-semibold">
                     {currentModule.examples[selectedExampleIdx]?.description}
                   </p>
                   <ReplayPanel 
@@ -281,7 +281,7 @@ export const Lessons: React.FC = () => {
               <div className="flex flex-col gap-4 animate-fadeIn">
                 <div className="flex justify-between items-center border-b border-white/5 pb-2">
                   <div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase">Assessment Quiz</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase font-mono">Assessment Quiz</span>
                     <h4 className="font-extrabold text-sm text-white mt-0.5">
                       Question {quizIdx + 1} of {currentModule.exercises!.length}
                     </h4>
@@ -289,11 +289,11 @@ export const Lessons: React.FC = () => {
                   <span className="text-xs font-mono text-emerald-400 font-bold">+10 XP</span>
                 </div>
 
-                <p className="text-sm text-slate-200 font-medium leading-relaxed my-2">
+                <p className="text-sm text-slate-200 font-semibold leading-relaxed my-2">
                   {currentModule.exercises![quizIdx]?.question}
                 </p>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 font-semibold">
                   {currentModule.exercises![quizIdx]?.options.map((opt, oIdx) => (
                     <button
                       key={oIdx}
@@ -303,7 +303,7 @@ export const Lessons: React.FC = () => {
                           ? oIdx === currentModule.exercises![quizIdx].answer
                             ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400 font-bold'
                             : oIdx === selectedOption
-                            ? 'bg-red-500/10 border-red-500/50 text-red-400'
+                            ? 'bg-red-500/10 border-red-500/50 text-red-400 font-bold'
                             : 'bg-white/[0.02] border-white/5 opacity-55'
                           : selectedOption === oIdx
                           ? 'bg-amber-500/10 border-amber-500 text-amber-400 font-semibold'
@@ -317,7 +317,7 @@ export const Lessons: React.FC = () => {
 
                 <div className="flex flex-col gap-4 mt-2">
                   {isAnswered && (
-                    <div className="text-xs text-slate-400 bg-[#0c0c14] border border-white/5 p-4 rounded-xl leading-relaxed">
+                    <div className="text-xs text-slate-400 bg-black/40 border border-white/5 p-4 rounded-xl leading-relaxed font-semibold">
                       <strong className="block text-white mb-1">
                         {selectedOption === currentModule.exercises[quizIdx].answer ? '🎉 Brilliant! (+10 XP)' : '❌ Inaccurate'}
                       </strong>
@@ -326,25 +326,26 @@ export const Lessons: React.FC = () => {
                   )}
 
                   {!isAnswered ? (
-                    <button
+                    <Button
                       onClick={handleQuizSubmit}
                       disabled={selectedOption === null}
-                      className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-bg-primary font-bold py-2.5 rounded-xl transition-all shadow-glow text-center text-xs"
+                      fullWidth
                     >
                       Submit Answer
-                    </button>
+                    </Button>
                   ) : (
-                    <button
+                    <Button
                       onClick={handleNextQuiz}
-                      className="bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-2.5 rounded-xl transition-all text-center text-xs"
+                      variant="secondary"
+                      fullWidth
                     >
                       {quizIdx < currentModule.exercises.length - 1 ? 'Next Question' : 'Complete Module Study'}
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>
             )}
-          </div>
+          </Card>
         </div>
       </div>
     </div>

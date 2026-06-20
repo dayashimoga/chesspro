@@ -5,13 +5,50 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Dashboard } from '../Dashboard';
 import { useAppStore } from '../../store/useAppStore';
 
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => mockNavigate,
+}));
+
 // Mock Zustand store
 vi.mock('../../store/useAppStore', () => ({
   useAppStore: vi.fn(),
 }));
 
+// Mock core engines for deterministic tests
+vi.mock('../../core/storage', () => ({
+  Storage: {
+    analyzeWeaknesses: () => ({ weaknesses: ['calculation'] }),
+  },
+  SpacedRepetition: {
+    getStats: () => ({ due: 3 }),
+  },
+}));
+
+vi.mock('../../core/adaptive-engine', () => ({
+  AdaptiveEngine: {
+    analyzeProfile: () => ({
+      overallRating: 1200,
+      confidence: 0.85,
+      weakAreas: ['calculation'],
+    }),
+  },
+}));
+
+vi.mock('../../core/gamification', () => ({
+  Gamification: {
+    getStats: () => ({ puzzlesSolved: 10, lessonsCompleted: 5 }),
+    getDailyChallenges: () => [
+      { id: '1', title: 'Solve 3 Puzzles', description: 'Solve 3 puzzles of any rating', target: 3, current: 1, xpReward: 50, completed: false, icon: '🎯' },
+    ],
+    getAllAchievements: () => [
+      { id: 'first_steps', title: 'First Steps', description: 'Complete your first lesson', unlocked: true, icon: '🚀' },
+      { id: 'tactician_1', title: 'Tactician I', description: 'Solve 10 puzzles', unlocked: true, icon: '🧩' },
+    ],
+  },
+}));
+
 describe('Dashboard', () => {
-  const mockSetActivePage = vi.fn();
   const mockUser = {
     email: 'testuser@chessos.com',
     puzzleRating: 1200,
@@ -28,7 +65,6 @@ describe('Dashboard', () => {
       const state = {
         user: mockUser,
         completedLessons: ['foundations-rules', 'foundations-movement'],
-        setActivePage: mockSetActivePage,
       };
       return selector(state);
     });
@@ -53,7 +89,7 @@ describe('Dashboard', () => {
     expect(playAIBtn).toBeInTheDocument();
 
     fireEvent.click(solvePuzzlesBtn);
-    expect(mockSetActivePage).toHaveBeenCalledWith('puzzles');
+    expect(mockNavigate).toHaveBeenCalledWith('/puzzles');
   });
 
   it('renders skill tree nodes based on progress', () => {

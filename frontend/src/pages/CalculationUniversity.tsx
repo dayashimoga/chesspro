@@ -3,6 +3,8 @@ import { Chess } from 'chess.js';
 import { Board } from '../components/Board';
 import { useAppStore } from '../store/useAppStore';
 import { stockfishService } from '../core/stockfishService';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 interface CalculationExercise {
   id: string;
@@ -174,18 +176,16 @@ export const CalculationUniversity: React.FC = () => {
       {/* Topic Selector */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
         {CALC_TOPICS.map(topic => (
-          <button
+          <Button
             key={topic.id}
             onClick={() => { setActiveTopic(topic.id); setExerciseIdx(0); }}
-            className={`px-4 py-2.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-              activeTopic === topic.id
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-400'
-            }`}
+            variant={activeTopic === topic.id ? 'primary' : 'secondary'}
+            size="sm"
+            className="whitespace-nowrap flex items-center gap-1.5 shrink-0"
           >
             <span>{topic.icon}</span>
             <span>{topic.title}</span>
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -193,19 +193,19 @@ export const CalculationUniversity: React.FC = () => {
         {/* Left: Theory + Candidate Moves */}
         <div className="flex flex-col gap-4">
           {/* Topic Theory */}
-          <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14]">
+          <Card hoverEffect={false}>
             <div className="flex items-center gap-2 pb-2 border-b border-white/5 mb-3">
               <span className="text-2xl">{CALC_TOPICS.find(t => t.id === activeTopic)?.icon}</span>
               <h3 className="font-bold text-white text-sm">{CALC_TOPICS.find(t => t.id === activeTopic)?.title}</h3>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-300 leading-relaxed font-semibold">
               {CALC_TOPICS.find(t => t.id === activeTopic)?.desc}
             </p>
-          </div>
+          </Card>
 
           {/* Candidate Moves Panel */}
           {showSolution && (
-            <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14] animate-fadeIn">
+            <Card className="animate-fadeIn" hoverEffect={false}>
               <h4 className="font-bold text-xs text-white uppercase tracking-wider mb-3">Candidate Moves Analysis</h4>
               <div className="flex flex-col gap-2">
                 {currentExercise.candidateMoves.map((cm, idx) => (
@@ -222,14 +222,14 @@ export const CalculationUniversity: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </Card>
           )}
 
           {/* Engine Comparison */}
           {phase === 'compare' && (
-            <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14] animate-fadeIn">
+            <Card className="animate-fadeIn" hoverEffect={false}>
               <h4 className="font-bold text-xs text-white uppercase tracking-wider mb-3">🔬 Engine Comparison</h4>
-              <div className="text-xs text-slate-300 space-y-2">
+              <div className="text-xs text-slate-300 space-y-2 font-semibold">
                 <div className="flex justify-between border-b border-white/5 pb-1">
                   <span>Your move:</span>
                   <span className="font-mono font-bold text-amber-400">{userMove || 'N/A'}</span>
@@ -247,13 +247,13 @@ export const CalculationUniversity: React.FC = () => {
                   <span className="font-mono text-slate-400">{currentExercise.bestLine.join(' ')}</span>
                 </div>
               </div>
-            </div>
+            </Card>
           )}
         </div>
 
         {/* Center: Interactive Board */}
         <div className="flex flex-col gap-4 items-center justify-start">
-          <div className="bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5 w-full flex flex-col items-center">
+          <Card className="w-full flex flex-col items-center p-6" hoverEffect={false}>
             <Board
               fen={boardFen}
               interactive={phase === 'calculate'}
@@ -264,7 +264,7 @@ export const CalculationUniversity: React.FC = () => {
               <span className="mx-2">•</span>
               <span>{currentExercise.title}</span>
             </div>
-          </div>
+          </Card>
 
           {/* Feedback */}
           {feedback && (
@@ -280,7 +280,7 @@ export const CalculationUniversity: React.FC = () => {
 
         {/* Right: Workflow Steps */}
         <div className="flex flex-col gap-4">
-          <div className="glass-panel p-6 rounded-2xl border border-white/5 bg-[#0c0c14]">
+          <Card hoverEffect={false}>
             <h3 className="font-bold text-sm text-white mb-4">Calculation Workflow</h3>
 
             {/* Phase indicators */}
@@ -296,50 +296,52 @@ export const CalculationUniversity: React.FC = () => {
             {phase === 'study' && (
               <div className="flex flex-col gap-3 animate-fadeIn">
                 <h4 className="font-bold text-xs text-emerald-400 uppercase tracking-wider">1. Study the Position</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed font-semibold">
                   Examine the position carefully. Identify: material balance, king safety, piece activity, pawn structure, and threats.
                 </p>
-                <div className="bg-white/5 rounded-lg p-3 text-xs text-slate-400">
+                <div className="bg-white/5 border border-white/5 rounded-2xl p-3 text-xs text-slate-400">
                   <strong className="text-white block mb-1">Coach Tip:</strong>
                   {currentExercise.coachNotes.split('.')[0]}.
                 </div>
-                <button
+                <Button
                   onClick={() => setPhase('analyze')}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-bg-primary font-bold py-2 rounded-xl text-xs transition-all"
+                  fullWidth
+                  size="sm"
                 >
                   I've studied the position →
-                </button>
+                </Button>
               </div>
             )}
 
             {phase === 'analyze' && (
               <div className="flex flex-col gap-3 animate-fadeIn">
                 <h4 className="font-bold text-xs text-emerald-400 uppercase tracking-wider">2. Generate Candidate Moves</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed font-semibold">
                   Apply the CCT framework: list all <strong>Checks</strong>, then <strong>Captures</strong>, then <strong>Threats</strong>. Write your top 3 candidate moves mentally.
                 </p>
                 <textarea
                   placeholder="List your candidate moves and reasoning (e.g., '1. Bxh7+ — sacrifice to open the king. 2. Ng5 — attacks f7...')"
                   value={userReasoning}
                   onChange={e => setUserReasoning(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-lg p-3 text-xs text-white resize-none h-24 focus:outline-none focus:border-emerald-500 font-mono"
+                  className="bg-bg-primary border border-white/10 rounded-xl p-3 text-xs text-white resize-none h-24 focus:outline-none focus:border-emerald-500 font-mono w-full"
                 />
-                <button
+                <Button
                   onClick={() => setPhase('calculate')}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-bg-primary font-bold py-2 rounded-xl text-xs transition-all"
+                  fullWidth
+                  size="sm"
                 >
                   Ready to play my move →
-                </button>
+                </Button>
               </div>
             )}
 
             {phase === 'calculate' && (
               <div className="flex flex-col gap-3 animate-fadeIn">
                 <h4 className="font-bold text-xs text-emerald-400 uppercase tracking-wider">3. Play Your Best Move</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed font-semibold">
                   Click on the board to play your calculated best move. The board is now interactive.
                 </p>
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-xs text-amber-400">
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 text-xs text-amber-400 font-bold">
                   ⚠️ Think before you move! Once you play, the system will compare with the engine.
                 </div>
               </div>
@@ -348,54 +350,59 @@ export const CalculationUniversity: React.FC = () => {
             {phase === 'compare' && (
               <div className="flex flex-col gap-3 animate-fadeIn">
                 <h4 className="font-bold text-xs text-emerald-400 uppercase tracking-wider">4. Compare & Learn</h4>
-                <div className="bg-[#06060b] border border-white/5 p-3 rounded-xl text-xs text-slate-300 leading-relaxed">
+                <div className="bg-bg-primary border border-white/5 p-3 rounded-2xl text-xs text-slate-300 leading-relaxed font-semibold">
                   <strong className="text-white block mb-1">📖 Coach Analysis:</strong>
                   {currentExercise.coachNotes}
                 </div>
-                <button
+                <Button
                   onClick={() => setPhase('review')}
-                  className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold py-2 rounded-xl text-xs transition-all"
+                  variant="secondary"
+                  fullWidth
+                  size="sm"
                 >
                   Review Complete →
-                </button>
+                </Button>
               </div>
             )}
 
             {phase === 'review' && (
               <div className="flex flex-col gap-3 animate-fadeIn">
                 <h4 className="font-bold text-xs text-emerald-400 uppercase tracking-wider">5. Summary</h4>
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-xs text-emerald-400">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-3 text-xs text-emerald-400 font-bold">
                   🏆 Exercise complete! You practiced the {CALC_TOPICS.find(t => t.id === activeTopic)?.title} technique.
                 </div>
-                <button
+                <Button
                   onClick={handleNextExercise}
-                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-bg-primary font-extrabold py-2.5 rounded-xl text-xs transition-all shadow-glow"
+                  fullWidth
+                  size="sm"
                 >
                   Next Exercise →
-                </button>
+                </Button>
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Exercise navigation */}
           <div className="flex justify-between items-center text-xs text-slate-500">
-            <button
+            <Button
               onClick={() => setExerciseIdx(Math.max(0, exerciseIdx - 1))}
               disabled={exerciseIdx === 0}
-              className="bg-white/5 border border-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg disabled:opacity-40 font-bold"
+              variant="secondary"
+              size="sm"
             >
               ◀ Prev
-            </button>
-            <span className="font-mono">
+            </Button>
+            <span className="font-mono font-bold">
               {exerciseIdx + 1} / {topicExercises.length || EXERCISES.length}
             </span>
-            <button
+            <Button
               onClick={() => setExerciseIdx(Math.min((topicExercises.length || EXERCISES.length) - 1, exerciseIdx + 1))}
               disabled={exerciseIdx >= (topicExercises.length || EXERCISES.length) - 1}
-              className="bg-white/5 border border-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg disabled:opacity-40 font-bold"
+              variant="secondary"
+              size="sm"
             >
               Next ▶
-            </button>
+            </Button>
           </div>
         </div>
       </div>

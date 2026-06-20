@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Board } from '../components/Board';
 import { useAppStore } from '../store/useAppStore';
 import endgameContent from '../content/03-endgames';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 type LabPhase = 'theory' | 'examples' | 'exercises' | 'assessment';
 
@@ -67,15 +69,15 @@ export const EndgameUniversity: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-amber-500">Endgame University</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-amber-500 font-mono">Endgame University</span>
           <h2 className="text-2xl font-black text-white font-serif">Endgame Mastery</h2>
           <p className="text-xs text-slate-400 mt-1">Master the art of converting advantages and defending inferior positions</p>
         </div>
         <div className="flex gap-2 items-center">
-          <div className="bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-emerald-400 text-xs font-bold">
+          <div className="bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-emerald-400 text-xs font-bold font-mono">
             {completedModules.size} / {endgameContent.modules.length} Modules
           </div>
-          <div className="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-lg text-amber-400 text-xs font-bold">
+          <div className="bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-lg text-amber-400 text-xs font-bold font-mono">
             Score: {score}/{totalAttempts}
           </div>
         </div>
@@ -84,23 +86,19 @@ export const EndgameUniversity: React.FC = () => {
       {/* Module Selector */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
         {endgameContent.modules.map(mod => (
-          <button
+          <Button
             key={mod.id}
             onClick={() => setActiveModule(mod.id)}
-            className={`px-4 py-2.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-              activeModule === mod.id
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                : completedModules.has(mod.id)
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-400'
-            }`}
+            variant={activeModule === mod.id ? 'primary' : 'secondary'}
+            size="sm"
+            className="whitespace-nowrap flex items-center gap-1.5 shrink-0"
           >
             {completedModules.has(mod.id) && <span>✅</span>}
             <span>{mod.title}</span>
             <span className={`px-1.5 py-0.5 rounded border text-[10px] ${difficultyColor(mod.difficulty)}`}>
               {mod.difficulty}
             </span>
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -111,7 +109,7 @@ export const EndgameUniversity: React.FC = () => {
             key={p}
             onClick={() => setPhase(p)}
             className={`flex-1 py-2 rounded-lg text-xs font-bold capitalize transition-all ${
-              phase === p ? 'bg-amber-500 text-black' : 'hover:bg-white/5 text-slate-400'
+              phase === p ? 'bg-amber-500 text-black shadow-glow' : 'hover:bg-white/5 text-slate-400'
             }`}
           >
             {p}
@@ -124,28 +122,28 @@ export const EndgameUniversity: React.FC = () => {
         {/* Theory Phase */}
         {phase === 'theory' && (
           <>
-            <div className="glass-panel p-6 rounded-2xl border border-white/5 bg-[#0c0c14] overflow-y-auto max-h-[600px] prose prose-invert prose-sm">
+            <Card className="overflow-y-auto max-h-[600px]" hoverEffect={false}>
               <div
                 dangerouslySetInnerHTML={{ __html: currentModule?.theory || '' }}
-                className="text-xs leading-relaxed [&_h2]:text-lg [&_h2]:font-black [&_h2]:text-white [&_h2]:mb-3 [&_h3]:text-sm [&_h3]:font-bold [&_h3]:text-amber-400 [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-slate-300 [&_p]:mb-3 [&_li]:text-slate-300 [&_li]:mb-1 [&_strong]:text-white [&_.key-concept]:bg-amber-500/5 [&_.key-concept]:border [&_.key-concept]:border-amber-500/20 [&_.key-concept]:rounded-xl [&_.key-concept]:p-4 [&_.key-concept]:mt-4 [&_.key-concept-title]:text-amber-400 [&_.key-concept-title]:font-bold [&_.key-concept-title]:text-xs [&_.key-concept-title]:mb-2"
+                className="text-xs leading-relaxed [&_h2]:text-lg [&_h2]:font-black [&_h2]:text-white [&_h2]:mb-3 [&_h3]:text-sm [&_h3]:font-bold [&_h3]:text-amber-400 [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-slate-300 [&_p]:mb-3 [&_li]:text-slate-300 [&_li]:mb-1 [&_strong]:text-white [&_.key-concept]:bg-amber-500/5 [&_.key-concept]:border [&_.key-concept]:border-amber-500/20 [&_.key-concept]:rounded-xl [&_.key-concept]:p-4 [&_.key-concept]:mt-4 [&_.key-concept-title]:text-amber-400 [&_.key-concept-title]:font-bold [&_.key-concept-title]:text-xs [&_.key-concept-title]:mb-2 font-semibold"
               />
-            </div>
-            <div className="flex flex-col items-center gap-4">
+            </Card>
+            <div className="flex flex-col gap-4 items-center">
               {currentExamples.length > 0 && (
-                <div className="bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5 w-full flex flex-col items-center">
+                <Card className="w-full flex flex-col items-center" hoverEffect={false}>
                   <Board fen={currentExamples[0]?.fen || '8/8/8/8/8/8/8/8 w - - 0 1'} interactive={false} onMove={() => {}} />
                   <div className="mt-3 text-center">
                     <span className="text-xs font-bold text-white">{currentExamples[0]?.title}</span>
                     <p className="text-[11px] text-slate-400 mt-1">{currentExamples[0]?.description}</p>
                   </div>
-                </div>
+                </Card>
               )}
-              <button
+              <Button
                 onClick={() => setPhase('examples')}
-                className="w-full bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2.5 rounded-xl text-xs transition-all"
+                fullWidth
               >
                 View Examples →
-              </button>
+              </Button>
             </div>
           </>
         )}
@@ -153,56 +151,59 @@ export const EndgameUniversity: React.FC = () => {
         {/* Examples Phase */}
         {phase === 'examples' && (
           <>
-            <div className="flex flex-col items-center gap-4">
-              <div className="bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5 w-full flex flex-col items-center">
+            <div className="flex flex-col gap-4 items-center">
+              <Card className="w-full flex flex-col items-center" hoverEffect={false}>
                 <Board
                   fen={currentExamples[exampleIdx]?.fen || '8/8/8/8/8/8/8/8 w - - 0 1'}
                   interactive={false}
                   onMove={handleMoveInExample}
                 />
-              </div>
+              </Card>
               <div className="flex gap-2 w-full">
-                <button
+                <Button
                   onClick={() => setExampleIdx(Math.max(0, exampleIdx - 1))}
                   disabled={exampleIdx === 0}
-                  className="flex-1 bg-white/5 border border-white/5 hover:bg-white/10 py-2 rounded-lg disabled:opacity-40 text-xs font-bold text-white"
+                  variant="secondary"
+                  className="flex-1"
                 >
                   ◀ Previous
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setExampleIdx(Math.min(currentExamples.length - 1, exampleIdx + 1))}
                   disabled={exampleIdx >= currentExamples.length - 1}
-                  className="flex-1 bg-white/5 border border-white/5 hover:bg-white/10 py-2 rounded-lg disabled:opacity-40 text-xs font-bold text-white"
+                  variant="secondary"
+                  className="flex-1"
                 >
                   Next ▶
-                </button>
+                </Button>
               </div>
             </div>
-            <div className="glass-panel p-6 rounded-2xl border border-white/5 bg-[#0c0c14]">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500">
+            <Card hoverEffect={false}>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500 font-mono">
                 Example {exampleIdx + 1} of {currentExamples.length}
               </span>
               <h3 className="text-lg font-bold text-white mt-2 mb-3">
                 {currentExamples[exampleIdx]?.title}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed font-semibold">
                 {currentExamples[exampleIdx]?.description}
               </p>
-              <button
+              <Button
                 onClick={() => setPhase('exercises')}
-                className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2.5 rounded-xl text-xs transition-all"
+                className="mt-6"
+                fullWidth
               >
                 Practice Exercises →
-              </button>
-            </div>
+              </Button>
+            </Card>
           </>
         )}
 
         {/* Exercises Phase */}
         {phase === 'exercises' && currentExercises.length > 0 && (
           <>
-            <div className="glass-panel p-6 rounded-2xl border border-white/5 bg-[#0c0c14]">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500 block mb-2">
+            <Card hoverEffect={false}>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500 block mb-2 font-mono">
                 Exercise {exerciseIdx + 1} of {currentExercises.length}
               </span>
               <h3 className="text-sm font-bold text-white mb-4">
@@ -245,32 +246,32 @@ export const EndgameUniversity: React.FC = () => {
                     </strong>
                     {currentExercises[exerciseIdx]?.explanation}
                   </div>
-                  <button
+                  <Button
                     onClick={handleNextExercise}
-                    className="w-full bg-amber-500 hover:bg-amber-600 text-black font-extrabold py-2.5 rounded-xl text-xs transition-all"
+                    fullWidth
                   >
                     {exerciseIdx < currentExercises.length - 1 ? 'Next Exercise →' : 'Complete Module ✓'}
-                  </button>
+                  </Button>
                 </div>
               )}
-            </div>
+            </Card>
 
             {/* Board for find-move exercises */}
-            <div className="flex flex-col items-center gap-4">
-              <div className="bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5 w-full flex flex-col items-center">
+            <div className="flex flex-col gap-4 items-center">
+              <Card className="w-full flex flex-col items-center" hoverEffect={false}>
                 <Board
                   fen={currentExercises[exerciseIdx]?.fen || currentExamples[0]?.fen || '8/8/8/8/8/8/8/8 w - - 0 1'}
                   interactive={currentExercises[exerciseIdx]?.type === 'find-move'}
                   onMove={() => {}}
                 />
-              </div>
+              </Card>
             </div>
           </>
         )}
 
         {/* Assessment Phase */}
         {phase === 'assessment' && (
-          <div className="col-span-1 lg:col-span-2 glass-panel p-8 rounded-2xl border border-white/5 bg-[#0c0c14] text-center">
+          <Card className="col-span-1 lg:col-span-2 text-center py-8" hoverEffect={false}>
             <span className="text-5xl mb-4 block">🏆</span>
             <h3 className="text-xl font-black text-white mb-2">Module Complete!</h3>
             <p className="text-xs text-slate-400 mb-6">
@@ -290,7 +291,7 @@ export const EndgameUniversity: React.FC = () => {
                 <div className="text-[10px] text-slate-500">Accuracy</div>
               </div>
             </div>
-            <button
+            <Button
               onClick={() => {
                 const modIds = endgameContent.modules.map(m => m.id);
                 const curIdx = modIds.indexOf(activeModule);
@@ -298,11 +299,10 @@ export const EndgameUniversity: React.FC = () => {
                   setActiveModule(modIds[curIdx + 1]);
                 }
               }}
-              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold py-3 px-8 rounded-xl text-xs transition-all"
             >
               Next Module →
-            </button>
-          </div>
+            </Button>
+          </Card>
         )}
       </div>
     </div>

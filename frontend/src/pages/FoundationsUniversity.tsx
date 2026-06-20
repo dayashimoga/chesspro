@@ -2,6 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Board } from '../components/Board';
 import { useAppStore } from '../store/useAppStore';
 import { Chess, Square } from 'chess.js';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { ProgressBar } from '../components/ui/ProgressBar';
 
 interface Topic {
   id: string;
@@ -302,18 +306,16 @@ export const FoundationsUniversity: React.FC = () => {
         {/* Labs Quick Selector */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin max-w-full">
           {FOUNDATIONS_TOPICS.map((topic, idx) => (
-            <button
+            <Button
               key={topic.id}
               onClick={() => setTopicIdx(idx)}
-              className={`px-4 py-2 rounded-xl border text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                idx === topicIdx
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                  : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-400'
-              }`}
+              variant={idx === topicIdx ? 'primary' : 'secondary'}
+              size="sm"
+              className="whitespace-nowrap flex items-center gap-1.5 shrink-0"
             >
               <span>{topic.icon}</span>
               <span>{topic.title}</span>
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -321,21 +323,21 @@ export const FoundationsUniversity: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Theory & Quiz */}
         <div className="flex flex-col gap-4">
-          <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14] flex flex-col gap-4">
+          <Card className="flex flex-col gap-4" hoverEffect={false}>
             <div className="flex items-center gap-2.5 pb-2 border-b border-white/5">
               <span className="text-2xl">{currentTopic.icon}</span>
               <h3 className="font-bold text-white text-base">{currentTopic.title}</h3>
             </div>
 
             <div 
-              className="text-xs text-slate-300 leading-relaxed space-y-3"
+              className="text-xs text-slate-300 leading-relaxed space-y-3 font-medium"
               dangerouslySetInnerHTML={{ __html: currentTopic.theory }}
             />
-          </div>
+          </Card>
 
           {/* Assessment Quiz widget */}
           {currentTopic.quizzes && currentTopic.quizzes.length > 0 && (
-            <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14] flex flex-col gap-3">
+            <Card className="flex flex-col gap-3" hoverEffect={false}>
               <h4 className="font-bold text-xs text-white uppercase tracking-wider">Concept Check</h4>
               <p className="text-xs text-slate-300 leading-relaxed font-semibold">
                 {currentTopic.quizzes[quizIdx].question}
@@ -373,28 +375,33 @@ export const FoundationsUniversity: React.FC = () => {
               )}
 
               {!quizAnswered ? (
-                <button
+                <Button
                   onClick={handleQuizSubmit}
                   disabled={selectedOpt === null}
-                  className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-bg-primary font-bold py-2 rounded-lg text-xs mt-1 transition-all"
+                  fullWidth
+                  size="sm"
+                  className="mt-1"
                 >
                   Verify Answer
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   onClick={handleNextQuiz}
-                  className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold py-2 rounded-lg text-xs mt-1 transition-all"
+                  variant="secondary"
+                  fullWidth
+                  size="sm"
+                  className="mt-1"
                 >
                   Next Challenge
-                </button>
+                </Button>
               )}
-            </div>
+            </Card>
           )}
         </div>
 
         {/* Right 2 Columns: Interactive Board Simulator */}
         <div className="lg:col-span-2 flex flex-col gap-4">
-          <div className="glass-panel p-6 rounded-3xl border border-white/5 flex flex-col md:flex-row gap-6 items-center">
+          <Card className="flex flex-col md:flex-row gap-6 items-center" hoverEffect={false}>
             
             {/* Interactive Chessboard */}
             <div className="flex flex-col gap-2 items-center">
@@ -418,7 +425,7 @@ export const FoundationsUniversity: React.FC = () => {
 
               {/* Game display logic for Coordinates game */}
               {currentTopic.id === 'coordinates' ? (
-                <div className="bg-[#0c0c14] border border-white/5 rounded-xl p-4 flex flex-col gap-3">
+                <div className="bg-bg-primary/60 border border-white/5 rounded-2xl p-4 flex flex-col gap-3 w-full">
                   <div className="flex justify-between items-center text-xs font-mono border-b border-white/5 pb-2">
                     <span>Target Target:</span>
                     <span className="text-emerald-400 font-extrabold text-lg uppercase tracking-wider">{coordinateTarget || 'N/A'}</span>
@@ -433,29 +440,31 @@ export const FoundationsUniversity: React.FC = () => {
                   </div>
 
                   {!gameRunning ? (
-                    <button
+                    <Button
                       onClick={startCoordinateGame}
-                      className="bg-emerald-500 hover:bg-emerald-600 text-bg-primary font-bold py-2 rounded-lg text-xs mt-2 transition-all w-full"
+                      fullWidth
+                      size="sm"
+                      className="mt-2"
                     >
                       Start Training Game
-                    </button>
+                    </Button>
                   ) : (
                     <p className="text-[11px] text-slate-400 text-center italic mt-2">Click target coordinates on the board grid.</p>
                   )}
                 </div>
               ) : (
-                <div className="bg-[#0c0c14] border border-white/5 rounded-xl p-4 flex flex-col gap-2 font-mono text-xs">
+                <div className="bg-bg-primary/60 border border-white/5 rounded-2xl p-4 flex flex-col gap-2 font-mono text-xs w-full">
                   <span className="text-slate-400">Simulation Output:</span>
                   <p className="text-emerald-400 font-bold leading-relaxed">{simMessage}</p>
                 </div>
               )}
 
               {/* Practice guidance instructions */}
-              <div className="border border-white/5 bg-white/[0.02] p-4 rounded-xl">
+              <div className="border border-white/5 bg-white/[0.02] p-4 rounded-2xl w-full">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Guided Practice Instructions</span>
                 <ul className="list-disc pl-4 flex flex-col gap-1">
                   {currentTopic.guidedSteps.map((step, sIdx) => (
-                    <li key={sIdx} className="text-[11px] text-slate-300 leading-normal">{step}</li>
+                    <li key={sIdx} className="text-[11px] text-slate-300 leading-normal font-semibold">{step}</li>
                   ))}
                 </ul>
               </div>
@@ -467,7 +476,7 @@ export const FoundationsUniversity: React.FC = () => {
               )}
             </div>
 
-          </div>
+          </Card>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Lessons from './pages/Lessons';
 import Puzzles from './pages/Puzzles';
@@ -13,7 +14,11 @@ import SpacedReview from './pages/SpacedReview';
 import FoundationsUniversity from './pages/FoundationsUniversity';
 import TacticalUniversity from './pages/TacticalUniversity';
 import MiddlegameUniversity from './pages/MiddlegameUniversity';
+import DailyLearning from './pages/DailyLearning';
+import Achievements from './pages/Achievements';
 import { AuthModal } from './components/AuthModal';
+import { ThemeToggle } from './components/ThemeToggle';
+import { BoardSettingsToggle } from './components/BoardSettingsToggle';
 // Lazy-loaded university pages for performance
 const CalculationUniversity = React.lazy(() => import('./pages/CalculationUniversity'));
 const EndgameUniversity = React.lazy(() => import('./pages/EndgameUniversity'));
@@ -22,50 +27,58 @@ const OpeningUniversity = React.lazy(() => import('./pages/OpeningUniversity'));
 const TournamentPrep = React.lazy(() => import('./pages/TournamentPrep'));
 import { useAppStore } from './store/useAppStore';
 import { Storage } from './core/storage';
+import { Gamification } from './core/gamification';
 
-type PageId = 'dashboard' | 'lessons' | 'puzzles' | 'games' | 'openings' | 'endgames' 
-  | 'calculation' | 'blindfold' | 'aicoach' | 'play' | 'review' | 'lesson-detail'
-  | 'foundations' | 'tactics' | 'middlegame'
-  | 'calc-university' | 'endgame-university' | 'master-games' | 'opening-university'
-  | 'tournament-prep';
+interface NavItem {
+  path: string;
+  label: string;
+  icon: string;
+}
 
-const NAV_SECTIONS = [
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Main',
     items: [
-      { id: 'dashboard' as PageId, label: 'Dashboard', icon: '📊' },
-      { id: 'play' as PageId, label: 'Play vs AI', icon: '♟️' },
-      { id: 'review' as PageId, label: 'Spaced Review', icon: '🔄' },
+      { path: '/', label: 'Dashboard', icon: '📊' },
+      { path: '/daily', label: 'Daily Plan', icon: '📅' },
+      { path: '/play', label: 'Play vs AI', icon: '♟️' },
+      { path: '/review', label: 'Spaced Review', icon: '🔄' },
     ],
   },
   {
     title: 'Chess University',
     items: [
-      { id: 'foundations' as PageId, label: 'Foundations', icon: '🏫' },
-      { id: 'tactics' as PageId, label: 'Tactics Lab', icon: '🧩' },
-      { id: 'calc-university' as PageId, label: 'Calculation', icon: '🧠' },
-      { id: 'opening-university' as PageId, label: 'Openings', icon: '🌳' },
-      { id: 'middlegame' as PageId, label: 'Middlegame', icon: '⚔️' },
-      { id: 'endgame-university' as PageId, label: 'Endgames', icon: '👑' },
-      { id: 'master-games' as PageId, label: 'Master Games', icon: '🏆' },
+      { path: '/foundations', label: 'Foundations', icon: '🏫' },
+      { path: '/tactics', label: 'Tactics Lab', icon: '🧩' },
+      { path: '/calc-university', label: 'Calculation', icon: '🧠' },
+      { path: '/opening-university', label: 'Openings', icon: '🌳' },
+      { path: '/middlegame', label: 'Middlegame', icon: '⚔️' },
+      { path: '/endgame-university', label: 'Endgames', icon: '👑' },
+      { path: '/master-games', label: 'Master Games', icon: '🏆' },
     ],
   },
   {
     title: 'Training Tools',
     items: [
-      { id: 'puzzles' as PageId, label: 'Puzzle Trainer', icon: '🎯' },
-      { id: 'calculation' as PageId, label: 'Visualization', icon: '👁️' },
-      { id: 'blindfold' as PageId, label: 'Blindfold Lab', icon: '🙈' },
-      { id: 'endgames' as PageId, label: 'Endgame Drills', icon: '♔' },
-      { id: 'tournament-prep' as PageId, label: 'Tournament Prep', icon: '🏅' },
+      { path: '/puzzles', label: 'Puzzle Trainer', icon: '🎯' },
+      { path: '/calculation', label: 'Visualization', icon: '👁️' },
+      { path: '/blindfold', label: 'Blindfold Lab', icon: '🙈' },
+      { path: '/endgames', label: 'Endgame Drills', icon: '♔' },
+      { path: '/tournament-prep', label: 'Tournament Prep', icon: '🏅' },
     ],
   },
   {
     title: 'Coach & Study',
     items: [
-      { id: 'aicoach' as PageId, label: 'AI Chess Coach', icon: '🎙️' },
-      { id: 'lessons' as PageId, label: 'Curriculum', icon: '📚' },
-      { id: 'games' as PageId, label: 'Game Database', icon: '📂' },
+      { path: '/aicoach', label: 'AI Chess Coach', icon: '🎙️' },
+      { path: '/lessons', label: 'Curriculum', icon: '📚' },
+      { path: '/games', label: 'Game Database', icon: '📂' },
+      { path: '/achievements', label: 'Achievements', icon: '🏆' },
     ],
   },
 ];
@@ -110,9 +123,10 @@ const PageSkeleton = () => (
   </div>
 );
 
-export const App: React.FC = () => {
-  const activePage = useAppStore(s => s.activePage);
-  const setActivePage = useAppStore(s => s.setActivePage);
+// Inner app that uses router hooks
+const AppShell: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const user = useAppStore(s => s.user);
   const sidebarOpen = useAppStore(s => s.sidebarOpen);
   const toggleSidebar = useAppStore(s => s.toggleSidebar);
@@ -121,50 +135,43 @@ export const App: React.FC = () => {
   const logout = useAppStore(s => s.logout);
 
   const [showAuth, setShowAuth] = useState(false);
+  const [achievementToast, setAchievementToast] = useState<string | null>(null);
 
-  // Update streak on mount
-  React.useEffect(() => {
+  // Update streak and sync on mount
+  useEffect(() => {
     Storage.updateStreak();
     useAppStore.getState().syncFromStorage();
+    // Sync gamification stats
+    const p = Storage.getProgress();
+    Gamification.syncStats(p.xp, p.level, p.streak, p.completedLessons.length);
     // Auto-sync from cloud on mount if authenticated
     if (useAppStore.getState().isAuthenticated) {
       useAppStore.getState().syncFromCloud().catch(() => {});
     }
   }, []);
 
-  // Set document title based on page
-  React.useEffect(() => {
-    const pageName = activePage.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  // Set document title based on route
+  useEffect(() => {
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    const pageName = pathSegments.length > 0
+      ? pathSegments[pathSegments.length - 1].replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+      : 'Dashboard';
     document.title = `${pageName} — ChessOS Pro`;
-  }, [activePage]);
+  }, [location]);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    closeSidebar();
+  }, [location.pathname]);
 
   const xpProgress = user.xp % 250;
   const xpPercentage = (xpProgress / 250) * 100;
 
-  const renderPage = () => {
-    switch (activePage) {
-      case 'dashboard': return <Dashboard />;
-      case 'lessons': return <Lessons />;
-      case 'lesson-detail': return <Lessons />;
-      case 'puzzles': return <Puzzles />;
-      case 'games': return <MasterGames />;
-      case 'openings': return <OpeningTrainer />;
-      case 'endgames': return <EndgameTrainer />;
-      case 'calculation': return <CalculationTrainer />;
-      case 'blindfold': return <BlindfoldTrainer />;
-      case 'aicoach': return <AICoachDashboard />;
-      case 'play': return <PlayVsAI />;
-      case 'review': return <SpacedReview />;
-      case 'foundations': return <FoundationsUniversity />;
-      case 'tactics': return <TacticalUniversity />;
-      case 'middlegame': return <MiddlegameUniversity />;
-      case 'calc-university': return <Suspense fallback={<PageSkeleton />}><CalculationUniversity /></Suspense>;
-      case 'endgame-university': return <Suspense fallback={<PageSkeleton />}><EndgameUniversity /></Suspense>;
-      case 'master-games': return <Suspense fallback={<PageSkeleton />}><MasterGameUniversity /></Suspense>;
-      case 'opening-university': return <Suspense fallback={<PageSkeleton />}><OpeningUniversity /></Suspense>;
-      case 'tournament-prep': return <Suspense fallback={<PageSkeleton />}><TournamentPrep /></Suspense>;
-      default: return <Dashboard />;
-    }
+  // Get current page name from path
+  const getCurrentPageName = () => {
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    if (pathSegments.length === 0) return 'Dashboard';
+    return pathSegments[pathSegments.length - 1].replace(/-/g, ' ');
   };
 
   return (
@@ -183,13 +190,13 @@ export const App: React.FC = () => {
       `}>
         <div className="flex flex-col gap-1 p-4">
           {/* Brand */}
-          <div className="flex items-center gap-3 px-3 py-4 mb-2">
-            <span className="text-3xl font-bold" style={{ color: '#10b981' }}>♚</span>
+          <NavLink to="/" className="flex items-center gap-3 px-3 py-4 mb-2 group">
+            <span className="text-3xl font-bold group-hover:scale-110 transition-transform" style={{ color: '#10b981' }}>♚</span>
             <div>
               <h1 className="text-lg font-black text-white tracking-wide leading-tight">ChessOS</h1>
               <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#10b981' }}>GM MASTERY</span>
             </div>
-          </div>
+          </NavLink>
 
           {/* Nav Sections */}
           {NAV_SECTIONS.map(section => (
@@ -198,19 +205,22 @@ export const App: React.FC = () => {
                 {section.title}
               </div>
               {section.items.map(item => (
-                <button
-                  key={item.id}
-                  id={`nav-${item.id}`}
-                  onClick={() => setActivePage(item.id)}
-                  className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                    activePage === item.id
-                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/15'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03] border border-transparent'
-                  }`}
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={item.path === '/'}
+                  id={`nav-${item.path.replace(/\//g, '-').slice(1) || 'dashboard'}`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                      isActive
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/15'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03] border border-transparent'
+                    }`
+                  }
                 >
                   <span className="text-base">{item.icon}</span>
                   <span>{item.label}</span>
-                </button>
+                </NavLink>
               ))}
             </div>
           ))}
@@ -283,10 +293,12 @@ export const App: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider hidden sm:inline">ChessOS</span>
               <span className="text-slate-600 hidden sm:inline">›</span>
-              <span className="text-white text-xs font-bold capitalize">{activePage.replace(/-/g, ' ')}</span>
+              <span className="text-white text-xs font-bold capitalize">{getCurrentPageName()}</span>
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle />
+            <BoardSettingsToggle />
             <div className="flex items-center gap-1.5 text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/15 px-2 sm:px-3 py-1 rounded-full">
               <span>🔥</span>
               <span className="hidden sm:inline">{user.streak} Day </span>
@@ -303,14 +315,53 @@ export const App: React.FC = () => {
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-4 lg:p-6 bg-bg-primary">
           <ErrorBoundary>
-            {renderPage()}
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/daily" element={<DailyLearning />} />
+              <Route path="/lessons" element={<Lessons />} />
+              <Route path="/puzzles" element={<Puzzles />} />
+              <Route path="/games" element={<MasterGames />} />
+              <Route path="/openings" element={<OpeningTrainer />} />
+              <Route path="/endgames" element={<EndgameTrainer />} />
+              <Route path="/calculation" element={<CalculationTrainer />} />
+              <Route path="/blindfold" element={<BlindfoldTrainer />} />
+              <Route path="/aicoach" element={<AICoachDashboard />} />
+              <Route path="/play" element={<PlayVsAI />} />
+              <Route path="/review" element={<SpacedReview />} />
+              <Route path="/foundations" element={<FoundationsUniversity />} />
+              <Route path="/tactics" element={<TacticalUniversity />} />
+              <Route path="/middlegame" element={<MiddlegameUniversity />} />
+              <Route path="/achievements" element={<Achievements />} />
+              <Route path="/calc-university" element={<Suspense fallback={<PageSkeleton />}><CalculationUniversity /></Suspense>} />
+              <Route path="/endgame-university" element={<Suspense fallback={<PageSkeleton />}><EndgameUniversity /></Suspense>} />
+              <Route path="/master-games" element={<Suspense fallback={<PageSkeleton />}><MasterGameUniversity /></Suspense>} />
+              <Route path="/opening-university" element={<Suspense fallback={<PageSkeleton />}><OpeningUniversity /></Suspense>} />
+              <Route path="/tournament-prep" element={<Suspense fallback={<PageSkeleton />}><TournamentPrep /></Suspense>} />
+              {/* Catch-all */}
+              <Route path="*" element={<Dashboard />} />
+            </Routes>
           </ErrorBoundary>
         </main>
       </div>
 
       {/* Auth Modal */}
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+
+      {/* Achievement Toast */}
+      {achievementToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-amber-500/90 to-amber-600/90 border border-amber-400/30 px-5 py-3 rounded-xl shadow-2xl text-sm font-bold text-white animate-fadeIn max-w-md">
+          🏆 {achievementToast}
+        </div>
+      )}
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
   );
 };
 

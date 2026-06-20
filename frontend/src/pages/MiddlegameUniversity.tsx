@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Board } from '../components/Board';
 import { useAppStore } from '../store/useAppStore';
 import { Chess } from 'chess.js';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 interface MiddlegameLab {
   id: string;
@@ -126,18 +128,16 @@ export const MiddlegameUniversity: React.FC = () => {
         {/* Labs Quick Menu */}
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin max-w-full">
           {MIDDLEGAME_LABS.map((lab, idx) => (
-            <button
+            <Button
               key={lab.id}
               onClick={() => setLabIdx(idx)}
-              className={`px-4 py-2 rounded-xl border text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                idx === labIdx
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                  : 'bg-white/5 border-white/5 hover:bg-white/10 text-slate-400'
-              }`}
+              variant={idx === labIdx ? 'primary' : 'secondary'}
+              size="sm"
+              className="whitespace-nowrap flex items-center gap-1.5 shrink-0"
             >
               <span>{lab.icon}</span>
               <span>{lab.title}</span>
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -145,47 +145,48 @@ export const MiddlegameUniversity: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Theory & Analysis Plan */}
         <div className="flex flex-col gap-4">
-          <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14] flex flex-col gap-3">
+          <Card className="flex flex-col gap-3" hoverEffect={false}>
             <div className="flex items-center gap-2 border-b border-white/5 pb-2">
               <span className="text-2xl">{currentLab.icon}</span>
               <h3 className="font-bold text-white text-sm">{currentLab.title}</h3>
             </div>
             <div 
-              className="text-xs text-slate-300 leading-relaxed space-y-3"
+              className="text-xs text-slate-300 leading-relaxed space-y-3 font-semibold"
               dangerouslySetInnerHTML={{ __html: currentLab.theory }}
             />
-          </div>
+          </Card>
 
-          <div className="glass-panel p-5 rounded-2xl border border-white/5 bg-[#0c0c14] flex flex-col gap-2">
+          <Card className="flex flex-col gap-2" hoverEffect={false}>
             <span className="text-[10px] font-bold text-emerald-400 uppercase font-mono">🎯 Positional Plan:</span>
             <p className="text-xs text-slate-300 leading-relaxed font-semibold">{currentLab.bestPlan}</p>
-          </div>
+          </Card>
         </div>
 
         {/* Center: Interactive Analysis Board */}
-        <div className="flex flex-col gap-4 items-center justify-center bg-[#0c0c14]/50 rounded-3xl p-6 border border-white/5">
+        <Card className="flex flex-col gap-4 items-center justify-center" hoverEffect={false}>
           <Board
             fen={exploreFen}
             interactive={true}
             onMove={handleExploreMove}
           />
           {isExploring ? (
-            <button
+            <Button
               onClick={() => { setExploreFen(currentLab.fen); setIsExploring(false); }}
-              className="bg-white/5 border border-white/5 hover:bg-white/10 text-[10px] font-bold px-3 py-1 rounded transition-all text-slate-300"
+              variant="secondary"
+              size="sm"
             >
               ↩ Reset Position
-            </button>
+            </Button>
           ) : (
             <span className="text-[10px] text-slate-500 font-mono">Free play enabled: Make moves to explore variations</span>
           )}
-        </div>
+        </Card>
 
         {/* Right: Assessment quiz */}
-        <div className="glass-panel p-6 rounded-2xl border border-white/5 flex flex-col justify-between">
+        <Card className="flex flex-col justify-between" hoverEffect={false}>
           <div className="flex flex-col gap-4">
             <div>
-              <span className="text-[10px] uppercase font-bold text-emerald-500">Middlegame Quiz</span>
+              <span className="text-[10px] uppercase font-bold text-emerald-500 font-mono">Middlegame Quiz</span>
               <h3 className="text-base font-bold text-white mt-0.5">{currentLab.title} Check</h3>
             </div>
 
@@ -218,7 +219,7 @@ export const MiddlegameUniversity: React.FC = () => {
 
           <div className="flex flex-col gap-4 mt-6">
             {isSubmitted && (
-              <div className="text-xs text-slate-400 bg-[#0c0c14] border border-white/5 p-4 rounded-xl leading-relaxed animate-fadeIn">
+              <div className="text-xs text-slate-400 bg-black/40 border border-white/5 p-4 rounded-xl leading-relaxed animate-fadeIn font-semibold">
                 <strong className="block text-white mb-1">
                   {selectedOpt === currentLab.answerIndex ? '🎉 Positional Master! (+15 XP)' : '❌ Try again'}
                 </strong>
@@ -227,23 +228,24 @@ export const MiddlegameUniversity: React.FC = () => {
             )}
 
             {!isSubmitted ? (
-              <button
+              <Button
                 onClick={handleSubmit}
                 disabled={selectedOpt === null}
-                className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 text-bg-primary font-bold py-2.5 rounded-xl text-xs transition-all w-full text-center"
+                fullWidth
               >
                 Submit Plan Answer
-              </button>
+              </Button>
             ) : (
-              <button
+              <Button
                 onClick={handleNext}
-                className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold py-2.5 rounded-xl text-xs transition-all w-full text-center"
+                variant="secondary"
+                fullWidth
               >
                 Next Lab Exercise
-              </button>
+              </Button>
             )}
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

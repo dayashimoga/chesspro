@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Board } from '../components/Board';
 import { ChessEngine } from '../core/chess-engine';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { useAppStore } from '../store/useAppStore';
 
 const AI_LEVELS = [
   { id: 'beginner', name: '🟢 Beginner (800)', depth: 1, rating: 800 },
@@ -29,6 +33,8 @@ export const PlayVsAI: React.FC = () => {
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysis, setAnalysis] = useState<GameAnalysis | null>(null);
+
+  const boardTheme = useAppStore(s => s.theme); // default theme switcher uses appStore.theme
 
   const updateState = useCallback(() => {
     setFen(engine.fen());
@@ -61,7 +67,6 @@ export const PlayVsAI: React.FC = () => {
   useEffect(() => {
     if (engine.isGameOver() && moveHistory.length > 0) {
       const totalMoves = moveHistory.length;
-      // Simulate analysis based on game length and AI level
       const levelData = AI_LEVELS.find(l => l.id === aiLevel);
       const difficultyFactor = (levelData?.depth || 2) / 5;
       const blunders = Math.max(0, Math.floor(Math.random() * 3 * difficultyFactor));
@@ -112,7 +117,6 @@ export const PlayVsAI: React.FC = () => {
     }
   };
 
-  // Format move list as numbered pairs
   const formattedMoves = [];
   for (let i = 0; i < moveHistory.length; i += 2) {
     formattedMoves.push({
@@ -122,126 +126,147 @@ export const PlayVsAI: React.FC = () => {
     });
   }
 
-  const accuracyColor = (acc: number) => {
-    if (acc >= 90) return '#10b981';
-    if (acc >= 70) return '#fbbf24';
-    if (acc >= 50) return '#f97316';
-    return '#ef4444';
+  const getAccuracyBadgeVariant = (acc: number) => {
+    if (acc >= 90) return 'emerald';
+    if (acc >= 70) return 'amber';
+    return 'red';
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto animate-fadeIn">
+    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
       <div>
         <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Arena</span>
         <h2 className="text-2xl font-black text-white">Play vs <span className="text-emerald-400">Chess AI</span></h2>
         <p className="text-sm text-slate-400 mt-1">Challenge the engine at various difficulty levels. Post-game analysis after every match.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
-        {/* Board */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
+        {/* Board column */}
         <div className="flex flex-col items-center gap-4">
-          <div className="bg-bg-secondary/50 rounded-2xl p-4 sm:p-6 border border-white/5 w-full max-w-[500px]">
+          <Card className="flex items-center justify-center p-6 bg-bg-secondary/40 border-white/5 w-full max-w-[500px]" hoverEffect={false}>
             <Board
               fen={fen}
               interactive={true}
               flipped={playerColor === 'b'}
               onMove={handleMove}
               lastMoveSquares={lastMove}
+              boardTheme={boardTheme === 'light' ? 'tournament' : boardTheme === 'tournament' ? 'tournament' : boardTheme === 'focus' ? 'blue' : 'green'}
+              pieceSet={boardTheme === 'focus' ? 'alpha' : 'standard'}
             />
-          </div>
+          </Card>
           <div className="flex gap-2">
-            <button onClick={handleUndo} className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-semibold text-slate-300 transition-all">↩ Undo</button>
-            <button onClick={handleNewGame} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-sm font-bold text-bg-primary transition-all shadow-glow">✨ New Game</button>
+            <Button onClick={handleUndo} variant="secondary">
+              ↩ Undo
+            </Button>
+            <Button onClick={handleNewGame}>
+              ✨ New Game
+            </Button>
           </div>
-          <div className="glass-panel px-6 py-3 rounded-xl text-center">
-            <span className="font-semibold text-white text-sm">{status}</span>
-          </div>
+          <Card className="!py-3 !px-6 text-center font-bold text-white text-sm" hoverEffect={false}>
+            {status}
+          </Card>
         </div>
 
-        {/* Controls, Moves & Analysis */}
+        {/* Controls and Move List column */}
         <div className="flex flex-col gap-4">
           {/* Post-Game Analysis */}
           {showAnalysis && analysis && (
-            <div className="glass-panel p-5 rounded-xl border-l-4" style={{ borderLeftColor: accuracyColor(analysis.accuracy) }}>
-              <h3 className="font-bold text-white text-sm mb-3">📊 Post-Game Analysis</h3>
-              <div className="grid grid-cols-2 gap-3 mb-3">
-                <div className="bg-white/5 rounded-lg p-3 text-center">
-                  <div className="text-2xl font-black" style={{ color: accuracyColor(analysis.accuracy) }}>{analysis.accuracy}%</div>
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">Accuracy</div>
+            <Card className="flex flex-col gap-4 border-l-4 !border-l-emerald-500" hoverEffect={false}>
+              <h3 className="font-bold text-white text-sm">📊 Post-Game Analysis</h3>
+              <div className="grid grid-cols-2 gap-3 shadow-inner">
+                <div className="bg-white/5 rounded-xl p-3.5 text-center border border-white/5">
+                  <div className="text-2xl font-black text-emerald-400">{analysis.accuracy}%</div>
+                  <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Accuracy</div>
                 </div>
-                <div className="bg-white/5 rounded-lg p-3 text-center">
-                  <div className="text-2xl font-black text-emerald-400">{analysis.bestMoveRate}%</div>
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">Best Moves</div>
-                </div>
-              </div>
-              <div className="flex gap-4 text-xs">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-red-500" />
-                  <span className="text-slate-400">{analysis.blunders} Blunders</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-orange-500" />
-                  <span className="text-slate-400">{analysis.mistakes} Mistakes</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" />
-                  <span className="text-slate-400">{analysis.inaccuracies} Inaccuracies</span>
+                <div className="bg-white/5 rounded-xl p-3.5 text-center border border-white/5">
+                  <div className="text-2xl font-black text-amber-400">{analysis.bestMoveRate}%</div>
+                  <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Best Moves</div>
                 </div>
               </div>
-              <div className="mt-3 text-xs text-slate-500">
+              <div className="flex flex-col gap-1.5 text-xs">
+                <div className="flex justify-between items-center bg-red-500/5 p-2 rounded-lg border border-red-500/10">
+                  <span className="text-slate-400 font-semibold">🔴 Blunders</span>
+                  <Badge variant="red">{analysis.blunders}</Badge>
+                </div>
+                <div className="flex justify-between items-center bg-amber-500/5 p-2 rounded-lg border border-amber-500/10">
+                  <span className="text-slate-400 font-semibold">🟡 Mistakes</span>
+                  <Badge variant="amber">{analysis.mistakes}</Badge>
+                </div>
+                <div className="flex justify-between items-center bg-slate-500/5 p-2 rounded-lg border border-white/5">
+                  <span className="text-slate-400 font-semibold">⚪ Inaccuracies</span>
+                  <Badge variant="slate">{analysis.inaccuracies}</Badge>
+                </div>
+              </div>
+              <div className="text-xs text-slate-400 leading-relaxed font-semibold">
                 {analysis.accuracy >= 85 ? '🏆 Excellent play! Your technique is sharp.' :
                  analysis.accuracy >= 70 ? '👍 Good game. Focus on reducing mistakes.' :
                  analysis.accuracy >= 50 ? '📈 Keep practicing — work on calculation depth.' :
                  '💪 Every game is a learning opportunity. Review your blunders!'}
               </div>
-            </div>
+            </Card>
           )}
 
           {/* Settings */}
-          <div className="glass-panel p-5 rounded-xl">
-            <h3 className="font-bold text-white text-sm mb-3">⚙️ Settings</h3>
-            <label className="text-xs text-slate-400 font-semibold block mb-1">AI Difficulty</label>
-            <select
-              id="ai-difficulty"
-              value={aiLevel}
-              onChange={e => setAiLevel(e.target.value)}
-              className="w-full bg-bg-tertiary border border-white/10 rounded-lg px-3 py-2 text-sm text-white mb-3 focus:outline-none focus:border-emerald-500"
-            >
-              {AI_LEVELS.map(l => (
-                <option key={l.id} value={l.id}>{l.name}</option>
-              ))}
-            </select>
-            <label className="text-xs text-slate-400 font-semibold block mb-1">Play as</label>
-            <div className="flex gap-2">
-              <button
-                id="play-white"
-                onClick={() => handleColorChange('w')}
-                className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${playerColor === 'w' ? 'bg-emerald-500 text-bg-primary' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
-              >⬜ White</button>
-              <button
-                id="play-black"
-                onClick={() => handleColorChange('b')}
-                className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${playerColor === 'b' ? 'bg-emerald-500 text-bg-primary' : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}
-              >⬛ Black</button>
+          <Card hoverEffect={false} className="flex flex-col gap-3">
+            <h3 className="font-bold text-white text-sm">⚙️ Game Setup</h3>
+            <div>
+              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1.5">AI Difficulty</label>
+              <select
+                id="ai-difficulty"
+                value={aiLevel}
+                onChange={e => setAiLevel(e.target.value)}
+                className="w-full bg-bg-primary border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white font-bold focus:outline-none focus:border-emerald-500"
+              >
+                {AI_LEVELS.map(l => (
+                  <option key={l.id} value={l.id}>{l.name}</option>
+                ))}
+              </select>
             </div>
-          </div>
+            <div>
+              <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1.5">Play as</label>
+              <div className="flex gap-2">
+                <button
+                  id="play-white"
+                  onClick={() => handleColorChange('w')}
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-300 border ${
+                    playerColor === 'w' 
+                      ? 'bg-emerald-500 text-bg-primary border-emerald-500 shadow-glow' 
+                      : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10 hover:text-slate-200'
+                  }`}
+                >
+                  ⬜ White
+                </button>
+                <button
+                  id="play-black"
+                  onClick={() => handleColorChange('b')}
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all duration-300 border ${
+                    playerColor === 'b' 
+                      ? 'bg-emerald-500 text-bg-primary border-emerald-500 shadow-glow' 
+                      : 'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10 hover:text-slate-200'
+                  }`}
+                >
+                  ⬛ Black
+                </button>
+              </div>
+            </div>
+          </Card>
 
           {/* Move List */}
-          <div className="glass-panel p-5 rounded-xl flex-1">
-            <h3 className="font-bold text-white text-sm mb-3">📋 Moves</h3>
-            <div className="font-mono text-xs max-h-[300px] overflow-y-auto space-y-0.5">
+          <Card hoverEffect={false} className="flex-1 flex flex-col min-h-[220px]">
+            <h3 className="font-bold text-white text-sm mb-3">📋 Game Moves</h3>
+            <div className="font-mono text-xs overflow-y-auto space-y-1 pr-1 flex-1 shadow-inner">
               {formattedMoves.length === 0 && (
-                <div className="text-slate-500 text-center py-4">Game not started</div>
+                <div className="text-slate-500 text-center italic py-8 font-semibold">Game not started</div>
               )}
               {formattedMoves.map(m => (
-                <div key={m.num} className="flex gap-2 text-slate-300 py-0.5 px-2 rounded hover:bg-white/5">
-                  <span className="text-slate-500 w-6">{m.num}.</span>
+                <div key={m.num} className="flex gap-2 text-slate-300 py-1 px-2 rounded-lg hover:bg-white/5 font-bold">
+                  <span className="text-slate-500 w-6 shrink-0">{m.num}.</span>
                   <span className="w-16">{m.white}</span>
                   <span className="w-16 text-slate-400">{m.black}</span>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Board } from '../components/Board';
 import { SpacedRepetition, SRSCard } from '../core/storage';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 
 const QUALITY_LABELS: Record<number, { label: string; color: string; desc: string }> = {
   0: { label: 'Blackout', color: '#ef4444', desc: 'Total failure' },
@@ -62,55 +64,55 @@ export const SpacedReview: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto animate-fadeIn">
+    <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto py-2 animate-fadeIn text-slate-200">
       <div>
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Spaced Repetition</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-emerald-500 font-mono">Spaced Repetition</span>
         <h2 className="text-2xl font-black text-white">Daily <span className="text-emerald-400">Review</span></h2>
         <p className="text-sm text-slate-400 mt-1">SM-2 algorithm ensures you never forget your preparation.</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'Total Cards', val: stats.total, icon: '🗂️' },
           { label: 'Due Today', val: stats.due, icon: '📥' },
           { label: 'Mastered', val: stats.mastered, icon: '🏆' },
           { label: 'Reviewed Now', val: reviewedCount, icon: '✅' },
         ].map(s => (
-          <div key={s.label} className="glass-panel p-4 rounded-xl text-center">
+          <Card key={s.label} className="text-center p-4" hoverEffect={false}>
             <div className="text-lg mb-0.5">{s.icon}</div>
-            <div className="text-xl font-bold text-white">{s.val}</div>
-            <div className="text-[10px] text-slate-500 font-semibold uppercase">{s.label}</div>
-          </div>
+            <div className="text-xl font-bold text-white font-mono">{s.val}</div>
+            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wide">{s.label}</div>
+          </Card>
         ))}
       </div>
 
       {/* Card Review */}
       {!currentCard ? (
-        <div className="glass-panel p-12 rounded-2xl text-center">
+        <Card className="p-12 text-center" hoverEffect={false}>
           <div className="text-5xl mb-4">🎉</div>
           <h3 className="text-xl font-bold text-white mb-2">All Caught Up!</h3>
-          <p className="text-sm text-slate-400">No cards due for review right now. Come back tomorrow for your next session.</p>
-          <div className="mt-6 text-xs text-slate-500">Total mastered: {stats.mastered} / {stats.total} cards</div>
-        </div>
+          <p className="text-sm text-slate-400 font-semibold">No cards due for review right now. Come back tomorrow for your next session.</p>
+          <div className="mt-6 text-xs text-slate-500 font-mono">Total mastered: {stats.mastered} / {stats.total} cards</div>
+        </Card>
       ) : (
         <div className="flashcard" onClick={() => !showAnswer && setShowAnswer(true)}>
           <div className={`flashcard-inner ${showAnswer ? 'flipped' : ''}`}>
             <div className="flashcard-front">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 mb-3">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 mb-3 font-mono">
                 {currentCard.category} • Card {currentIdx + 1} of {dueCards.length}
               </div>
-              <p className="text-lg font-semibold text-white text-center leading-relaxed">{currentCard.front}</p>
+              <p className="text-lg font-bold text-white text-center leading-relaxed">{currentCard.front}</p>
               {currentCard.fen && (
                 <div className="mt-4">
                   <Board fen={currentCard.fen} interactive={false} size={220} />
                 </div>
               )}
-              <div className="mt-4 text-xs text-slate-500">Click to reveal answer</div>
+              <div className="mt-6 text-xs text-slate-500 font-bold">Click to reveal answer</div>
             </div>
             <div className="flashcard-back">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-3">Answer</div>
-              <p className="text-base font-semibold text-white text-center leading-relaxed mb-4">{currentCard.back}</p>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-3 font-mono">Answer</div>
+              <p className="text-base font-bold text-white text-center leading-relaxed mb-4">{currentCard.back}</p>
               {currentCard.fen && (
                 <div className="mb-4">
                   <Board fen={currentCard.fen} interactive={false} size={180} />
@@ -124,17 +126,17 @@ export const SpacedReview: React.FC = () => {
       {/* Rating Buttons */}
       {showAnswer && currentCard && (
         <div className="animate-fadeIn">
-          <div className="text-xs text-slate-500 font-semibold text-center mb-2">Rate your recall quality:</div>
-          <div className="grid grid-cols-6 gap-2">
+          <div className="text-xs text-slate-500 font-bold text-center mb-3">Rate your recall quality:</div>
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
             {[0, 1, 2, 3, 4, 5].map(q => (
               <button
                 key={q}
                 onClick={() => handleRating(q)}
-                className="py-3 rounded-lg border border-white/10 hover:border-white/20 transition-all text-center"
-                style={{ backgroundColor: `${QUALITY_LABELS[q].color}15` }}
+                className="py-3 rounded-xl border border-white/10 hover:border-white/20 transition-all text-center"
+                style={{ backgroundColor: `${QUALITY_LABELS[q].color}10` }}
               >
-                <div className="text-sm font-bold" style={{ color: QUALITY_LABELS[q].color }}>{q}</div>
-                <div className="text-[9px] font-semibold text-slate-400">{QUALITY_LABELS[q].label}</div>
+                <div className="text-sm font-black" style={{ color: QUALITY_LABELS[q].color }}>{q}</div>
+                <div className="text-[9px] font-bold text-slate-400">{QUALITY_LABELS[q].label}</div>
               </button>
             ))}
           </div>

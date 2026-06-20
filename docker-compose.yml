@@ -30,3 +30,23 @@ services:
       - NODE_ENV=development
     depends_on:
       - frontend
+
+  test:
+    image: node:22-alpine
+    container_name: chessos-test-runner
+    working_dir: /app/frontend
+    volumes:
+      - .:/app
+    command: npm run test
+    profiles:
+      - test
+
+  verify:
+    image: node:22-alpine
+    container_name: chessos-verify-runner
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh ./scripts/verify-tests.sh
+    profiles:
+      - verify
