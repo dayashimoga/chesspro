@@ -234,135 +234,377 @@ class _MainShellState extends State<MainShell> {
 }
 
 // ============================================================================
-// Dashboard Page
+// Dashboard Page — Premium Design with Hero Banner, XP, Challenges
 // ============================================================================
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> with SingleTickerProviderStateMixin {
+  late AnimationController _animController;
+  late Animation<double> _fadeAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
+    _animController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
 
   @override
   Widget build(BuildContext context) {
     final repo = DataRepository();
     final stats = repo.loadStats();
+    final xp = stats['xp'] ?? 0;
+    final level = stats['level'] ?? 1;
+    final streak = stats['streak'] ?? 0;
+    final rating = stats['rating'] ?? 800;
+    final xpForNext = 250;
+    final xpProgress = (xp % xpForNext) / xpForNext;
 
     return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
+      child: FadeTransition(
+        opacity: _fadeAnim,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ===== Hero Banner =====
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      ChessOSTheme.primary.withOpacity(0.12),
+                      ChessOSTheme.primary.withOpacity(0.04),
+                      ChessOSTheme.secondary.withOpacity(0.06),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ChessOSTheme.primary.withOpacity(0.08),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ChessOS Pro',
-                      style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white),
-                    ),
-                    Text(
-                      'GM MASTERY PLATFORM',
+                      '${_getGreeting()}, Champion ♚',
                       style: GoogleFonts.inter(
-                        fontSize: 10, fontWeight: FontWeight.w700,
-                        letterSpacing: 3, color: ChessOSTheme.primary,
+                        fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white,
                       ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Continue your journey to mastery.',
+                      style: GoogleFonts.inter(fontSize: 13, color: Colors.white.withOpacity(0.45)),
+                    ),
+                    const SizedBox(height: 16),
+                    // Stats chips
+                    Row(
+                      children: [
+                        _HeroChip(icon: '📊', label: 'Rating', value: '$rating', color: ChessOSTheme.primary),
+                        const SizedBox(width: 10),
+                        _HeroChip(icon: '🔥', label: 'Streak', value: '$streak', color: ChessOSTheme.secondary),
+                        const SizedBox(width: 10),
+                        _HeroChip(icon: '⭐', label: 'Lv$level', value: '$xp XP', color: const Color(0xFF8B5CF6)),
+                      ],
                     ),
                   ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: ChessOSTheme.secondary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: ChessOSTheme.secondary.withOpacity(0.2)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Text('🔥', style: TextStyle(fontSize: 14)),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${stats['streak']} Day Streak',
-                        style: GoogleFonts.inter(
-                          fontSize: 11, fontWeight: FontWeight.w700, color: ChessOSTheme.secondary,
+              ),
+              const SizedBox(height: 14),
+
+              // ===== XP Progress Bar =====
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: ChessOSTheme.card,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: ChessOSTheme.outline),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42, height: 42,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF10B981), Color(0xFF059669)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(color: ChessOSTheme.primary.withOpacity(0.3), blurRadius: 8),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Lv$level',
+                          style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w900, color: ChessOSTheme.background),
                         ),
                       ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Experience', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
+                              Text('${xp % xpForNext}/$xpForNext XP', style: GoogleFonts.inter(fontSize: 10, color: Colors.white.withOpacity(0.35))),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: LinearProgressIndicator(
+                              value: xpProgress,
+                              backgroundColor: Colors.white.withOpacity(0.06),
+                              valueColor: const AlwaysStoppedAnimation(Color(0xFF10B981)),
+                              minHeight: 8,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+
+              // ===== Quick Actions =====
+              Text(
+                'QUICK ACTIONS',
+                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white.withOpacity(0.25), letterSpacing: 2),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  _QuickAction(icon: '📅', label: 'Daily Plan', route: '/coach', color: const Color(0xFF8B5CF6), context: context),
+                  const SizedBox(width: 10),
+                  _QuickAction(icon: '🧩', label: 'Puzzles', route: '/puzzles', color: const Color(0xFF10B981), context: context),
+                  const SizedBox(width: 10),
+                  _QuickAction(icon: '♟️', label: 'Play AI', route: '/play', color: const Color(0xFFF59E0B), context: context),
+                  const SizedBox(width: 10),
+                  _QuickAction(icon: '📖', label: 'Learn', route: '/foundations', color: const Color(0xFF3B82F6), context: context),
+                ],
+              ),
+              const SizedBox(height: 18),
+
+              // ===== Daily Challenges =====
+              Text(
+                'DAILY CHALLENGES',
+                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white.withOpacity(0.25), letterSpacing: 2),
+              ),
+              const SizedBox(height: 10),
+              _DailyChallengeCard(icon: '🧩', title: 'Solve 5 Puzzles', progress: 0.6, target: '3/5', color: const Color(0xFF10B981)),
+              const SizedBox(height: 8),
+              _DailyChallengeCard(icon: '📖', title: 'Complete 1 Lesson', progress: 0.0, target: '0/1', color: const Color(0xFF3B82F6)),
+              const SizedBox(height: 8),
+              _DailyChallengeCard(icon: '♟️', title: 'Play a Game', progress: 0.0, target: '0/1', color: const Color(0xFFF59E0B)),
+              const SizedBox(height: 18),
+
+              // ===== Content Stats =====
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      ChessOSTheme.primary.withOpacity(0.06),
+                      ChessOSTheme.primary.withOpacity(0.02),
                     ],
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: ChessOSTheme.primary.withOpacity(0.1)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _ContentStat('${repo.totalCourses}', 'Courses'),
+                    _ContentStat('${repo.totalModules}', 'Modules'),
+                    _ContentStat('${repo.totalPuzzles}', 'Puzzles'),
+                    _ContentStat('${repo.totalMasterGames}', 'Games'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+
+              // ===== University Grid =====
+              Text(
+                'CHESS UNIVERSITY',
+                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white.withOpacity(0.25), letterSpacing: 2),
+              ),
+              const SizedBox(height: 12),
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1.45,
+                children: const [
+                  _UniversityCard(title: 'Foundations', icon: '🏫', route: '/foundations', color: Color(0xFF10B981)),
+                  _UniversityCard(title: 'Tactics', icon: '⚔️', route: '/tactics', color: Color(0xFFF59E0B)),
+                  _UniversityCard(title: 'Calculation', icon: '🧠', route: '/calculation', color: Color(0xFF8B5CF6)),
+                  _UniversityCard(title: 'Openings', icon: '🌳', route: '/openings', color: Color(0xFF3B82F6)),
+                  _UniversityCard(title: 'Middlegame', icon: '🏰', route: '/middlegame', color: Color(0xFFEF4444)),
+                  _UniversityCard(title: 'Endgames', icon: '👑', route: '/endgames', color: Color(0xFFF97316)),
+                  _UniversityCard(title: 'Master Games', icon: '🏆', route: '/master-games', color: Color(0xFFEC4899)),
+                  _UniversityCard(title: 'Puzzles', icon: '🧩', route: '/puzzles', color: Color(0xFF06B6D4)),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ===== Hero Chip =====
+class _HeroChip extends StatelessWidget {
+  final String icon, label, value;
+  final Color color;
+  const _HeroChip({required this.icon, required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withOpacity(0.15)),
+        ),
+        child: Column(
+          children: [
+            Text(icon, style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 4),
+            Text(value, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white)),
+            Text(label, style: GoogleFonts.inter(fontSize: 8, fontWeight: FontWeight.w600, color: color.withOpacity(0.8))),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ===== Quick Action =====
+class _QuickAction extends StatelessWidget {
+  final String icon, label, route;
+  final Color color;
+  final BuildContext context;
+  const _QuickAction({required this.icon, required this.label, required this.route, required this.color, required this.context});
+
+  @override
+  Widget build(BuildContext _) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => GoRouter.of(context).go(route),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [color.withOpacity(0.12), color.withOpacity(0.04)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: color.withOpacity(0.15)),
+          ),
+          child: Column(
+            children: [
+              Text(icon, style: const TextStyle(fontSize: 22)),
+              const SizedBox(height: 6),
+              Text(label, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ===== Daily Challenge Card =====
+class _DailyChallengeCard extends StatelessWidget {
+  final String icon, title, target;
+  final double progress;
+  final Color color;
+  const _DailyChallengeCard({required this.icon, required this.title, required this.progress, required this.target, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: ChessOSTheme.card,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: progress >= 1.0 ? color.withOpacity(0.3) : ChessOSTheme.outline),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 36, height: 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withOpacity(progress >= 1.0 ? 0.2 : 0.08),
+            ),
+            child: Center(child: Text(icon, style: const TextStyle(fontSize: 16))),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white)),
+                const SizedBox(height: 4),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Colors.white.withOpacity(0.05),
+                    valueColor: AlwaysStoppedAnimation(color),
+                    minHeight: 4,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-
-            // Stats Row
-            Row(
-              children: [
-                _StatCard(title: 'Rating', value: '${stats['rating']}', icon: '📊', color: ChessOSTheme.primary),
-                const SizedBox(width: 12),
-                _StatCard(title: 'XP', value: '${stats['xp']}', icon: '💎', color: ChessOSTheme.primary),
-                const SizedBox(width: 12),
-                _StatCard(title: 'Level', value: '${stats['level']}', icon: '⭐', color: ChessOSTheme.secondary),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Content stats
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    ChessOSTheme.primary.withOpacity(0.06),
-                    ChessOSTheme.primary.withOpacity(0.02),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: ChessOSTheme.primary.withOpacity(0.1)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _ContentStat('${repo.totalCourses}', 'Courses'),
-                  _ContentStat('${repo.totalModules}', 'Modules'),
-                  _ContentStat('${repo.totalPuzzles}', 'Puzzles'),
-                  _ContentStat('${repo.totalMasterGames}', 'Games'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Quick Actions
-            Text(
-              'CHESS UNIVERSITY',
-              style: GoogleFonts.inter(
-                fontSize: 10, fontWeight: FontWeight.w700,
-                letterSpacing: 2, color: ChessOSTheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            // University Grid
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 1.4,
-              children: const [
-                _UniversityCard(title: 'Foundations', icon: '🏫', route: '/foundations', color: Color(0xFF10B981)),
-                _UniversityCard(title: 'Tactics', icon: '⚔️', route: '/tactics', color: Color(0xFFF59E0B)),
-                _UniversityCard(title: 'Calculation', icon: '🧠', route: '/calculation', color: Color(0xFF8B5CF6)),
-                _UniversityCard(title: 'Openings', icon: '🌳', route: '/openings', color: Color(0xFF3B82F6)),
-                _UniversityCard(title: 'Middlegame', icon: '🏰', route: '/middlegame', color: Color(0xFFEF4444)),
-                _UniversityCard(title: 'Endgames', icon: '👑', route: '/endgames', color: Color(0xFFF97316)),
-                _UniversityCard(title: 'Master Games', icon: '🏆', route: '/master-games', color: Color(0xFFEC4899)),
-                _UniversityCard(title: 'Puzzles', icon: '🧩', route: '/puzzles', color: Color(0xFF06B6D4)),
-              ],
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 12),
+          Text(target, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
+        ],
       ),
     );
   }
@@ -384,38 +626,6 @@ class _ContentStat extends StatelessWidget {
   }
 }
 
-class _StatCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final String icon;
-  final Color color;
-
-  const _StatCard({required this.title, required this.value, required this.icon, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: ChessOSTheme.card,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: ChessOSTheme.outline),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(icon, style: const TextStyle(fontSize: 20)),
-            const SizedBox(height: 8),
-            Text(value, style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white)),
-            Text(title, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w600, color: ChessOSTheme.onSurfaceVariant)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _UniversityCard extends StatelessWidget {
   final String title;
   final String icon;
@@ -429,18 +639,32 @@ class _UniversityCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.go(route),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.05),
+          gradient: LinearGradient(
+            colors: [color.withOpacity(0.1), color.withOpacity(0.03)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withOpacity(0.15)),
+          boxShadow: [
+            BoxShadow(color: color.withOpacity(0.05), blurRadius: 12, offset: const Offset(0, 4)),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(icon, style: const TextStyle(fontSize: 28)),
-            Text(title, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white)),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(title, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white)),
+                ),
+                Icon(Icons.arrow_forward_ios_rounded, size: 12, color: color.withOpacity(0.5)),
+              ],
+            ),
           ],
         ),
       ),

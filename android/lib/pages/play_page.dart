@@ -79,14 +79,13 @@ class _PlayAIPageState extends State<PlayAIPage> {
   Future<void> _makeAIMove() async {
     setState(() => _isThinking = true);
 
-    // Small delay to feel natural
-    await Future.delayed(Duration(milliseconds: 200 + (_difficulty * 100)));
-
-    final aiMove = _engine.getBestMove(_difficulty);
+    // Use isolate-based async computation to keep UI responsive
+    final aiMove = await _engine.getBestMoveAsync(_difficulty);
     if (aiMove != null) {
       _engine.makeMove(aiMove);
     }
 
+    if (!mounted) return;
     setState(() => _isThinking = false);
 
     if (_engine.isGameOver) {

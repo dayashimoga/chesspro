@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:chess/chess.dart' as chess_lib;
+import 'package:flutter/foundation.dart';
 
 /// ChessOS Chess Engine — Wraps the `chess` package for move validation,
 /// legal move generation, AI opponent, and post-game analysis.
@@ -254,6 +255,13 @@ class ChessEngine {
     return bestMove;
   }
 
+  /// Async version that runs AI in a background isolate to avoid UI jank
+  Future<String?> getBestMoveAsync(int difficulty) async {
+    final fen = _game.fen;
+    final result = await compute(_computeBestMove, _AiRequest(fen, difficulty));
+    return result;
+  }
+
   int _difficultyToDepth(int difficulty) {
     switch (difficulty) {
       case 1: return 1;
@@ -393,6 +401,20 @@ class ChessEngine {
                   : 'Game in progress',
     );
   }
+}
+
+// ============================================================================
+// Top-level isolate function for compute()
+// ============================================================================
+class _AiRequest {
+  final String fen;
+  final int difficulty;
+  _AiRequest(this.fen, this.difficulty);
+}
+
+String? _computeBestMove(_AiRequest request) {
+  final engine = ChessEngine.fromFen(request.fen);
+  return engine.getBestMove(request.difficulty);
 }
 
 // ============================================================================
