@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import { Storage, SpacedRepetition } from '../core/storage';
@@ -9,23 +9,168 @@ import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { ProgressBar } from '../components/ui/ProgressBar';
+import { ALL_COURSES } from '../content/index';
 
 const DAILY_PUZZLE_FEN = 'r2q1rk1/pp2ppbp/2n3p1/2pp4/3P1B2/2PB1N2/PP3PPP/R2Q1RK1 w - - 0 10';
+
+// Maps a weak area skill category to pathway id
+const SKILL_TO_PATHWAY: Record<string, string> = {
+  tactical: 'tactics',
+  patternRecognition: 'tactics',
+  opening: 'openings',
+  strategic: 'middlegame',
+  middlegame: 'middlegame',
+  endgame: 'endgame',
+  calculation: 'calculation',
+  visualization: 'calculation',
+};
+
+const PATHWAYS = [
+  { id: 'openings', courseIds: ['openings'] },
+  { id: 'tactics', courseIds: ['foundations', 'tactics'] },
+  { id: 'middlegame', courseIds: ['strategy', 'middlegame'] },
+  { id: 'endgame', courseIds: ['endgame'] },
+  { id: 'calculation', courseIds: ['calculation', 'advanced', 'master-games'] },
+];
 
 export const Dashboard: React.FC = () => {
   const user = useAppStore(s => s.user);
   const completedLessons = useAppStore(s => s.completedLessons);
+  const favorites = useAppStore(s => s.favorites || []);
   const navigate = useNavigate();
 
   const analysis = Storage.analyzeWeaknesses();
   const srsStats = SpacedRepetition.getStats();
   const profile = AdaptiveEngine.analyzeProfile();
-  const gamStats = Gamification.getStats();
   const dailyChallenges = Gamification.getDailyChallenges();
   const completedChallenges = dailyChallenges.filter(c => c.completed).length;
 
   const xpProgress = user.xp % 250;
   const xpPercentage = (xpProgress / 250) * 100;
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Array<{ courseId: string; moduleId: string; title: string; courseTitle: string; difficulty: string }>>([]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const q = e.target.value;
+    setSearchQuery(q);
+    if (q.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    const results: typeof searchResults = [];
+    const term = q.toLowerCase();
+    
+    for (const course of ALL_COURSES) {
+      for (const mod of course.modules) {
+        if (
+          mod.title.toLowerCase().includes(term) ||
+          mod.theory.toLowerCase().includes(term) ||
+          mod.difficulty.toLowerCase().includes(term) ||
+          course.title.toLowerCase().includes(term)
+        ) {
+          results.push({
+            courseId: course.id,
+            moduleId: mod.id,
+            title: mod.title,
+            courseTitle: course.title,
+            difficulty: mod.difficulty,
+          });
+        }
+      }
+    }
+    setSearchResults(results.slice(0, 5));
+  };
+
+  // 1. Recommended Next Lesson
+  const weakAreas = profile.weakAreas.length > 0 ? profile.weakAreas : ['tactical', 'endgame'];
+  let recommendedLesson: { courseId: string; moduleId: string; title: string; courseTitle: string; courseIcon: string; difficulty: string } | null = null;
+
+  for (const weak of weakAreas) {
+    const pathwayId = SKILL_TO_PATHWAY[weak] || 'tactics';
+    const pathway = PATHWAYS.find(p => p.id === pathwayId);
+    if (!pathway) continue;
+
+    const pathwayCourses = ALL_COURSES.filter(c => pathway.courseIds.includes(c.id));
+    for (const course of pathwayCourses) {
+      for (const mod of course.modules) {
+        const key = `${course.id}-${mod.id}`;
+        if (!completedLessons.includes(key)) {
+          recommendedLesson = {
+            courseId: course.id,
+            moduleId: mod.id,
+            title: mod.title,
+            courseTitle: course.title,
+            courseIcon: course.icon,
+            difficulty: mod.difficulty,
+          };
+          break;
+        }
+      }
+      if (recommendedLesson) break;
+    }
+    if (recommendedLesson) break;
+  }
+
+  if (!recommendedLesson) {
+    for (const course of ALL_COURSES) {
+      for (const mod of course.modules) {
+        const key = `${course.id}-${mod.id}`;
+        if (!completedLessons.includes(key)) {
+          recommendedLesson = {
+            courseId: course.id,
+            moduleId: mod.id,
+            title: mod.title,
+            courseTitle: course.title,
+            courseIcon: course.icon,
+            difficulty: mod.difficulty,
+          };
+          break;
+        }
+      }
+      if (recommendedLesson) break;
+    }
+  }
+
+  // 2. Continue Learning
+  const lastActiveLessonStr = Storage.getProgress().lastActiveLesson;
+  let lastActiveLesson: { courseId: string; moduleId: string; title: string; courseTitle: string; courseIcon: string; difficulty: string } | null = null;
+  if (lastActiveLessonStr && lastActiveLessonStr.includes('/')) {
+    const [cId, mId] = lastActiveLessonStr.split('/');
+    const course = ALL_COURSES.find(c => c.id === cId);
+    if (course) {
+      const mod = course.modules.find(m => m.id === mId);
+      if (mod) {
+        lastActiveLesson = {
+          courseId: cId,
+          moduleId: mId,
+          title: mod.title,
+          courseTitle: course.title,
+          courseIcon: course.icon,
+          difficulty: mod.difficulty,
+        };
+      }
+    }
+  }
+
+  // 3. Favorites
+  const favoriteLessons = favorites.map(favStr => {
+    if (!favStr.includes('/')) return null;
+    const [cId, mId] = favStr.split('/');
+    const course = ALL_COURSES.find(c => c.id === cId);
+    if (!course) return null;
+    const mod = course.modules.find(m => m.id === mId);
+    if (!mod) return null;
+    return {
+      courseId: cId,
+      moduleId: mId,
+      title: mod.title,
+      courseTitle: course.title,
+      courseIcon: course.icon,
+      difficulty: mod.difficulty,
+    };
+  }).filter((x): x is NonNullable<typeof x> => x !== null);
 
   const skillTree = [
     { id: 'foundations', title: 'Chess Foundations', icon: '♔', desc: 'Board, Movement & Rules', target: '/foundations', status: completedLessons.length >= 5 ? 'Complete' : completedLessons.length > 0 ? 'In Progress' : 'In Progress' },
@@ -94,6 +239,103 @@ export const Dashboard: React.FC = () => {
             <span className="text-sm font-bold text-white block">{action.label}</span>
           </button>
         ))}
+      </div>
+
+      {/* Smart Search Bar */}
+      <Card className="relative overflow-visible" hoverEffect={false}>
+        <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-3">
+          <span>🔍</span> Smart Lesson Search
+        </h3>
+        <div className="relative">
+          <span className="absolute inset-y-0 left-4 flex items-center text-slate-500">🔍</span>
+          <input
+            type="text"
+            placeholder="Search lessons, tactical motifs, openings, or difficulty..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="w-full bg-[#0c0c14] border border-white/10 rounded-xl pl-11 pr-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-all font-semibold"
+          />
+        </div>
+        {searchResults.length > 0 && (
+          <div className="absolute left-4 right-4 mt-2 bg-[#0d0d18] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
+            {searchResults.map(res => (
+              <button
+                key={`${res.courseId}-${res.moduleId}`}
+                onClick={() => navigate('/lessons', { state: { courseId: res.courseId, moduleId: res.moduleId } })}
+                className="w-full text-left px-4 py-3 border-b border-white/5 hover:bg-white/[0.04] transition-all flex justify-between items-center"
+              >
+                <div>
+                  <span className="font-bold text-xs text-white block">{res.title}</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">{res.courseTitle}</span>
+                </div>
+                <Badge variant={res.difficulty === 'beginner' ? 'emerald' : res.difficulty === 'intermediate' ? 'amber' : 'red'} className="capitalize">
+                  {res.difficulty}
+                </Badge>
+              </button>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Continue Learning & Recommended Next Lesson */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Continue Learning Widget */}
+        <Card className="flex flex-col justify-between min-h-[150px] border-l-4 !border-l-indigo-500 bg-indigo-500/5" hoverEffect={true} onClick={() => lastActiveLesson && navigate('/lessons', { state: { courseId: lastActiveLesson.courseId, moduleId: lastActiveLesson.moduleId } })}>
+          <div>
+            <span className="text-[9px] uppercase tracking-widest font-extrabold text-indigo-400 block mb-1">Resume Activity</span>
+            {lastActiveLesson ? (
+              <>
+                <h4 className="font-extrabold text-white text-base flex items-center gap-2">
+                  <span>{lastActiveLesson.courseIcon}</span>
+                  <span>{lastActiveLesson.title}</span>
+                </h4>
+                <p className="text-xs text-slate-400 mt-1 leading-snug">Course: {lastActiveLesson.courseTitle}</p>
+              </>
+            ) : (
+              <>
+                <h4 className="font-bold text-white text-base">No active lessons</h4>
+                <p className="text-xs text-slate-400 mt-1">Jump into the curriculum hub to start learning.</p>
+              </>
+            )}
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            {lastActiveLesson ? (
+              <Badge variant="violet" className="capitalize">{lastActiveLesson.difficulty}</Badge>
+            ) : <span />}
+            <Button size="sm" variant="primary" className="!bg-indigo-600 hover:!bg-indigo-500">
+              {lastActiveLesson ? 'Resume →' : 'Browse Hub →'}
+            </Button>
+          </div>
+        </Card>
+
+        {/* Recommended Next Lesson Widget */}
+        <Card className="flex flex-col justify-between min-h-[150px] border-l-4 !border-l-emerald-500 bg-emerald-500/5" hoverEffect={true} onClick={() => recommendedLesson && navigate('/lessons', { state: { courseId: recommendedLesson.courseId, moduleId: recommendedLesson.moduleId } })}>
+          <div>
+            <span className="text-[9px] uppercase tracking-widest font-extrabold text-emerald-400 block mb-1">Recommended Next Lesson</span>
+            {recommendedLesson ? (
+              <>
+                <h4 className="font-extrabold text-white text-base flex items-center gap-2">
+                  <span>{recommendedLesson.courseIcon}</span>
+                  <span>{recommendedLesson.title}</span>
+                </h4>
+                <p className="text-xs text-slate-400 mt-1 leading-snug">Weakness-Targeted: {recommendedLesson.courseTitle}</p>
+              </>
+            ) : (
+              <>
+                <h4 className="font-bold text-white text-base">All caught up!</h4>
+                <p className="text-xs text-slate-400 mt-1">You completed all recommended topics.</p>
+              </>
+            )}
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            {recommendedLesson ? (
+              <Badge variant="emerald" className="capitalize">{recommendedLesson.difficulty}</Badge>
+            ) : <span />}
+            <Button size="sm" variant="primary">
+              Start Study →
+            </Button>
+          </div>
+        </Card>
       </div>
 
       {/* Daily Challenges Summary */}
@@ -190,7 +432,6 @@ export const Dashboard: React.FC = () => {
           <Card hoverEffect={false}>
             <h3 className="text-sm font-bold text-white mb-3">📊 Skill Radar</h3>
             {(() => {
-              const ratings = profile.trends;
               const skills = [
                 { key: 'tactical', label: 'Tactical', icon: '⚔️' },
                 { key: 'strategic', label: 'Strategic', icon: '📈' },
@@ -295,7 +536,7 @@ export const Dashboard: React.FC = () => {
             </Button>
           </Card>
 
-          {/* Review Queue */}
+          {/* Spaced Review */}
           <Card className="text-center" hoverEffect={false}>
             <h3 className="text-sm font-bold text-white mb-2 text-left">🔄 Spaced Review</h3>
             <div>
@@ -307,6 +548,33 @@ export const Dashboard: React.FC = () => {
                 </Button>
               )}
             </div>
+          </Card>
+
+          {/* Favorites List Widget */}
+          <Card hoverEffect={false}>
+            <h3 className="text-sm font-bold text-white mb-3">⭐ Bookmarked Lessons</h3>
+            {favoriteLessons.length === 0 ? (
+              <p className="text-xs text-slate-500 italic py-2 font-semibold">No favorited lessons yet. Star lessons in the Curriculum Hub to pin them here!</p>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {favoriteLessons.map(fav => (
+                  <button
+                    key={`${fav.courseId}-${fav.moduleId}`}
+                    onClick={() => navigate('/lessons', { state: { courseId: fav.courseId, moduleId: fav.moduleId } })}
+                    className="flex gap-2.5 p-2.5 rounded-xl items-center border bg-white/[0.02] border-white/5 hover:border-emerald-500/30 text-left transition-all hover:scale-[1.02]"
+                  >
+                    <span className="text-xl bg-white/5 w-8 h-8 flex items-center justify-center rounded-lg">{fav.courseIcon}</span>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-bold text-white text-[11px] truncate">{fav.title}</h4>
+                      <p className="text-[9px] text-slate-400 truncate mt-0.5">{fav.courseTitle}</p>
+                    </div>
+                    <Badge variant={fav.difficulty === 'beginner' ? 'emerald' : fav.difficulty === 'intermediate' ? 'amber' : 'red'} className="capitalize shrink-0">
+                      {fav.difficulty}
+                    </Badge>
+                  </button>
+                ))}
+              </div>
+            )}
           </Card>
 
           {/* Achievements */}
@@ -338,4 +606,3 @@ export const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
-

@@ -5,6 +5,7 @@ import openingsContent from '../content/05-openings';
 import extendedOpenings from '../content/openings-extended';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { Chess } from 'chess.js';
 
 // Merge original + extended openings into a single module list
 const allModules = [...openingsContent.modules, ...extendedOpenings];
@@ -21,6 +22,12 @@ export const OpeningUniversity: React.FC = () => {
   const [score, setScore] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
   const [completedOpenings, setCompletedOpenings] = useState<Set<string>>(new Set());
+
+  // Interactive practice states
+  const [practiceMoveIdx, setPracticeMoveIdx] = useState(0);
+  const [practiceWrongAttempts, setPracticeWrongAttempts] = useState(0);
+  const [practiceFeedback, setPracticeFeedback] = useState<{ correct: boolean; text: string } | null>(null);
+  const [practiceFen, setPracticeFen] = useState('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
 
   const addXP = useAppStore(s => s.addXP);
   const currentModule = mergedContent.modules.find(m => m.id === activeOpening) || mergedContent.modules[0];
@@ -41,6 +48,10 @@ export const OpeningUniversity: React.FC = () => {
     setQuizIdx(0);
     setSelectedAnswer(null);
     setShowResult(false);
+    setPracticeMoveIdx(0);
+    setPracticeWrongAttempts(0);
+    setPracticeFeedback(null);
+    setPracticeFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
   };
 
   const handleAnswer = (answerIdx: number) => {
@@ -61,6 +72,54 @@ export const OpeningUniversity: React.FC = () => {
     } else {
       setCompletedOpenings(new Set([...completedOpenings, activeOpening]));
       setPhase('practice');
+      setPracticeMoveIdx(0);
+      setPracticeWrongAttempts(0);
+      setPracticeFeedback(null);
+      setPracticeFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    }
+  };
+
+  const handlePracticeMove = (from: string, to: string) => {
+    if (practiceMoveIdx >= openingTree.length) return;
+    const game = new Chess(practiceFen);
+    try {
+      const move = game.move({ from, to, promotion: 'q' });
+      if (move) {
+        const expectedNode = openingTree[practiceMoveIdx];
+        const expectedSan = expectedNode.move.replace(/^\d+(\.\.\.|\.)/, '').trim();
+        if (move.san === expectedSan) {
+          const nextFen = game.fen();
+          setPracticeFen(nextFen);
+          
+          const nextIdx = practiceMoveIdx + 1;
+          setPracticeMoveIdx(nextIdx);
+          setPracticeFeedback({ correct: true, text: `Correct! ${expectedNode.comment || ''}` });
+
+          // Auto play Black's response if it is next in the tree
+          if (nextIdx < openingTree.length) {
+            const nextNode = openingTree[nextIdx];
+            if (nextNode.move.includes('...')) {
+              setTimeout(() => {
+                const engineGame = new Chess(nextFen);
+                const engineExpectedSan = nextNode.move.replace(/^\d+(\.\.\.|\.)/, '').trim();
+                try {
+                  engineGame.move(engineExpectedSan);
+                  setPracticeFen(engineGame.fen());
+                  setPracticeMoveIdx(nextIdx + 1);
+                  setPracticeFeedback({ correct: true, text: `Opponent plays ${nextNode.move}. ${nextNode.comment || ''}` });
+                } catch {
+                  // Fallback
+                }
+              }, 1000);
+            }
+          }
+        } else {
+          setPracticeWrongAttempts(prev => prev + 1);
+          setPracticeFeedback({ correct: false, text: `Not the main line. The correct move was ${expectedSan}.` });
+        }
+      }
+    } catch {
+      setPracticeFeedback({ correct: false, text: 'Illegal move in this position.' });
     }
   };
 
@@ -113,7 +172,15 @@ export const OpeningUniversity: React.FC = () => {
         {(['theory', 'explorer', 'quiz', 'practice'] as OpeningPhase[]).map(p => (
           <button
             key={p}
-            onClick={() => setPhase(p)}
+            onClick={() => {
+              setPhase(p);
+              if (p === 'practice') {
+                setPracticeMoveIdx(0);
+                setPracticeWrongAttempts(0);
+                setPracticeFeedback(null);
+                setPracticeFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+              }
+            }}
             className={`flex-1 py-2 rounded-lg text-xs font-bold capitalize transition-all ${
               phase === p ? 'bg-blue-500 text-white shadow-glow' : 'hover:bg-white/5 text-slate-400'
             }`}
@@ -264,7 +331,7 @@ export const OpeningUniversity: React.FC = () => {
                     onClick={handleNextQuiz}
                     fullWidth
                   >
-                    {quizIdx < exercises.length - 1 ? 'Next Question →' : 'Complete Opening ✓'}
+                    {quizIdx < exercises.length - 1 ? 'Next Question →' : 'Complete to Practice Mode →'}
                   </Button>
                 </div>
               )}
@@ -282,36 +349,85 @@ export const OpeningUniversity: React.FC = () => {
           </>
         )}
 
-        {/* Practice Complete */}
+        {/* Practice Phase */}
         {phase === 'practice' && (
-          <Card className="col-span-1 lg:col-span-2 text-center py-8" hoverEffect={false}>
-            <span className="text-5xl mb-4 block">🎓</span>
-            <h3 className="text-xl font-black text-white mb-2">Opening Mastered!</h3>
-            <p className="text-xs text-slate-400 mb-6">
-              You completed the <strong className="text-blue-400">{currentModule?.title}</strong> opening.
-            </p>
-            <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto mb-6">
-              <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                <div className="text-xl font-black text-emerald-400">{score}</div>
-                <div className="text-[10px] text-slate-500">Correct</div>
-              </div>
-              <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                <div className="text-xl font-black text-sky-400">{totalAttempts > 0 ? Math.round(score / totalAttempts * 100) : 0}%</div>
-                <div className="text-[10px] text-slate-500">Accuracy</div>
-              </div>
+          <>
+            <div className="flex flex-col items-center gap-4">
+              <Card className="w-full flex flex-col items-center" hoverEffect={false}>
+                <Board
+                  fen={practiceFen}
+                  interactive={practiceMoveIdx < openingTree.length}
+                  onMove={handlePracticeMove}
+                />
+                <div className="mt-3 text-xs text-slate-400 text-center font-mono font-semibold">
+                  {practiceMoveIdx >= openingTree.length ? 'Opening Completed!' : `Your Turn — Play move ${practiceMoveIdx + 1}`}
+                </div>
+              </Card>
             </div>
-            <Button
-              onClick={() => {
-                const modIds = mergedContent.modules.map(m => m.id);
-                const curIdx = modIds.indexOf(activeOpening);
-                if (curIdx < modIds.length - 1) {
-                  resetToOpening(modIds[curIdx + 1]);
-                }
-              }}
-            >
-              Next Opening →
-            </Button>
-          </Card>
+
+            <Card hoverEffect={false} className="flex flex-col gap-4">
+              {practiceMoveIdx < openingTree.length ? (
+                <>
+                  <h3 className="text-sm font-bold text-white mb-2">
+                    🎯 Practice Mode: Play the Main Line
+                  </h3>
+                  <p className="text-xs text-slate-300">
+                    Play White's moves on the board. The coach will play Black's replies and explain the ideas.
+                  </p>
+                  <div className="p-3 bg-white/5 rounded-xl border border-white/5 font-mono text-[10px] text-slate-400">
+                    <span className="text-blue-400 font-bold block mb-1">Target Line:</span>
+                    <div className="flex flex-wrap gap-y-1">
+                      {openingTree.map((node, i) => (
+                        <span key={i} className={`mr-2 ${i === practiceMoveIdx ? 'text-amber-400 font-bold ring-1 ring-amber-500/20 px-1 rounded' : i < practiceMoveIdx ? 'text-slate-600 line-through' : ''}`}>
+                          {node.move}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {practiceFeedback && (
+                    <div className={`p-3 rounded-xl border text-xs font-bold ${
+                      practiceFeedback.correct
+                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                        : 'bg-red-500/10 border-red-500/30 text-red-400'
+                    }`}>
+                      {practiceFeedback.text}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-4">
+                  <span className="text-5xl mb-4 block">🏆</span>
+                  <h3 className="text-lg font-black text-white mb-2">Opening Mastered!</h3>
+                  <p className="text-xs text-slate-400 mb-6">
+                    You played the entire main line of <strong className="text-blue-400">{currentModule?.title}</strong> flawlessly.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto mb-6 font-semibold">
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                      <div className="text-xl font-black text-emerald-400">+{currentModule?.difficulty === 'beginner' ? 15 : currentModule?.difficulty === 'intermediate' ? 25 : 40} XP</div>
+                      <div className="text-[10px] text-slate-500">Reward</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                      <div className="text-xl font-black text-sky-400">{practiceWrongAttempts}</div>
+                      <div className="text-[10px] text-slate-500">Mistakes</div>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      addXP(currentModule?.difficulty === 'beginner' ? 15 : currentModule?.difficulty === 'intermediate' ? 25 : 40);
+                      const modIds = mergedContent.modules.map(m => m.id);
+                      const curIdx = modIds.indexOf(activeOpening);
+                      if (curIdx < modIds.length - 1) {
+                        resetToOpening(modIds[curIdx + 1]);
+                      }
+                    }}
+                  >
+                    Next Opening →
+                  </Button>
+                </div>
+              )}
+            </Card>
+          </>
         )}
       </div>
     </div>

@@ -4,6 +4,51 @@ import { useAppStore } from '../store/useAppStore';
 import { Storage } from '../core/storage';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { Board } from '../components/Board';
+
+interface MistakeCase {
+  id: string;
+  name: string;
+  blunderMove: string;
+  classification: string;
+  fen: string;
+  explanation: string;
+  correctAlternative: string;
+  highlightSquare: string;
+}
+
+const MISTAKE_CASES: MistakeCase[] = [
+  {
+    id: 'fried-liver',
+    name: 'Fried Liver Blunder',
+    blunderMove: '5...Nxd5?',
+    classification: '🔴 Blunder (-2.4)',
+    fen: 'r1bqkb1r/ppp2ppp/2n5/3np1N1/2B5/8/PPPP1PPP/RNBQK2R w KQkq - 0 6',
+    explanation: 'Capturing the pawn on d5 with the knight is a database blunder. White has the devastating sacrifice 6.Nxf7! drawing the king into the open center, where it faces a mating attack after 6...Kxf7 7.Qf3+ Ke6 8.Nc3.',
+    correctAlternative: '5...Na5! (attacking the c4 bishop, driving it away)',
+    highlightSquare: 'd5'
+  },
+  {
+    id: 'scholars-mate',
+    name: 'Scholar\'s Mate Blunder',
+    blunderMove: '3...Nf6?',
+    classification: '⛔ Mate in 1 Blunder',
+    fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4',
+    explanation: 'Developing the knight to f6 completely ignores White\'s threat on f7. White delivers immediate checkmate on the next move with 4.Qxf7#.',
+    correctAlternative: '3...g6! (blocking the queen\'s attack path) or 3...Qe7!',
+    highlightSquare: 'f7'
+  },
+  {
+    id: 'back-rank-trap',
+    name: 'Greedy Back Rank Blunder',
+    blunderMove: '12...Qxb2?',
+    classification: '🔴 Blunder (-4.8)',
+    fen: 'r5k1/pp3ppp/2n5/8/8/4q3/PPQ2PPP/2R3K1 b - - 0 13',
+    explanation: 'Black captures a free-looking pawn but abandons the back rank defense. White recaptures or plays Rc8+ leading to forced back rank checkmate.',
+    correctAlternative: '12...Re8 (maintaining back rank control and safety)',
+    highlightSquare: 'c8'
+  }
+];
 
 export const AICoachDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +71,14 @@ export const AICoachDashboard: React.FC = () => {
   });
 
   const [planTab, setPlanTab] = useState<'daily' | 'weekly' | 'monthly'>('daily');
+  const [activeMistakeIdx, setActiveMistakeIdx] = useState<number>(0);
+  const [mistakeBoardFen, setMistakeBoardFen] = useState<string>(MISTAKE_CASES[0].fen);
+
+  const activeMistake = MISTAKE_CASES[activeMistakeIdx];
+
+  useEffect(() => {
+    setMistakeBoardFen(activeMistake.fen);
+  }, [activeMistakeIdx]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -113,9 +166,9 @@ export const AICoachDashboard: React.FC = () => {
 
   // Radar Chart Trigonometry helper
   const getRadarPoints = () => {
-    const cx = 150;
-    const cy = 150;
-    const r = 90;
+    const cx_val = 150;
+    const cy_val = 150;
+    const r_val = 90;
     const values = [
       subRatings.tactics,
       subRatings.openings,
@@ -126,8 +179,8 @@ export const AICoachDashboard: React.FC = () => {
     return values.map((val, i) => {
       const angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
       const normalized = Math.max(0.15, Math.min(1.0, (val - 400) / 1600)); // Range: 400 to 2000 Elo
-      const x = cx + r * normalized * Math.cos(angle);
-      const y = cy + r * normalized * Math.sin(angle);
+      const x = cx_val + r_val * normalized * Math.cos(angle);
+      const y = cy_val + r_val * normalized * Math.sin(angle);
       return `${x},${y}`;
     }).join(' ');
   };
@@ -313,8 +366,8 @@ export const AICoachDashboard: React.FC = () => {
 
       </div>
 
-      <div className="grid grid-cols-1 gap-6 mt-2">
-        {/* Dynamic Schedule Plan */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
+        {/* Left Column: Dynamic Schedule Plan */}
         {(() => {
           const weeklySchedule = [
             { time: 'Mon / Tue', task: 'Openings: Build & practice custom repertoire lines', duration: '30m / day' },
@@ -360,7 +413,7 @@ export const AICoachDashboard: React.FC = () => {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-l border-emerald-500/20 pl-4 py-1 relative">
+              <div className="grid grid-cols-1 gap-4 border-l border-emerald-500/20 pl-4 py-1 relative">
                 {currentSchedule.map((sch, idx) => (
                   <div key={idx} className="relative flex flex-col gap-1 pb-3 last:pb-0">
                     <div className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-emerald-500 border border-bg-primary shadow-glow" />
@@ -375,6 +428,60 @@ export const AICoachDashboard: React.FC = () => {
             </Card>
           );
         })()}
+
+        {/* Right Column: AI Mistake Explainer */}
+        <Card className="flex flex-col gap-4 p-5" hoverEffect={false}>
+          <div className="flex justify-between items-start border-b border-white/5 pb-2">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-rose-500 font-mono">Tactical Review</span>
+              <h3 className="text-sm font-bold text-white mt-0.5">AI Mistake Explainer</h3>
+            </div>
+            
+            {/* Blunder list dropdown selector */}
+            <select
+              value={activeMistakeIdx}
+              onChange={(e) => setActiveMistakeIdx(Number(e.target.value))}
+              className="bg-bg-secondary border border-white/10 rounded-lg px-2.5 py-1 text-slate-300 text-xs focus:outline-none focus:border-rose-500"
+            >
+              {MISTAKE_CASES.map((item, idx) => (
+                <option key={item.id} value={idx}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+            {/* Board representation at the blunder point */}
+            <div className="flex flex-col items-center">
+              <Board
+                fen={mistakeBoardFen}
+                interactive={false}
+                size={180}
+                highlights={[{ square: activeMistake.highlightSquare, color: 'rgba(239, 68, 68, 0.4)' }]}
+              />
+            </div>
+            
+            {/* Explanatory notes */}
+            <div className="flex flex-col gap-2.5">
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] font-bold text-white font-mono">{activeMistake.blunderMove}</span>
+                <span className="text-[10px] uppercase font-bold text-rose-400 bg-rose-500/10 border border-rose-500/15 px-2 py-0.5 rounded font-mono">
+                  {activeMistake.classification}
+                </span>
+              </div>
+              
+              <p className="text-xs text-slate-300 leading-relaxed font-semibold">
+                {activeMistake.explanation}
+              </p>
+
+              <div className="mt-1 border-t border-white/5 pt-2">
+                <span className="text-[10px] font-bold text-emerald-400 block uppercase tracking-wider">Correct Defense:</span>
+                <span className="text-xs text-slate-400 block mt-0.5 font-bold font-mono">{activeMistake.correctAlternative}</span>
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );

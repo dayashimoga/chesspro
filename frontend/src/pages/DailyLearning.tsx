@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
-import { AdaptiveEngine, DailyPlan, DailyPlanItem } from '../core/adaptive-engine';
+import { AdaptiveEngine, DailyPlan, DailyPlanItem, MissionPosition } from '../core/adaptive-engine';
 import { Gamification } from '../core/gamification';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { ProgressBar } from '../components/ui/ProgressBar';
 import { Modal } from '../components/ui/Modal';
+import { Board } from '../components/Board';
+import { Chess } from 'chess.js';
 
 const TIME_OPTIONS = [
   { value: 5, label: '5 min', desc: 'Quick warm-up', icon: '⚡' },
@@ -73,6 +75,51 @@ export const DailyLearning: React.FC = () => {
       visualization: 'Visualization', patternRecognition: 'Patterns',
     };
     return labels[key] || key;
+  };
+
+  const [activeMission, setActiveMission] = useState<string | null>(null);
+  const [missionPosIdx, setMissionPosIdx] = useState(0);
+  const [missionFeedback, setMissionFeedback] = useState<{ correct: boolean; text: string } | null>(null);
+  const [missionSolved, setMissionSolved] = useState<Set<number>>(new Set());
+
+  const handleMissionMove = useCallback((item: DailyPlanItem, _from: string, _to: string, san: string) => {
+    if (!item.missionData || missionPosIdx >= item.missionData.length) return;
+    const pos = item.missionData[missionPosIdx];
+    const normalizedSan = san.replace(/[+#!?]/g, '').replace(/x/g, '').toLowerCase().trim();
+    const normalizedSolution = pos.solution[0]?.replace(/[+#!?]/g, '').replace(/x/g, '').toLowerCase().trim();
+
+    if (normalizedSan === normalizedSolution) {
+      setMissionFeedback({ correct: true, text: `✅ Correct! ${pos.theme}` });
+      const newSolved = new Set(missionSolved);
+      newSolved.add(missionPosIdx);
+      setMissionSolved(newSolved);
+      addXP(5);
+      Gamification.updateChallengeProgress('puzzles', 1);
+      Gamification.incrementStat('puzzlesSolved');
+
+      // Auto-advance after delay
+      setTimeout(() => {
+        setMissionFeedback(null);
+        if (missionPosIdx < item.missionData!.length - 1) {
+          setMissionPosIdx(prev => prev + 1);
+        } else {
+          // Mission complete
+          handleCompleteItem(item);
+          setActiveMission(null);
+          setMissionPosIdx(0);
+          setMissionSolved(new Set());
+        }
+      }, 1500);
+    } else {
+      setMissionFeedback({ correct: false, text: `❌ Try again. ${pos.instruction}` });
+    }
+  }, [missionPosIdx, missionSolved, addXP]);
+
+  const startMission = (item: DailyPlanItem) => {
+    setActiveMission(item.title);
+    setMissionPosIdx(0);
+    setMissionFeedback(null);
+    setMissionSolved(new Set());
   };
 
   return (
@@ -214,58 +261,135 @@ export const DailyLearning: React.FC = () => {
               <div className="flex flex-col gap-3">
                 {plan.items.map((item, idx) => {
                   const isCompleted = completedItems.has(item.title);
+                  const isActiveMission = activeMission === item.title;
+                  const hasMission = item.missionData && item.missionData.length > 0;
                   return (
                     <div
                       key={idx}
-                      className={`p-4 rounded-xl border transition-all duration-300 ${
+                      className={`rounded-xl border transition-all duration-300 ${
                         isCompleted
                           ? 'bg-emerald-500/5 border-emerald-500/20 opacity-75'
+                          : isActiveMission
+                          ? 'bg-amber-500/5 border-amber-500/20'
                           : 'bg-white/5 border-white/5 hover:border-white/15 shadow-sm'
                       }`}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0 ${
-                          isCompleted ? 'bg-emerald-500/10' : 'bg-white/5'
-                        }`}>
-                          {isCompleted ? '✅' : item.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className={`text-xs font-bold ${isCompleted ? 'text-emerald-400 line-through' : 'text-white'}`}>
-                                {item.title}
-                              </h4>
-                              <p className="text-[10px] text-slate-500 mt-0.5 font-semibold leading-snug">{item.description}</p>
-                            </div>
-                            <div className="text-right shrink-0 ml-2">
-                              <span className="text-[10px] text-amber-400 font-bold block">+{item.xpReward} XP</span>
-                              <span className="text-[9px] text-slate-600 font-bold block">{item.duration} min</span>
-                            </div>
+                      <div className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg shrink-0 ${
+                            isCompleted ? 'bg-emerald-500/10' : 'bg-white/5'
+                          }`}>
+                            {isCompleted ? '✅' : item.icon}
                           </div>
-                          <div className="flex gap-2 mt-3">
-                            {!isCompleted && (
-                              <>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => navigate(item.route)}
-                                  className="!py-1 !px-2.5 text-[10px]"
-                                >
-                                  Start →
-                                </Button>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className={`text-xs font-bold ${isCompleted ? 'text-emerald-400 line-through' : 'text-white'}`}>
+                                  {item.title}
+                                </h4>
+                                <p className="text-[10px] text-slate-500 mt-0.5 font-semibold leading-snug">{item.description}</p>
+                                {hasMission && !isCompleted && (
+                                  <span className="text-[8px] bg-amber-500/15 text-amber-400 px-1.5 py-0.5 rounded font-bold mt-1 inline-block">
+                                    🎯 Interactive Mission
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-right shrink-0 ml-2">
+                                <span className="text-[10px] text-amber-400 font-bold block">+{item.xpReward} XP</span>
+                                <span className="text-[9px] text-slate-600 font-bold block">{item.duration} min</span>
+                              </div>
+                            </div>
+                            <div className="flex gap-2 mt-3">
+                              {!isCompleted && !isActiveMission && (
+                                <>
+                                  {hasMission ? (
+                                    <Button
+                                      variant="primary"
+                                      size="sm"
+                                      onClick={() => startMission(item)}
+                                      className="!py-1 !px-3 text-[10px]"
+                                    >
+                                      🎯 Start Mission
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => navigate(item.route)}
+                                      className="!py-1 !px-2.5 text-[10px]"
+                                    >
+                                      Start →
+                                    </Button>
+                                  )}
+                                  <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => handleCompleteItem(item)}
+                                    className="!py-1 !px-2.5 text-[10px]"
+                                  >
+                                    Mark Done ✓
+                                  </Button>
+                                </>
+                              )}
+                              {isActiveMission && (
                                 <Button
                                   variant="secondary"
                                   size="sm"
-                                  onClick={() => handleCompleteItem(item)}
+                                  onClick={() => { setActiveMission(null); setMissionPosIdx(0); setMissionSolved(new Set()); }}
                                   className="!py-1 !px-2.5 text-[10px]"
                                 >
-                                  Mark Done ✓
+                                  Close Mission
                                 </Button>
-                              </>
-                            )}
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
+
+                      {/* Inline Mission Board */}
+                      {isActiveMission && item.missionData && (
+                        <div className="border-t border-amber-500/10 p-4 animate-slideUp">
+                          <div className="flex flex-col items-center gap-3">
+                            {/* Progress */}
+                            <div className="flex items-center gap-2 w-full">
+                              <span className="text-[10px] font-bold text-amber-400 uppercase">
+                                Puzzle {missionPosIdx + 1} of {item.missionData.length}
+                              </span>
+                              <div className="flex-1 flex gap-1">
+                                {item.missionData.map((_, i) => (
+                                  <div key={i} className={`h-1.5 flex-1 rounded-full transition-all ${
+                                    missionSolved.has(i) ? 'bg-emerald-500' : i === missionPosIdx ? 'bg-amber-500 animate-pulse' : 'bg-white/10'
+                                  }`} />
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Instruction */}
+                            <p className="text-xs text-white font-bold w-full">
+                              {item.missionData[missionPosIdx]?.instruction}
+                            </p>
+
+                            {/* Board */}
+                            <Board
+                              fen={item.missionData[missionPosIdx]?.fen || '8/8/8/8/8/8/8/8 w - - 0 1'}
+                              interactive={true}
+                              onMove={(_from, _to, san) => handleMissionMove(item, _from, _to, san)}
+                              size={280}
+                            />
+
+                            {/* Feedback */}
+                            {missionFeedback && (
+                              <div className={`w-full p-3 rounded-xl text-xs font-bold text-center transition-all animate-slideUp ${
+                                missionFeedback.correct
+                                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                  : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                              }`}>
+                                {missionFeedback.text}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

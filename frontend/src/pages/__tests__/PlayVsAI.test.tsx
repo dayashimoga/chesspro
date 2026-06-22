@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { PlayVsAI } from '../PlayVsAI';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -27,7 +28,7 @@ describe('PlayVsAI Page', () => {
   });
 
   it('renders PlayVsAI arena successfully', () => {
-    render(<PlayVsAI />);
+    render(<MemoryRouter><PlayVsAI /></MemoryRouter>);
     expect(screen.getByText(/Play vs/i)).toBeInTheDocument();
     expect(screen.getByText(/Chess AI/i)).toBeInTheDocument();
     expect(screen.getByText(/Game Setup/i)).toBeInTheDocument();
@@ -35,7 +36,7 @@ describe('PlayVsAI Page', () => {
   });
 
   it('allows changing AI difficulty and player color selection', () => {
-    render(<PlayVsAI />);
+    render(<MemoryRouter><PlayVsAI /></MemoryRouter>);
     
     // Choose Black
     const playBlackBtn = screen.getByRole('button', { name: /Black/ });

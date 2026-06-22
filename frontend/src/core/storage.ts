@@ -20,6 +20,8 @@ export interface ProgressData {
   openingRating?: number;
   middlegameRating?: number;
   endgameRating?: number;
+  lastActiveLesson?: string;
+  favorites?: string[];
 }
 
 export interface SRSCard {
@@ -52,6 +54,8 @@ const createDefaultProgress = (): ProgressData => ({
   openingRating: 800,
   middlegameRating: 800,
   endgameRating: 800,
+  lastActiveLesson: '',
+  favorites: [],
 });
 
 const getSubRatingField = (category: string): 'tacticalRating' | 'strategicRating' | 'openingRating' | 'middlegameRating' | 'endgameRating' => {

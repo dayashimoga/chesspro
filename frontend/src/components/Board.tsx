@@ -26,6 +26,8 @@ const BOARD_THEMES = {
   brown: { light: '#f0d9b5', dark: '#b58863' },
   blue: { light: '#dee3e6', dark: '#8ca2ad' },
   tournament: { light: '#e1e1e1', dark: '#4b7399' },
+  wood: { light: '#f0d9b5', dark: '#a05a2c' },
+  dark: { light: '#334155', dark: '#0f172a' },
 };
 const LAST_MOVE_COLOR = 'rgba(255, 255, 80, 0.25)';
 const SELECTED_COLOR = 'rgba(16, 185, 129, 0.5)';
@@ -134,7 +136,7 @@ export interface BoardProps {
   lastMoveSquares?: { from: string; to: string } | null;
   allowedMoves?: string[];
   soundEnabled?: boolean;
-  boardTheme?: 'green' | 'brown' | 'blue' | 'tournament';
+  boardTheme?: 'green' | 'brown' | 'blue' | 'tournament' | 'wood' | 'dark';
   pieceSet?: 'standard' | 'neo' | 'alpha' | 'merida';
 }
 
@@ -268,7 +270,9 @@ export const Board: React.FC<BoardProps> = ({
     return () => window.removeEventListener('resize', updateSize);
   }, [size]);
 
-  const sqSize = boardSize / 8;
+  const borderWidth = boardSize > 300 ? 18 : 12;
+  const gridSize = boardSize - 2 * borderWidth;
+  const sqSize = gridSize / 8;
 
   let game: Chess;
   try {
@@ -298,7 +302,7 @@ export const Board: React.FC<BoardProps> = ({
 
         const timer = setTimeout(() => {
           setAnimatingPiece(null);
-        }, 150);
+        }, 200);
         prevFenRef.current = fen;
         return () => clearTimeout(timer);
       }
@@ -326,12 +330,12 @@ export const Board: React.FC<BoardProps> = ({
   const toSVGCoords = (fileIdx: number, rankIdx: number) => {
     const f = flipped ? 7 - fileIdx : fileIdx;
     const r = flipped ? 7 - rankIdx : rankIdx;
-    return { x: f * sqSize, y: r * sqSize };
+    return { x: borderWidth + f * sqSize, y: borderWidth + r * sqSize };
   };
 
   const getSqFromPixel = (px: number, py: number): string | null => {
-    const f = Math.floor(px / sqSize);
-    const r = Math.floor(py / sqSize);
+    const f = Math.floor((px - borderWidth) / sqSize);
+    const r = Math.floor((py - borderWidth) / sqSize);
     if (f < 0 || f > 7 || r < 0 || r > 7) return null;
     const fileIdx = flipped ? 7 - f : f;
     const rankIdx = flipped ? 7 - r : r;
@@ -584,7 +588,7 @@ export const Board: React.FC<BoardProps> = ({
         onContextMenu={(e) => e.preventDefault()}
       >
         {/* Background */}
-        <rect x={0} y={0} width={boardSize} height={boardSize} fill="#2a2a3a" rx={4} />
+        <rect x={0} y={0} width={boardSize} height={boardSize} fill="#0d0d15" rx={4} />
 
         {/* Squares */}
         {ranks.map((rank, rIdx) =>
@@ -592,13 +596,13 @@ export const Board: React.FC<BoardProps> = ({
             const isLight = (rIdx + fIdx) % 2 === 0;
             return (
               <rect
-                key={`sq-${file}${rank}`}
-                x={fIdx * sqSize}
-                y={rIdx * sqSize}
-                width={sqSize}
-                height={sqSize}
-                fill={isLight ? lightColor : darkColor}
-                style={{ cursor: interactive ? 'pointer' : 'default' }}
+                 key={`sq-${file}${rank}`}
+                 x={borderWidth + fIdx * sqSize}
+                 y={borderWidth + rIdx * sqSize}
+                 width={sqSize}
+                 height={sqSize}
+                 fill={isLight ? lightColor : darkColor}
+                 style={{ cursor: interactive ? 'pointer' : 'default' }}
               />
             );
           })
@@ -653,6 +657,7 @@ export const Board: React.FC<BoardProps> = ({
               x={pos.x} y={pos.y}
               width={sqSize} height={sqSize}
               fill={hl.color || 'rgba(16, 185, 129, 0.3)'}
+              style={{ animation: 'glowPulse 2s infinite ease-in-out' }}
               pointerEvents="none"
             />
           );
@@ -733,13 +738,14 @@ export const Board: React.FC<BoardProps> = ({
               >
                 <g
                   style={isAnimating ? {
-                    animation: 'pieceMove 0.15s cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
+                    animation: 'pieceMove 0.20s cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
                     ['--from-x' as any]: `${animatingPiece.fromX}px`,
                     ['--from-y' as any]: `${animatingPiece.fromY}px`,
                   } : undefined}
                 >
                   <g
                     transform={`scale(${scale})`}
+                    style={{ filter: 'drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.45))' }}
                     dangerouslySetInnerHTML={{ __html: svg }}
                   />
                 </g>
@@ -819,13 +825,13 @@ export const Board: React.FC<BoardProps> = ({
             }
           }
 
-          const scale = (sqSize * 1.2) / 45; // Slightly larger while dragging
-          const offsetX = dragState.currentX - (sqSize * 1.2) / 2;
-          const offsetY = dragState.currentY - (sqSize * 1.2) / 2;
+          const scale = (sqSize * 1.25) / 45; // Slightly larger while dragging
+          const offsetX = dragState.currentX - (sqSize * 1.25) / 2;
+          const offsetY = dragState.currentY - (sqSize * 1.25) / 2;
           return (
             <g
               transform={`translate(${offsetX}, ${offsetY}) scale(${scale})`}
-              style={{ opacity: 0.9, filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))' }}
+              style={{ opacity: 0.9, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.6))' }}
               pointerEvents="none"
               dangerouslySetInnerHTML={{ __html: svg }}
             />
@@ -884,6 +890,7 @@ export const Board: React.FC<BoardProps> = ({
                 strokeLinecap="round"
                 markerEnd={`url(#${markerId})`}
                 opacity={0.8}
+                style={{ animation: 'fadeIn 0.25s ease-out' }}
                 strokeDasharray={arrow.dashed ? '8,4' : undefined}
                 pointerEvents="none"
               />
@@ -893,36 +900,35 @@ export const Board: React.FC<BoardProps> = ({
 
         {/* Coordinate labels */}
         {files.map((file, fIdx) => {
-          const isLight = (7 + fIdx) % 2 === 0;
           return (
             <text
               key={`coord-file-${file}`}
-              x={fIdx * sqSize + sqSize - 4}
-              y={7 * sqSize + sqSize - 3}
-              fontSize={Math.max(9, sqSize * 0.18)}
+              x={borderWidth + fIdx * sqSize + sqSize / 2}
+              y={boardSize - borderWidth / 2}
+              fontSize={Math.max(9, borderWidth * 0.65)}
               fontFamily="'JetBrains Mono', monospace"
               fontWeight={700}
-              fill={isLight ? darkColor : lightColor}
-              opacity={0.85}
+              fill="#94a3b8"
+              dominantBaseline="central"
+              textAnchor="middle"
               pointerEvents="none"
-              textAnchor="end"
             >
               {file}
             </text>
           );
         })}
         {ranks.map((rank, rIdx) => {
-          const isLight = (rIdx) % 2 === 0;
           return (
             <text
               key={`coord-rank-${rank}`}
-              x={3}
-              y={rIdx * sqSize + Math.max(10, sqSize * 0.22)}
-              fontSize={Math.max(9, sqSize * 0.18)}
+              x={borderWidth / 2}
+              y={borderWidth + rIdx * sqSize + sqSize / 2}
+              fontSize={Math.max(9, borderWidth * 0.65)}
               fontFamily="'JetBrains Mono', monospace"
               fontWeight={700}
-              fill={isLight ? darkColor : lightColor}
-              opacity={0.85}
+              fill="#94a3b8"
+              dominantBaseline="central"
+              textAnchor="middle"
               pointerEvents="none"
             >
               {rank}

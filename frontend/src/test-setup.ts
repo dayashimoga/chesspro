@@ -26,9 +26,25 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 // Mock Worker for Stockfish
 class MockWorker {
-  onmessage: ((e: MessageEvent) => void) | null = null;
-  onerror: ((e: ErrorEvent) => void) | null = null;
-  postMessage(_data: any) {}
+  onmessage: ((e: any) => void) | null = null;
+  onerror: ((e: any) => void) | null = null;
+  constructor() {
+    setTimeout(() => {
+      if (this.onmessage) {
+        this.onmessage({ data: 'worker_ready' });
+      }
+    }, 0);
+  }
+  postMessage(data: any) {
+    if (typeof data === 'string' && data.startsWith('go')) {
+      setTimeout(() => {
+        if (this.onmessage) {
+          this.onmessage({ data: 'info depth 3 multipv 1 score cp 20 pv e2e4' });
+          this.onmessage({ data: 'bestmove e2e4' });
+        }
+      }, 5);
+    }
+  }
   terminate() {}
 }
 

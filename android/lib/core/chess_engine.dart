@@ -1,6 +1,9 @@
 import 'dart:math';
+import 'dart:isolate';
+import 'dart:async';
 import 'package:chess/chess.dart' as chess_lib;
 import 'package:flutter/foundation.dart';
+
 
 /// ChessOS Chess Engine — Wraps the `chess` package for move validation,
 /// legal move generation, AI opponent, and post-game analysis.
@@ -8,6 +11,8 @@ class ChessEngine {
   late chess_lib.Chess _game;
   final List<MoveRecord> _moveHistory = [];
   final Random _rng = Random();
+  final Map<String, _TranspositionTableEntry> _transpositionTable = {};
+
 
   // Piece-square tables for evaluation
   static const List<List<int>> _pawnTable = [
@@ -184,6 +189,7 @@ class ChessEngine {
   void reset() {
     _game = chess_lib.Chess();
     _moveHistory.clear();
+    _transpositionTable.clear();
   }
 
   /// Load a FEN position
@@ -209,48 +215,82 @@ class ChessEngine {
   /// Difficulty: 1=Beginner, 2=Intermediate, 3=Advanced, 4=Expert, 5=Master
   String? getBestMove(int difficulty) {
     final depth = _difficultyToDepth(difficulty);
-    final moves = _game.moves();
+    final moves = _game.generate_moves();
     if (moves.isEmpty) return null;
 
     // At low difficulties, sometimes make suboptimal moves
     if (difficulty <= 2 && _rng.nextDouble() < (difficulty == 1 ? 0.4 : 0.2)) {
-      return moves[_rng.nextInt(moves.length)];
+      final randomMove = moves[_rng.nextInt(moves.length)];
+      return _game.move_to_san(randomMove);
     }
 
-    String? bestMove;
+    // Check transposition table for the root position
+    final fenKey = _game.fen;
+    final entry = _transpositionTable[fenKey];
+    if (entry != null && entry.depth >= depth && entry.bestMove != null) {
+      for (final move in moves) {
+        if (_game.move_to_san(move) == entry.bestMove) {
+          return entry.bestMove;
+        }
+      }
+    }
+
+    dynamic bestMoveObj;
     int bestScore = -999999;
     final isMaximizing = _game.turn == chess_lib.Color.WHITE;
 
     // Shuffle moves for variety
-    final shuffled = List<String>.from(moves)..shuffle(_rng);
+    final shuffled = List<dynamic>.from(moves)..shuffle(_rng);
+
+    // Sort using raw flags
+    shuffled.sort((a, b) {
+      final aFlags = a.flags as int;
+      final bFlags = b.flags as int;
+      int scoreA = 0;
+      int scoreB = 0;
+      if ((aFlags & 12) != 0) scoreA += 10;
+      if ((aFlags & 16) != 0) scoreA += 8;
+      if ((bFlags & 12) != 0) scoreB += 10;
+      if ((bFlags & 16) != 0) scoreB += 8;
+      return scoreB.compareTo(scoreA);
+    });
 
     for (final move in shuffled) {
-      _game.move(move);
+      _game.make_move(move);
       final score = _minimax(depth - 1, -1000000, 1000000, !isMaximizing);
-      _game.undo();
+      _game.undo_move();
 
       final adjustedScore = isMaximizing ? score : -score;
       if (adjustedScore > bestScore) {
         bestScore = adjustedScore;
-        bestMove = move;
+        bestMoveObj = move;
       }
     }
 
     // Add randomness for lower difficulties
     if (difficulty <= 3 && _rng.nextDouble() < 0.15) {
-      // Occasionally pick second-best move
-      final candidates = <MapEntry<String, int>>[];
+      final candidates = <MapEntry<dynamic, int>>[];
       for (final move in shuffled.take(8)) {
-        _game.move(move);
+        _game.make_move(move);
         final score = _minimax(depth - 1, -1000000, 1000000, !isMaximizing);
-        _game.undo();
+        _game.undo_move();
         candidates.add(MapEntry(move, isMaximizing ? score : -score));
       }
       candidates.sort((a, b) => b.value.compareTo(a.value));
       if (candidates.length > 1) {
-        return candidates[min(1, candidates.length - 1)].key;
+        bestMoveObj = candidates[min(1, candidates.length - 1)].key;
       }
     }
+
+    final bestMove = bestMoveObj != null ? _game.move_to_san(bestMoveObj) : null;
+
+    // Store in Transposition Table
+    _transpositionTable[fenKey] = _TranspositionTableEntry(
+      depth: depth,
+      score: isMaximizing ? bestScore : -bestScore,
+      flag: 0, // EXACT
+      bestMove: bestMove,
+    );
 
     return bestMove;
   }
@@ -258,8 +298,8 @@ class ChessEngine {
   /// Async version that runs AI in a background isolate to avoid UI jank
   Future<String?> getBestMoveAsync(int difficulty) async {
     final fen = _game.fen;
-    final result = await compute(_computeBestMove, _AiRequest(fen, difficulty));
-    return result;
+    final manager = await _PersistentIsolateManager.instance;
+    return manager.getBestMove(fen, difficulty);
   }
 
   int _difficultyToDepth(int difficulty) {
@@ -274,43 +314,96 @@ class ChessEngine {
   }
 
   int _minimax(int depth, int alpha, int beta, bool isMaximizing) {
-    if (depth == 0 || _game.game_over) {
-      return _evaluate();
+    final fenKey = _game.fen;
+    final entry = _transpositionTable[fenKey];
+    if (entry != null && entry.depth >= depth) {
+      if (entry.flag == 0) { // EXACT
+        return entry.score;
+      } else if (entry.flag == 1) { // ALPHA
+        if (entry.score <= alpha) return entry.score;
+      } else if (entry.flag == 2) { // BETA
+        if (entry.score >= beta) return entry.score;
+      }
     }
 
-    final moves = _game.moves();
+    if (depth == 0) {
+      return _evaluateFast();
+    }
+
+    final moves = _game.generate_moves();
+    if (moves.isEmpty) {
+      if (_game.in_check) {
+        return isMaximizing ? -100000 - depth : 100000 + depth;
+      }
+      return 0; // Stalemate
+    }
+
+    // Move ordering: sort captures and promotions first using raw flags
+    moves.sort((a, b) {
+      final aFlags = a.flags as int;
+      final bFlags = b.flags as int;
+      int scoreA = 0;
+      int scoreB = 0;
+      if ((aFlags & 12) != 0) scoreA += 10;
+      if ((aFlags & 16) != 0) scoreA += 8;
+      if ((bFlags & 12) != 0) scoreB += 10;
+      if ((bFlags & 16) != 0) scoreB += 8;
+      return scoreB.compareTo(scoreA);
+    });
+
+    int alphaOriginal = alpha;
+    int bestScore = isMaximizing ? -999999 : 999999;
+    dynamic bestMoveObj;
 
     if (isMaximizing) {
-      int maxEval = -999999;
       for (final move in moves) {
-        _game.move(move);
+        _game.make_move(move);
         final eval = _minimax(depth - 1, alpha, beta, false);
-        _game.undo();
-        maxEval = max(maxEval, eval);
+        _game.undo_move();
+        if (eval > bestScore) {
+          bestScore = eval;
+          bestMoveObj = move;
+        }
         alpha = max(alpha, eval);
         if (beta <= alpha) break;
       }
-      return maxEval;
     } else {
-      int minEval = 999999;
       for (final move in moves) {
-        _game.move(move);
+        _game.make_move(move);
         final eval = _minimax(depth - 1, alpha, beta, true);
-        _game.undo();
-        minEval = min(minEval, eval);
+        _game.undo_move();
+        if (eval < bestScore) {
+          bestScore = eval;
+          bestMoveObj = move;
+        }
         beta = min(beta, eval);
         if (beta <= alpha) break;
       }
-      return minEval;
     }
+
+    int flag = 0; // EXACT
+    if (bestScore <= alphaOriginal) {
+      flag = 1; // ALPHA
+    } else if (bestScore >= beta) {
+      flag = 2; // BETA
+    }
+
+    final bestMoveSan = bestMoveObj != null ? _game.move_to_san(bestMoveObj) : null;
+
+    if (_transpositionTable.length > 50000) {
+      _transpositionTable.clear();
+    }
+    _transpositionTable[fenKey] = _TranspositionTableEntry(
+      depth: depth,
+      score: bestScore,
+      flag: flag,
+      bestMove: bestMoveSan,
+    );
+
+    return bestScore;
   }
 
-  int _evaluate() {
-    if (_game.in_checkmate) {
-      return _game.turn == chess_lib.Color.WHITE ? -100000 : 100000;
-    }
-    if (_game.in_draw || _game.in_stalemate) return 0;
-
+  int _evaluateFast() {
     int score = 0;
     final board = _game.board;
 
@@ -343,6 +436,16 @@ class ChessEngine {
 
     return score;
   }
+
+  int _evaluate() {
+    return _evaluateFast();
+  }
+
+  /// Get the current position evaluation in centipawns/100 (pawn units)
+  double getEvaluation() {
+    return _evaluateFast() / 100.0;
+  }
+
 
   // ========================================================================
   // Game Analysis
@@ -404,7 +507,7 @@ class ChessEngine {
 }
 
 // ============================================================================
-// Top-level isolate function for compute()
+// Top-level isolate function for compute() - kept for compatibility
 // ============================================================================
 class _AiRequest {
   final String fen;
@@ -415,6 +518,107 @@ class _AiRequest {
 String? _computeBestMove(_AiRequest request) {
   final engine = ChessEngine.fromFen(request.fen);
   return engine.getBestMove(request.difficulty);
+}
+
+// ============================================================================
+// Persistent background isolate configuration
+// ============================================================================
+class _PersistentAiRequest {
+  final String requestId;
+  final String fen;
+  final int difficulty;
+  _PersistentAiRequest(this.requestId, this.fen, this.difficulty);
+}
+
+class _PersistentAiResponse {
+  final String requestId;
+  final String? bestMove;
+  _PersistentAiResponse(this.requestId, this.bestMove);
+}
+
+class _PersistentIsolateManager {
+  static _PersistentIsolateManager? _instance;
+
+  static Future<_PersistentIsolateManager> get instance async {
+    if (_instance == null) {
+      _instance = _PersistentIsolateManager._();
+      await _instance!._init();
+    }
+    return _instance!;
+  }
+
+  _PersistentIsolateManager._();
+
+  Isolate? _isolate;
+  SendPort? _sendPort;
+  final ReceivePort _receivePort = ReceivePort();
+  final Map<String, Completer<String?>> _pendingRequests = {};
+  bool _initialized = false;
+
+  Future<void> _init() async {
+    if (_initialized) return;
+
+    _isolate = await Isolate.spawn(_isolateEntryPoint, _receivePort.sendPort);
+
+    final completer = Completer<void>();
+    _receivePort.listen((message) {
+      if (message is SendPort) {
+        _sendPort = message;
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      } else if (message is _PersistentAiResponse) {
+        final pendingCompleter = _pendingRequests.remove(message.requestId);
+        if (pendingCompleter != null) {
+          pendingCompleter.complete(message.bestMove);
+        }
+      }
+    });
+
+    await completer.future;
+    _initialized = true;
+  }
+
+  Future<String?> getBestMove(String fen, int difficulty) async {
+    final requestId = '${DateTime.now().microsecondsSinceEpoch}_${Random().nextInt(1000)}';
+    final completer = Completer<String?>();
+    _pendingRequests[requestId] = completer;
+
+    _sendPort?.send(_PersistentAiRequest(requestId, fen, difficulty));
+    return completer.future;
+  }
+
+  static void _isolateEntryPoint(SendPort mainSendPort) {
+    final isolateReceivePort = ReceivePort();
+    mainSendPort.send(isolateReceivePort.sendPort);
+
+    final ChessEngine isolateEngine = ChessEngine();
+
+    isolateReceivePort.listen((message) {
+      if (message is _PersistentAiRequest) {
+        isolateEngine.loadFen(message.fen);
+        final bestMove = isolateEngine.getBestMove(message.difficulty);
+        mainSendPort.send(_PersistentAiResponse(message.requestId, bestMove));
+      }
+    });
+  }
+}
+
+// ============================================================================
+// Transposition Table Types
+// ============================================================================
+class _TranspositionTableEntry {
+  final int depth;
+  final int score;
+  final int flag; // 0 = EXACT, 1 = ALPHA, 2 = BETA
+  final String? bestMove;
+
+  _TranspositionTableEntry({
+    required this.depth,
+    required this.score,
+    required this.flag,
+    this.bestMove,
+  });
 }
 
 // ============================================================================

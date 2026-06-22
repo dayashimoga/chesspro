@@ -45,6 +45,15 @@ export const endgameContent = {
         { type: 'quiz', question: 'Who benefits from having the opposition?', options: ['The player who must move', 'The player who does NOT have to move', 'Always White', 'Always the attacker'], answer: 1, explanation: 'The player who does NOT have to move holds the opposition and can force the opponent to give way.' },
         { type: 'quiz', question: 'What are key squares for a pawn on e5?', options: ['d6, e6, f6', 'd5, e5, f5', 'e7, e8', 'd4, e4, f4'], answer: 0, explanation: 'For a pawn on the 5th rank, the key squares are the three squares directly ahead on the 6th rank.' },
         { type: 'find-move', fen: '8/8/4k3/8/8/4K3/4P3/8 w - - 0 1', question: 'White to move. What is the best move to seize the opposition?', solution: ['Ke4'], explanation: 'Ke4 takes the direct opposition. Now Black must move aside, and White gains ground.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/4k3/8/4K3/4P3/8/8 w - - 0 1', commentary: 'Opposition occurs when kings face each other with exactly one square between them. Here, White has the opposition because Black must move and yield space.' }
+      ],
+      guidedSteps: [
+        { fen: '8/8/4k3/8/8/4K3/4P3/8 w - - 0 1', instruction: 'Move your king to e4 to seize the direct opposition!', expectedMove: 'Ke4', highlights: [{ square: 'e4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! You seized the opposition. Black\'s king must step aside.', incorrectFeedback: 'Move the king to e4.', hints: ['Move the king directly in front of Black\'s king'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/8/3k4/8/3K4/3P4/8 w - - 0 1', description: 'Maintain opposition by moving the king to e4 (Ke4).', solution: ['Ke4'], conceptTested: 'Opposition maintenance', maxAttempts: 3 }
       ]
     },
     {
@@ -75,6 +84,15 @@ export const endgameContent = {
       exercises: [
         { type: 'quiz', question: 'What is the purpose of triangulation?', options: ['To gain material', 'To lose a tempo and transfer the move', 'To promote a pawn', 'To reach a stalemate'], answer: 1, explanation: 'Triangulation loses a tempo so the opponent must move in a position of zugzwang.' },
         { type: 'quiz', question: 'How many moves does a basic triangulation require?', options: ['1', '2', '3', '4'], answer: 2, explanation: 'A triangulation uses 3 king moves to return to the same position with the opponent to move.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/3k4/8/3KP3/8/8/8 w - - 0 1', commentary: 'Triangulation is a triangular maneuver by the king to lose a tempo and put the opponent in zugzwang.' }
+      ],
+      guidedSteps: [
+        { fen: '8/8/1k6/1p6/1P6/1K6/8/8 w - - 0 1', instruction: 'Start triangulation by moving the king to a4.', expectedMove: 'Ka4', highlights: [], correctFeedback: 'Good start! Moving to a4 is the first step of losing a tempo.', incorrectFeedback: 'Move the king to a4.', hints: ['King to a4'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/1k6/1p6/1P6/1K6/8/8 w - - 0 1', description: 'Triangulate Ka4 then Ka3 then Kb3 to win.', solution: ['Ka4', 'Ka3', 'Kb3'], conceptTested: 'Triangulation maneuver', maxAttempts: 4 }
       ]
     },
     {
@@ -104,6 +122,15 @@ export const endgameContent = {
       exercises: [
         { type: 'quiz', question: 'What is zugzwang?', options: ['A German opening', 'A position where being forced to move is a disadvantage', 'A type of checkmate', 'A draw condition'], answer: 1, explanation: 'Zugzwang means any move you make worsens your position.' },
         { type: 'quiz', question: 'In which phase of the game is zugzwang most common?', options: ['Opening', 'Middlegame', 'Endgame', 'All phases equally'], answer: 2, explanation: 'Zugzwang is most common in endgames when there are few pieces and mobility is limited.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/1k6/1p6/1P6/1K6/8/8 b - - 0 1', commentary: 'Zugzwang means a player is forced to make a move that worsens their position.' }
+      ],
+      guidedSteps: [
+        { fen: '8/8/1k6/1p6/1P6/1K6/8/8 b - - 0 1', instruction: 'As Black, you are in zugzwang. Move the king to c6, the only square that doesn\'t lose immediately.', expectedMove: 'Kc6', highlights: [], correctFeedback: 'You played the best defense, though White\'s king can now penetrate.', incorrectFeedback: 'Move your king to c6.', hints: ['King to c6'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/1k6/1p6/1P6/1K6/8/8 b - - 0 1', description: 'Black must move. Demonstrate zugzwang by retreating to c6 (Kc6).', solution: ['Kc6'], conceptTested: 'Zugzwang defense', maxAttempts: 3 }
       ]
     },
     {
@@ -137,6 +164,15 @@ export const endgameContent = {
       exercises: [
         { type: 'quiz', question: 'What is the first step in the bridge-building technique?', options: ['Advance the pawn', 'Move king to the side', 'Place the rook on the 4th rank', 'Give check'], answer: 2, explanation: 'The rook goes to the 4th rank first to prepare the bridge position.' },
         { type: 'quiz', question: 'Why is the Lucena position important?', options: ['It is rare', 'It demonstrates stalemate', 'It is the most common winning technique in rook endgames', 'It only applies to knight endgames'], answer: 2, explanation: 'The Lucena position and bridge technique is the fundamental winning method in rook endgames.' }
+      ],
+      demoSteps: [
+        { fen: '1K1k4/1P6/8/8/8/8/1r6/5R2 w - - 0 1', commentary: 'The Lucena position is a winning setup in rook endgames. White builds a bridge with the rook to block lateral checks.' }
+      ],
+      guidedSteps: [
+        { fen: '1K1k4/1P6/8/8/8/8/1r6/5R2 w - - 0 1', instruction: 'Move the rook to the 4th rank (Rf4) to begin the bridge-building technique.', expectedMove: 'Rf4', highlights: [], correctFeedback: 'Brilliant! Rf4 is the correct first move, preparing the rook to block lateral checks.', incorrectFeedback: 'Rook to f4.', hints: ['Move the rook to f4'] }
+      ],
+      masteryPositions: [
+        { fen: '3K4/3P1k2/8/8/8/8/4r3/5R2 w - - 0 1', description: 'Start the bridge-building process (Rf4).', solution: ['Rf4'], conceptTested: 'Lucena bridge building', maxAttempts: 3 }
       ]
     },
     {
@@ -168,6 +204,15 @@ export const endgameContent = {
       exercises: [
         { type: 'quiz', question: 'Where should the defending rook be placed in the Philidor position?', options: ['Behind the pawn', 'In front of the pawn', 'On the 3rd rank', 'Next to the king'], answer: 2, explanation: 'The rook on the 3rd rank prevents the attacking king from advancing beyond the 6th rank.' },
         { type: 'quiz', question: 'When should you switch to checking from behind?', options: ['Immediately', 'When the pawn reaches the 6th rank', 'Only in the opening', 'Never'], answer: 1, explanation: 'Switch to back-rank checking once the pawn advances to the 6th rank, as it blocks the king\'s shelter.' }
+      ],
+      demoSteps: [
+        { fen: '8/3k4/8/3KP3/8/3r4/8/4R3 b - - 0 1', commentary: 'The Philidor position is a draw defense in rook endgames. The rook prevents the attacking king from advancing by staying on the 3rd rank.' }
+      ],
+      guidedSteps: [
+        { fen: '8/3k4/8/3KP3/8/3r4/8/4R3 b - - 0 1', instruction: 'Move your rook to the 3rd rank (Rd6) to defend.', expectedMove: 'Rd6', highlights: [], correctFeedback: 'Excellent! Rd6 holds the 3rd rank and draws.', incorrectFeedback: 'Move the rook to d6.', hints: ['Rook to d6'] }
+      ],
+      masteryPositions: [
+        { fen: '8/3k4/8/3KP3/8/3r4/8/4R3 b - - 0 1', description: 'Keep the rook on the 3rd rank by moving it to d6 (Rd6).', solution: ['Rd6'], conceptTested: 'Philidor 3rd rank barrier', maxAttempts: 3 }
       ]
     },
     {
@@ -199,6 +244,15 @@ export const endgameContent = {
       exercises: [
         { type: 'quiz', question: 'What is Tarrasch\'s Rule for rook endgames?', options: ['Always trade rooks', 'Place rooks behind passed pawns', 'Keep rooks on the back rank', 'Advance the king first'], answer: 1, explanation: 'Tarrasch\'s Rule: Always place rooks behind passed pawns, whether your own or your opponent\'s.' },
         { type: 'quiz', question: 'Why is the 7th rank important for rooks?', options: ['It\'s closest to promotion', 'It attacks pawns and restricts the king', 'Rooks are trapped there', 'It\'s the starting position'], answer: 1, explanation: 'A rook on the 7th rank attacks enemy pawns on their starting squares and confines the king to the back rank.' }
+      ],
+      demoSteps: [
+        { fen: '8/R4pk1/8/5p2/5P2/6K1/8/1r6 w - - 0 1', commentary: 'Rooks belong on the 7th rank to restrict the enemy king and attack pawns.' }
+      ],
+      guidedSteps: [
+        { fen: '8/8/k7/P7/1R6/8/6KP/1r6 w - - 0 1', instruction: 'Activate your king! Move the king to g3 to defend and support your pawn.', expectedMove: 'Kg3', highlights: [], correctFeedback: 'Great! The king must actively participate in the endgame.', incorrectFeedback: 'Move the king to g3.', hints: ['King to g3'] }
+      ],
+      masteryPositions: [
+        { fen: '8/R4pk1/8/5p2/5P2/6K1/8/1r6 w - - 0 1', description: 'Maintain rook activity by attacking Black\'s weak pawns (Ra6).', solution: ['Ra6'], conceptTested: 'Rook activity', maxAttempts: 3 }
       ]
     },
     {
@@ -223,6 +277,15 @@ export const endgameContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'What is the biggest danger in queen endgames?', options: ['Stalemate', 'Perpetual check', 'Back rank mate', 'Pawn races'], answer: 1, explanation: 'In queen endgames, the defending side can often force perpetual check due to the queen\'s range.' }
+      ],
+      demoSteps: [
+        { fen: '8/1Q4pk/8/8/8/8/6PP/4q1K1 w - - 0 1', commentary: 'Queen centralization is key. The queen controls important diagonals and prevents checks.' }
+      ],
+      guidedSteps: [
+        { fen: '8/6pk/8/1Q6/8/8/6PP/6K1 w - - 0 1', instruction: 'Centralize your queen on e5 to restrict Black\'s pieces.', expectedMove: 'Qe5', highlights: [], correctFeedback: 'Excellent! Qe5 is a dominating outpost for the queen.', incorrectFeedback: 'Queen to e5.', hints: ['Move the queen to e5'] }
+      ],
+      masteryPositions: [
+        { fen: '8/6pk/8/1Q6/8/8/6PP/6K1 w - - 0 1', description: 'Centralize the queen on e5.', solution: ['Qe5'], conceptTested: 'Queen centralization', maxAttempts: 3 }
       ]
     },
     {
@@ -257,6 +320,15 @@ export const endgameContent = {
       exercises: [
         { type: 'quiz', question: 'In opposite-colored bishop endgames, what is the typical result?', options: ['White always wins', 'Usually a draw', 'Black always wins', 'Always checkmate'], answer: 1, explanation: 'Opposite-colored bishop endgames have a strong drawing tendency because each bishop controls squares the other cannot.' },
         { type: 'quiz', question: 'What is a "wrong bishop" in K+B+RP vs K?', options: ['A bishop that moved too early', 'A bishop that doesn\'t control the promotion square', 'A bishop on the wrong color', 'Both B and C'], answer: 3, explanation: 'The "wrong bishop" is one that doesn\'t control the corner promotion square, making the position a draw.' }
+      ],
+      demoSteps: [
+        { fen: '8/pp3k2/2p2b2/3p4/3P1B2/2P2K2/PP6/8 w - - 0 1', commentary: 'A bishop on a color opposite to its pawns is active and strong.' }
+      ],
+      guidedSteps: [
+        { fen: '8/pp3k2/2p2b2/3p4/3P1B2/2P2K2/PP6/8 w - - 0 1', instruction: 'Develop your bishop to an active outpost on e5.', expectedMove: 'Be5', highlights: [], correctFeedback: 'Excellent! Be5 dominates the board and restricts the enemy bishop.', incorrectFeedback: 'Bishop to e5.', hints: ['Move the bishop to e5'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/2p2b2/ppkp4/8/1P1B4/P1P2K2/8 w - - 0 1', description: 'Position the bishop on e4 to control the center (Be4).', solution: ['Be4'], conceptTested: 'Bishop centralization', maxAttempts: 3 }
       ]
     },
     {
@@ -285,6 +357,15 @@ export const endgameContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'What is a fortress in chess?', options: ['A castle formation', 'An impregnable defensive position despite material deficit', 'A king safety setup', 'An opening system'], answer: 1, explanation: 'A fortress is a defensive position the stronger side cannot penetrate, resulting in a draw despite material advantage.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/8/1p6/1Pk5/2P5/2K5/8 w - - 0 1', commentary: 'A fortress uses a blocked pawn structure to prevent entry.' }
+      ],
+      guidedSteps: [
+        { fen: '8/8/8/1p6/1Pk5/2P5/2K5/8 w - - 0 1', instruction: 'Defend your c3 pawn by playing Kc2 to maintain the fortress.', expectedMove: 'Kc2', highlights: [], correctFeedback: 'Perfect! King to c2 keeps the fortress secure.', incorrectFeedback: 'King to c2.', hints: ['Move the king to c2'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/8/1p6/1Pk5/2P5/2K5/8 w - - 0 1', description: 'Maintain the fortress by moving to Kd2 (Kd2).', solution: ['Kd2'], conceptTested: 'Fortress defense', maxAttempts: 3 }
       ]
     },
     {
@@ -317,6 +398,15 @@ export const endgameContent = {
       exercises: [
         { type: 'quiz', question: 'When ahead in material in the endgame, what should you generally trade?', options: ['Pawns', 'Pieces (not pawns)', 'Everything', 'Nothing'], answer: 1, explanation: 'When ahead in material, trade pieces (not pawns) to simplify. Keep pawns to have promotion potential.' },
         { type: 'quiz', question: 'What is the Rule of the Square?', options: ['A pawn structure rule', 'A method to determine if a king can catch a passed pawn', 'A mating technique', 'A castling rule'], answer: 1, explanation: 'The Rule of the Square tells you whether a king can catch a passed pawn by imagining a square from the pawn to its promotion square.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/8/8/4k3/8/4K3/4Q3 w - - 0 1', commentary: 'The queen restricts the enemy king while your king walks up.' }
+      ],
+      guidedSteps: [
+        { fen: '8/8/8/8/4k3/8/4K3/4Q3 w - - 0 1', instruction: 'Cut off the Black king by playing Qf2.', expectedMove: 'Qf2', highlights: [], correctFeedback: 'Great! Qf2 confines the king to a smaller zone.', incorrectFeedback: 'Queen to f2.', hints: ['Move the queen to f2'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/8/8/4k3/8/4K3/4Q3 w - - 0 1', description: 'Confine the king on the f-file (Qf2).', solution: ['Qf2'], conceptTested: 'King cutting off', maxAttempts: 3 }
       ]
     }
   ]

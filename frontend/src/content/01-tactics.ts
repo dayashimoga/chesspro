@@ -48,6 +48,22 @@ export const tacticsContent = {
         { id: 'fork_08', fen: 'r1bqkbnr/pppp1ppp/2n5/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3', solution: 'd5', theme: 'Pawn Fork Threat', difficulty: 'beginner', explanation: 'After the knight retreats, ...d5 challenges the center and may fork pieces.' },
         { id: 'fork_09', fen: 'r3k2r/ppp1nppp/3q1n2/3pN3/3P4/2N5/PPP2PPP/R2QR1K1 w kq - 0 10', solution: 'Nxf7', theme: 'Knight Fork', difficulty: 'advanced', explanation: 'Nxf7 forks the queen on d6 and the rook on h8. The knight is attacking from a powerful central square.' },
         { id: 'fork_10', fen: '2r2rk1/pp3ppp/2n1pn2/2Nq4/3P4/4P3/PP3PPP/R2QR1K1 w - - 0 12', solution: 'Nb7', theme: 'Knight Fork', difficulty: 'advanced', explanation: 'Nb7 attacks the queen and the rook on c8 simultaneously.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/4k3/8/3N4/8/1K6/4r3 w - - 0 1', commentary: 'A fork attacks two or more pieces at once. Here, the knight on d4 has the opportunity to fork the king and the rook.', highlights: [{ square: 'e6', color: 'rgba(239, 68, 68, 0.3)' }, { square: 'e1', color: 'rgba(239, 68, 68, 0.3)' }] },
+        { fen: '8/8/2N1k3/8/8/8/1K6/4r3 w - - 0 1', move: 'Nc6', commentary: 'Nc6! The knight attacks BOTH the king on e6 and the rook on e1. The king must move, and then the knight captures the rook for free!', arrows: [{ from: 'c6', to: 'e6', color: 'rgba(239, 68, 68, 0.6)' }, { from: 'c6', to: 'e1', color: 'rgba(245, 158, 11, 0.6)' }] },
+        { fen: 'rnbqkbnr/ppp2ppp/8/3pp3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3', commentary: 'Queen forks are equally devastating. Here Qh5 attacks BOTH the e5 pawn AND threatens Qxf7 checkmate.', highlights: [{ square: 'e5', color: 'rgba(239, 68, 68, 0.3)' }, { square: 'f7', color: 'rgba(239, 68, 68, 0.3)' }] },
+        { fen: 'rnbqkbnr/ppp2ppp/8/3pp2Q/4P3/8/PPPP1PPP/RNB1KBNR w KQkq - 0 3', move: 'Qh5', commentary: 'Qh5! The queen attacks e5 and threatens Qxf7#. Black must defend f7, giving up the e5 pawn. Two threats at once = guaranteed material gain.', arrows: [{ from: 'h5', to: 'e5', color: 'rgba(245, 158, 11, 0.6)' }, { from: 'h5', to: 'f7', color: 'rgba(239, 68, 68, 0.6)' }] },
+        { fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', commentary: 'Knight forks are the most feared because knights CANNOT be blocked. Look for enemy pieces on the same color square — that is your fork indicator.', highlights: [{ square: 'f7', color: 'rgba(245, 158, 11, 0.4)' }] }
+      ],
+      guidedSteps: [
+        { fen: '8/8/4k3/8/3N4/8/1K6/4r3 w - - 0 1', instruction: 'Find the knight fork! Attack both the king and the rook with one move.', expectedMove: 'Nc6', highlights: [{ square: 'e6', color: 'rgba(239, 68, 68, 0.2)' }, { square: 'e1', color: 'rgba(239, 68, 68, 0.2)' }], correctFeedback: '🎯 Nc6! Perfect fork — the knight attacks the king AND the rook. The king must move, and you win the rook for free.', incorrectFeedback: 'Look for a square where the knight attacks BOTH the king (e6) and the rook (e1) at the same time.', hints: ['The knight needs to attack two pieces at once', 'Which square lets the knight reach both e6 and e1?'] },
+        { fen: 'rnbqkbnr/ppp2ppp/8/3pp3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3', instruction: 'Find the queen fork! Attack the e5 pawn AND threaten checkmate on f7.', expectedMove: 'Qh5', highlights: [{ square: 'e5', color: 'rgba(239, 68, 68, 0.2)' }, { square: 'f7', color: 'rgba(239, 68, 68, 0.2)' }], correctFeedback: '🎯 Qh5! Brilliant — the queen attacks e5 and threatens Qxf7#. Black can only defend one threat!', incorrectFeedback: 'The queen needs to attack both e5 and f7 simultaneously. Which square gives the queen access to both targets?', hints: ['The queen needs a diagonal to f7 and a line to e5'] },
+        { fen: 'r3k2r/ppp1nppp/3q1n2/3pN3/3P4/2N5/PPP2PPP/R2QR1K1 w kq - 0 10', instruction: 'Find the devastating knight fork! Win the queen or the rook.', expectedMove: 'Nxf7', highlights: [], correctFeedback: '💥 Nxf7! The knight forks the queen on d6 and the rook on h8. Devastating — Black loses a major piece.', incorrectFeedback: 'Look at f7 — the knight can land there, attacking both the queen and the rook simultaneously.', hints: ['The knight on e5 can jump to f7', 'f7 attacks both the queen on d6 and the rook on h8'] }
+      ],
+      masteryPositions: [
+        { fen: '8/pk6/8/3N4/8/8/1K6/8 w - - 0 1', description: 'Find the knight fork to win the pawn on a7.', solution: ['Nc7+'], conceptTested: 'Knight fork pattern recognition', maxAttempts: 4 },
+        { fen: '2r3k1/pp3pp1/4p2p/8/1b2q3/1B2B1P1/PP3P1P/3QR1K1 w - - 0 1', description: 'Find the queen fork to win material.', solution: ['Qd7'], conceptTested: 'Queen fork execution', maxAttempts: 4 }
       ]
     },
     {
@@ -83,6 +99,16 @@ export const tacticsContent = {
         { id: 'pin_03', fen: 'r2qk2r/ppp1bppp/2n1pn2/3p2B1/3P4/2N2N2/PPP1PPPP/R2QKB1R w KQkq - 0 6', solution: 'Bxf6', theme: 'Winning a Pin', difficulty: 'intermediate', explanation: 'Bxf6 exploits the pin. After Bxf6 (or gxf6), White damages Black\'s pawn structure.' },
         { id: 'pin_04', fen: 'r1bqk2r/pppp1ppp/2n2n2/4p3/1b2P3/2NP1N2/PPP2PPP/R1BQKB1R w KQkq - 0 5', solution: 'Bd2', theme: 'Breaking a Pin', difficulty: 'intermediate', explanation: 'Bd2 breaks the pin on the knight. Black\'s bishop on b4 must retreat or exchange.' },
         { id: 'pin_05', fen: 'r1bq1rk1/ppp2ppp/2n2n2/3pp3/1bPP4/2N1PN2/PP3PPP/R1BQKB1R w KQ - 0 6', solution: 'a3', theme: 'Challenging a Pin', difficulty: 'intermediate', explanation: 'a3 challenges the bishop pin on c3. The bishop must decide where to retreat.' }
+      ],
+      demoSteps: [
+        { fen: 'rn1qkb1r/ppp2ppp/4pn2/3p4/3P2b1/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 2 4', commentary: 'A pin occurs when a piece cannot move because it shields a more valuable piece behind it. Here, the Black bishop on g4 pins White\'s knight on f3 to the queen.', highlights: [{ square: 'f3', color: 'rgba(239, 68, 68, 0.4)' }, { square: 'd1', color: 'rgba(59, 130, 246, 0.4)' }] },
+        { fen: 'rn1qkb1r/ppp2ppp/4pn2/3p4/3P2b1/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 2 4', commentary: 'Now look at how White can create a pin. By playing Bg5, White pins Black\'s knight on f6 to the queen on d8!', highlights: [{ square: 'f6', color: 'rgba(239, 68, 68, 0.4)' }, { square: 'd8', color: 'rgba(59, 130, 246, 0.4)' }] }
+      ],
+      guidedSteps: [
+        { fen: 'rn1qkb1r/ppp2ppp/4pn2/3p4/3P2b1/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 2 4', instruction: 'Pin Black\'s knight on f6 to their queen on d8 by developing your bishop to g5.', expectedMove: 'Bg5', highlights: [{ square: 'g5', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Correct! Bg5 pins the knight. It cannot move without losing the queen.', incorrectFeedback: 'Develop your bishop to g5.', hints: ['Find the bishop on c1 and move it to g5'] }
+      ],
+      masteryPositions: [
+        { fen: 'r1bqk1nr/pppp1ppp/2n5/1Bb5/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', description: 'Black developed Nc6. Pin it to the king with Bb5!', solution: ['Bb5'], conceptTested: 'Absolute Pin Bb5', maxAttempts: 3 }
       ]
     },
     {
@@ -107,6 +133,16 @@ export const tacticsContent = {
         { id: 'skewer_02', fen: '8/8/8/8/2k5/8/K7/1B6 w - - 0 1', solution: 'Ba2+', theme: 'Bishop Skewer', difficulty: 'intermediate', explanation: 'Ba2+ checks the king along the diagonal, potentially winning a piece behind it.' },
         { id: 'skewer_03', fen: '6k1/8/8/1q6/8/8/1R6/6K1 w - - 0 1', solution: 'Rb8+', theme: 'Rook Skewer', difficulty: 'beginner', explanation: 'Rb8+ checks the king. When it moves, the queen on b5 is captured.' },
         { id: 'skewer_04', fen: '4r1k1/5pp1/8/8/8/5B2/5PPP/6K1 w - - 0 1', solution: 'Bc6', theme: 'Bishop Skewer', difficulty: 'intermediate', explanation: 'Bc6 attacks the rook and threatens the a8 square. The rook is caught in a skewer.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/4k3/8/8/4K3/8/4R3 w - - 0 1', commentary: 'A skewer is a reverse pin: the more valuable piece is attacked first, and when it moves, the piece behind is captured.', highlights: [{ square: 'e6', color: 'rgba(239, 68, 68, 0.4)' }] },
+        { fen: '8/8/4k3/8/8/4K3/8/4R3 w - - 0 1', commentary: 'By playing Re1+, White checks the king. The king must move, exposing the square behind.', arrows: [{ from: 'e1', to: 'e6', color: 'rgba(239, 68, 68, 0.6)' }] }
+      ],
+      guidedSteps: [
+        { fen: '6k1/8/8/1q6/8/8/1R6/6K1 w - - 0 1', instruction: 'Deliver a rook skewer to win Black\'s queen on b5!', expectedMove: 'Rb8+', highlights: [], correctFeedback: 'Excellent! Rb8+ checks the king. When it moves, you capture the queen.', incorrectFeedback: 'Check the king along the 8th rank to skewer the queen.', hints: ['Move the rook on b2 to b8'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/8/8/2k5/8/K7/1B6 w - - 0 1', description: 'Find the bishop skewer to win the piece behind.', solution: ['Ba2+'], conceptTested: 'Bishop skewer', maxAttempts: 3 }
       ]
     },
     {
@@ -132,6 +168,15 @@ export const tacticsContent = {
         { id: 'disc_01', fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', solution: 'Ng5', theme: 'Discovered Attack Setup', difficulty: 'intermediate', explanation: 'Ng5 threatens Nxf7 (discovered attack) and direct attack on f7.' },
         { id: 'disc_02', fen: 'rn1qkbnr/ppp2Bpp/8/3pp3/4P1b1/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4', solution: 'Bxf7+', theme: 'Discovered Attack', difficulty: 'intermediate', explanation: 'Bxf7+ is a discovered check from the queen on d1 to the king. Black loses castling rights and the f7 pawn.' },
         { id: 'disc_03', fen: '2r2rk1/pp3ppp/2nqbn2/3p4/3P4/2NBP1B1/PP3PPP/R2Q1RK1 w - - 0 12', solution: 'Nxe5', theme: 'Discovered Attack', difficulty: 'advanced', explanation: 'Nxe5 discovers an attack from the bishop on g3 to the queen on d6. The knight also attacks the knight on f6.' }
+      ],
+      demoSteps: [
+        { fen: 'rn1qkbnr/ppp2Bpp/8/3pp3/4P1b1/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4', commentary: 'A discovered attack occurs when a piece moves out of the way, unmasking an attack from another piece behind it.' }
+      ],
+      guidedSteps: [
+        { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', instruction: 'Move the knight to g5 to threaten f7 while opening the queen diagonal.', expectedMove: 'Ng5', highlights: [{ square: 'g5', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Correct! Ng5 creates a double threat on f7.', incorrectFeedback: 'Move the knight from f3 to g5.', hints: ['Knight to g5'] }
+      ],
+      masteryPositions: [
+        { fen: '2r2rk1/pp3ppp/2nqbn2/3p4/3P4/2NDP1B1/PP3PPP/R2Q1RK1 w - - 0 12', description: 'Find a discovered attack on the queen by capturing the e5 pawn (Nxe5).', solution: ['Nxe5'], conceptTested: 'Discovered attack Nxe5', maxAttempts: 3 }
       ]
     },
     {
@@ -155,6 +200,15 @@ export const tacticsContent = {
         { id: 'defl_02', fen: 'r4rk1/ppp1qppp/2n2n2/2bpp3/2B5/2NP1N2/PPP1QPPP/R1B2RK1 w - - 0 8', solution: 'Bxe6', theme: 'Deflection', difficulty: 'advanced', explanation: 'Bxe6 deflects a defender and opens lines for the attack.' },
         { id: 'attr_01', fen: '6k1/pp3ppp/8/8/4r3/1Q6/PP3PPP/6K1 w - - 0 1', solution: 'Qb8+', theme: 'Attraction + Skewer', difficulty: 'intermediate', explanation: 'Qb8+ attracts the king to b8, then after Kg7/Kh7, the rook on e4 might be won.' },
         { id: 'overl_01', fen: 'r2q1rk1/pp2bppp/2n1pn2/3p4/3P4/2NBPN2/PP3PPP/R2Q1RK1 w - - 0 10', solution: 'Bxh7+', theme: 'Attraction Sacrifice', difficulty: 'advanced', explanation: 'The classic Greek Gift sacrifice. Bxh7+ attracts the king, followed by Ng5+ with a devastating attack.' }
+      ],
+      demoSteps: [
+        { fen: '6k1/5ppp/8/8/8/8/r4PPP/1R3RK1 w - - 0 1', commentary: 'Deflection forces an enemy piece away from its critical defensive duty, opening up tactical opportunities.' }
+      ],
+      guidedSteps: [
+        { fen: '6k1/pp3ppp/8/8/4r3/1Q6/PP3PPP/6K1 w - - 0 1', instruction: 'Attract the king to the back rank with Qb8+.', expectedMove: 'Qb8+', highlights: [], correctFeedback: 'Great! Qb8+ deflects Black\'s defenses and leads to checkmate.', incorrectFeedback: 'Check the king with Qb8+.', hints: ['Move your queen to b8'] }
+      ],
+      masteryPositions: [
+        { fen: '6k1/5ppp/8/8/8/8/r4PPP/1R3RK1 w - - 0 1', description: 'Deliver back rank mate by deflecting Black\'s defense (Rb8+).', solution: ['Rb8+'], conceptTested: 'Deflection mate', maxAttempts: 3 }
       ]
     },
     {
@@ -187,6 +241,15 @@ export const tacticsContent = {
         { id: 'smoth_01', fen: '6rk/6pp/8/6N1/8/8/8/6QK w - - 0 1', solution: 'Qg6', theme: 'Smothered Mate Setup', difficulty: 'advanced', explanation: 'Qg6 threatens Qf7# and Nf7+ leading to smothered mate patterns.' },
         { id: 'smoth_02', fen: '5rk1/5ppp/8/8/8/8/5PPP/4NQKR w - - 0 1', solution: 'Nf3', theme: 'Smothered Mate Prep', difficulty: 'intermediate', explanation: 'Preparing Ng5 with threats against f7 and potential smothered mate motifs.' },
         { id: 'smoth_03', fen: 'r1b3kr/pppn1pNp/8/4q3/8/8/PPPPQPPP/R1B1K2R w KQ - 0 1', solution: 'Qe8+', theme: 'Smothered Mate (Philidor)', difficulty: 'expert', explanation: 'Qe8+! Rxe8 (forced), Nf7# — smothered mate! The king is surrounded by its own pieces at g8/h7/pawn on g7.' }
+      ],
+      demoSteps: [
+        { fen: '6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1', commentary: 'Back-rank mate happens when the king is trapped behind its own pawns. The rook invades the back rank.' }
+      ],
+      guidedSteps: [
+        { fen: '6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1', instruction: 'Deliver back-rank mate with your rook.', expectedMove: 'Re8#', highlights: [{ square: 'e8', color: 'rgba(239, 68, 68, 0.3)' }], correctFeedback: 'Perfect! Re8# is checkmate.', incorrectFeedback: 'Move your rook to the 8th rank (e8).', hints: ['Rook to e8'] }
+      ],
+      masteryPositions: [
+        { fen: '6rk/6pp/7N/8/8/8/6PP/6K1 w - - 0 1', description: 'Deliver smothered mate with your knight (Nf7#).', solution: ['Nf7#'], conceptTested: 'Smothered mate', maxAttempts: 3 }
       ]
     },
     {
@@ -210,6 +273,15 @@ export const tacticsContent = {
       puzzles: [
         { id: 'zwi_01', fen: 'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2BPP3/5N2/PPP2PPP/RNBQK2R b KQkq d3 0 4', solution: 'exd4', theme: 'Zwischenzug Setup', difficulty: 'intermediate', explanation: 'After exd4, if White recaptures with Nxd4, Black has Nxd4 Qxd4 — but can insert an intermezzo first.' },
         { id: 'zwi_02', fen: 'r1b1kbnr/ppppqppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4', solution: 'd5', theme: 'Zwischenzug', difficulty: 'advanced', explanation: 'd5 is an in-between move that attacks the knight before recapturing on e5.' }
+      ],
+      demoSteps: [
+        { fen: 'r1b1kbnr/ppppqppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4', commentary: 'Zwischenzug is an in-between move that interrupts the expected move sequence with a stronger threat.' }
+      ],
+      guidedSteps: [
+        { fen: 'r1b1kbnr/ppppqppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4', instruction: 'Instead of defending, play the intermediate pawn push d5, attacking the knight.', expectedMove: 'd5', highlights: [], correctFeedback: 'Perfect! d5 is an active intermediate move.', incorrectFeedback: 'Push your d-pawn to d5.', hints: ['Pawn to d5'] }
+      ],
+      masteryPositions: [
+        { fen: 'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2BPP3/5N2/PPP2PPP/RNBQK2R b KQkq d3 0 4', description: 'Find the intermediate capture (exd4).', solution: ['exd4'], conceptTested: 'Intermediate capture', maxAttempts: 3 }
       ]
     },
     {
@@ -231,6 +303,15 @@ export const tacticsContent = {
       puzzles: [
         { id: 'xray_01', fen: '1r2r1k1/5ppp/8/8/8/8/5PPP/1R2R1K1 w - - 0 1', solution: 'Rxb8', theme: 'X-Ray Defense', difficulty: 'intermediate', explanation: 'Rxb8 works because the other rook on e1 X-rays through to provide support.' },
         { id: 'inter_01', fen: 'r2q1rk1/ppp2ppp/8/4n3/4Q3/8/PPP2PPP/R4RK1 w - - 0 1', solution: 'Qe3', theme: 'Interference', difficulty: 'advanced', explanation: 'Placing a piece on a square that interferes with the coordination of Black\'s defenses.' }
+      ],
+      demoSteps: [
+        { fen: '1r2r1k1/5ppp/8/8/8/8/5PPP/1R2R1K1 w - - 0 1', commentary: 'X-ray is when a piece defends or attacks through an intervening piece.' }
+      ],
+      guidedSteps: [
+        { fen: '1r2r1k1/5ppp/8/8/8/8/5PPP/1R2R1K1 w - - 0 1', instruction: 'Capture Black\'s rook on b8, knowing your e1 rook X-rays through e8 to protect it.', expectedMove: 'Rxb8', highlights: [], correctFeedback: 'Correct! White\'s rooks coordinate via X-ray.', incorrectFeedback: 'Capture the rook on b8.', hints: ['Rook captures b8'] }
+      ],
+      masteryPositions: [
+        { fen: 'r2q1rk1/ppp2ppp/8/4n3/4Q3/8/PPP2PPP/R4RK1 w - - 0 1', description: 'Attack the knight by moving your queen to e3 (Qe3).', solution: ['Qe3'], conceptTested: 'Queen repositioning', maxAttempts: 3 }
       ]
     },
     {
@@ -260,10 +341,19 @@ export const tacticsContent = {
 <p>A bishop and rook (or queen) combine to checkmate on the h-file. The bishop covers diagonal escape squares.</p>
 `,
       puzzles: [
-        { id: 'mate_pat_01', fen: '5rk1/pp4pp/8/8/1B6/8/PP3PPP/6KR w - - 0 1', solution: 'Rh8+', theme: 'Arabian Mate', difficulty: 'intermediate', explanation: 'Rh8+ Kxh8... depends on the position, but demonstrates the rook+bishop mating pattern.' },
-        { id: 'mate_pat_02', fen: 'r1b1k1nr/ppppqppp/2n5/4p3/2BPP3/2P2N2/PP3PPP/RNBQK2R b KQkq - 0 5', solution: 'Pattern Study', theme: 'Boden\'s Mate Setup', difficulty: 'advanced', explanation: 'Study position for Boden\'s Mate pattern where two bishops deliver mate on crossing diagonals.' },
-        { id: 'mate_pat_03', fen: '6k1/5ppp/8/8/8/5N2/5PPP/6K1 w - - 0 1', solution: 'Pattern Recognition', theme: 'Knight Mating Patterns', difficulty: 'intermediate', explanation: 'Study how knights can contribute to mating attacks, especially with other pieces.' },
-        { id: 'mate_pat_04', fen: 'r2qr1k1/ppp2ppp/2n2n2/3p4/3P4/2NBPN2/PPP2PPP/R2Q1RK1 w - - 0 9', solution: 'Bxh7+', theme: 'Greek Gift', difficulty: 'expert', explanation: 'The famous Greek Gift sacrifice: Bxh7+! Kxh7, Ng5+ Kg8 (Kg6 h5#), Qh5 Re8, Qxf7+ Kh8, Qh5+ Kg8, Qh7+ Kf8, Qh8+ Ke7, Qxg7#' }
+        { id: 'mate_pat_01', fen: '5rk1/pp4pp/8/8/1B6/8/PP3PPP/6KR w - - 0 1', solution: ['Rh8+'], theme: 'Arabian Mate', difficulty: 'intermediate', explanation: 'Rh8+ Kxh8... depends on the position, but demonstrates the rook+bishop mating pattern.' },
+        { id: 'mate_pat_02', fen: 'r1b1k1nr/ppppqppp/2n5/4p3/2B1P3/2P2N2/PP3PPP/RNBQK2R b KQkq - 0 5', solution: ['d6'], theme: 'Boden\'s Mate Setup', difficulty: 'advanced', explanation: 'Study position for Boden\'s Mate pattern where two bishops deliver mate on crossing diagonals.' },
+        { id: 'mate_pat_03', fen: '6k1/5ppp/8/8/8/5N2/5PPP/6K1 w - - 0 1', solution: ['h3'], theme: 'Knight Mating Patterns', difficulty: 'intermediate', explanation: 'Study how knights can contribute to mating attacks, especially with other pieces.' },
+        { id: 'mate_pat_04', fen: 'r2qr1k1/ppp2ppp/2n2n2/3p4/3P4/2NBPN2/PPP2PPP/R2Q1RK1 w - - 0 9', solution: ['Bxh7+'], theme: 'Greek Gift', difficulty: 'expert', explanation: 'The famous Greek Gift sacrifice: Bxh7+! Kxh7, Ng5+ Kg8 (Kg6 h5#), Qh5 Re8, Qxf7+ Kh8, Qh5+ Kg8, Qh7+ Kf8, Qh8+ Ke7, Qxg7#' }
+      ],
+      demoSteps: [
+        { fen: '5rk1/pp4pp/8/8/1B6/8/PP3PPP/6KR w - - 0 1', commentary: 'Mating nets restrict the king\'s flight squares until mate is inevitable.' }
+      ],
+      guidedSteps: [
+        { fen: '5rk1/pp3ppp/8/2pP4/4B3/1P3Q2/P1P3PP/6K1 w - - 0 1', instruction: 'Bring your queen to f5 to form a deadly battery and threaten Qh7 checkmate.', expectedMove: 'Qf5', highlights: [], correctFeedback: 'Excellent! Qf5 sets up unstoppable checkmate threats.', incorrectFeedback: 'Move your queen to f5.', hints: ['Queen to f5'] }
+      ],
+      masteryPositions: [
+        { fen: 'r2qr1k1/ppp2ppp/2n2n2/3p4/3P4/2NBPN2/PPP2PPP/R2Q1RK1 w - - 0 9', description: 'Execute the Greek Gift sacrifice: capture h7 with your bishop (Bxh7+).', solution: ['Bxh7+'], conceptTested: 'Greek Gift sacrifice', maxAttempts: 3 }
       ]
     }
   ]

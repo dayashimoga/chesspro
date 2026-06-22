@@ -46,6 +46,8 @@ interface AppState {
   // User
   user: UserProfile;
   completedLessons: string[];
+  favorites: string[];
+  toggleFavorite: (moduleId: string) => void;
 
   // Puzzle state
   activePuzzleId: string | null;
@@ -187,6 +189,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     ? (() => { try { const u = JSON.parse(savedUser); return { id: u.id || 'local_user', email: u.email || 'Learner', xp: u.xp ?? stored.xp, level: u.level ?? stored.level, puzzleRating: u.puzzleRating ?? stored.puzzleRating, streak: u.streak ?? stored.streak, tacticalRating: u.tacticalRating ?? stored.tacticalRating ?? 800, strategicRating: u.strategicRating ?? stored.strategicRating ?? 800, openingRating: u.openingRating ?? stored.openingRating ?? 800, middlegameRating: u.middlegameRating ?? stored.middlegameRating ?? 800, endgameRating: u.endgameRating ?? stored.endgameRating ?? 800 }; } catch { return { id: 'local_user', email: 'Learner', xp: stored.xp, level: stored.level, puzzleRating: stored.puzzleRating, streak: stored.streak, tacticalRating: stored.tacticalRating || 800, strategicRating: stored.strategicRating || 800, openingRating: stored.openingRating || 800, middlegameRating: stored.middlegameRating || 800, endgameRating: stored.endgameRating || 800 }; } })()
     : { id: 'local_user', email: 'Learner', xp: stored.xp, level: stored.level, puzzleRating: stored.puzzleRating, streak: stored.streak, tacticalRating: stored.tacticalRating || 800, strategicRating: stored.strategicRating || 800, openingRating: stored.openingRating || 800, middlegameRating: stored.middlegameRating || 800, endgameRating: stored.endgameRating || 800 },
   completedLessons: stored.completedLessons,
+  favorites: stored.favorites || [],
 
   // Puzzle
   activePuzzleId: null,
@@ -241,6 +244,16 @@ export const useAppStore = create<AppState>((set, get) => ({
     }));
   },
 
+  toggleFavorite: (moduleId) => {
+    const p = Storage.getProgress();
+    const currentFavs = p.favorites || [];
+    const updated = currentFavs.includes(moduleId)
+      ? currentFavs.filter(id => id !== moduleId)
+      : [...currentFavs, moduleId];
+    Storage.saveProgress({ favorites: updated });
+    set({ favorites: updated });
+  },
+
   updateRating: (change) => {
     const p = Storage.getProgress();
     p.puzzleRating = Math.max(100, Math.round(p.puzzleRating + change));
@@ -293,6 +306,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         endgameRating: p.endgameRating || 800,
       },
       completedLessons: p.completedLessons,
+      favorites: p.favorites || [],
       theme,
       boardTheme,
       pieceSet,

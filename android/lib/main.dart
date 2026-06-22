@@ -12,6 +12,10 @@ import 'pages/lesson_page.dart';
 import 'pages/puzzle_page.dart';
 import 'pages/play_page.dart';
 import 'pages/coach_page.dart';
+import 'pages/roadmap_page.dart';
+import 'pages/certification_page.dart';
+import 'pages/game_review_page.dart';
+
 
 // ============================================================================
 // ChessOS Pro — Main Entry Point
@@ -127,6 +131,7 @@ final _router = GoRouter(
       builder: (context, state, child) => MainShell(child: child),
       routes: [
         GoRoute(path: '/', builder: (_, __) => const DashboardPage()),
+        GoRoute(path: '/university', builder: (_, __) => const UniversityTabShellPage()),
         GoRoute(path: '/foundations', builder: (_, __) => const UniversityPage(title: 'Foundations', courseId: 'foundations')),
         GoRoute(path: '/tactics', builder: (_, __) => const UniversityPage(title: 'Tactics', courseId: 'tactics')),
         GoRoute(path: '/calculation', builder: (_, __) => const UniversityPage(title: 'Calculation', courseId: 'calculation')),
@@ -137,6 +142,8 @@ final _router = GoRouter(
         GoRoute(path: '/puzzles', builder: (_, __) => const PuzzleTrainerPage()),
         GoRoute(path: '/play', builder: (_, __) => const PlayAIPage()),
         GoRoute(path: '/coach', builder: (_, __) => const CoachDashboardPage()),
+        GoRoute(path: '/certification', builder: (_, __) => const CertificationPage()),
+        GoRoute(path: '/review', builder: (_, __) => const GameReviewPage()),
       ],
     ),
     // Lesson detail (outside shell — no bottom nav)
@@ -188,7 +195,7 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   static const _navItems = [
     ('Dashboard', Icons.dashboard_rounded, '/'),
-    ('University', Icons.school_rounded, '/foundations'),
+    ('University', Icons.school_rounded, '/university'),
     ('Puzzles', Icons.extension_rounded, '/puzzles'),
     ('Play', Icons.sports_esports_rounded, '/play'),
     ('Coach', Icons.psychology_rounded, '/coach'),
@@ -201,7 +208,8 @@ class _MainShellState extends State<MainShell> {
     if (location.startsWith('/play')) return 3;
     if (location.startsWith('/coach')) return 4;
     // Any university route
-    if (location.startsWith('/foundations') ||
+    if (location.startsWith('/university') ||
+        location.startsWith('/foundations') ||
         location.startsWith('/tactics') ||
         location.startsWith('/calculation') ||
         location.startsWith('/openings') ||
@@ -397,6 +405,44 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // ===== Certification Center Card =====
+              GestureDetector(
+                onTap: () => context.push('/certification'),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF161622),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFF59E0B).withOpacity(0.2)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Text('🛡️', style: TextStyle(fontSize: 24)),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Certification Center',
+                              style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.white),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              'Claim certificates for completed university majors.',
+                              style: GoogleFonts.inter(fontSize: 11, color: Colors.white60),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Color(0xFFF59E0B)),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 18),
@@ -893,6 +939,87 @@ class UniversityPage extends StatelessWidget {
           );
         }),
       ],
+    );
+  }
+}
+
+// ============================================================================
+// University Tab Shell Page
+// ============================================================================
+class UniversityTabShellPage extends StatefulWidget {
+  const UniversityTabShellPage({super.key});
+
+  @override
+  State<UniversityTabShellPage> createState() => _UniversityTabShellPageState();
+}
+
+class _UniversityTabShellPageState extends State<UniversityTabShellPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'ChessOS University',
+          style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white),
+        ),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: const Color(0xFF10B981),
+          labelColor: const Color(0xFF10B981),
+          unselectedLabelColor: Colors.white.withOpacity(0.4),
+          labelStyle: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w800),
+          unselectedLabelStyle: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500),
+          tabs: const [
+            Tab(text: 'Grandmaster Journey'),
+            Tab(text: 'Pathways'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          const JourneyRoadmapPage(),
+          _buildPathwaysTab(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPathwaysTab(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 1.45,
+        children: const [
+          _UniversityCard(title: 'Foundations', icon: '🏫', route: '/foundations', color: Color(0xFF10B981)),
+          _UniversityCard(title: 'Tactics', icon: '⚔️', route: '/tactics', color: Color(0xFFF59E0B)),
+          _UniversityCard(title: 'Calculation', icon: '🧠', route: '/calculation', color: Color(0xFF8B5CF6)),
+          _UniversityCard(title: 'Openings', icon: '🌳', route: '/openings', color: Color(0xFF3B82F6)),
+          _UniversityCard(title: 'Middlegame', icon: '🏰', route: '/middlegame', color: Color(0xFFEF4444)),
+          _UniversityCard(title: 'Endgames', icon: '👑', route: '/endgames', color: Color(0xFFF97316)),
+          _UniversityCard(title: 'Master Games', icon: '🏆', route: '/master-games', color: Color(0xFFEC4899)),
+          _UniversityCard(title: 'Puzzles', icon: '🧩', route: '/puzzles', color: Color(0xFF06B6D4)),
+        ],
+      ),
     );
   }
 }

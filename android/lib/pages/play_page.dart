@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/chess_board.dart';
 import '../core/chess_engine.dart';
 
@@ -98,6 +100,7 @@ class _PlayAIPageState extends State<PlayAIPage> {
       _gameOver = true;
       _analysis = _engine.analyzeGame();
     });
+    _saveGameToHistory();
   }
 
   void _resign() {
@@ -105,6 +108,19 @@ class _PlayAIPageState extends State<PlayAIPage> {
       _gameOver = true;
       _analysis = _engine.analyzeGame();
     });
+    _saveGameToHistory();
+  }
+
+  Future<void> _saveGameToHistory() async {
+    try {
+      final box = Hive.box('progress');
+      await box.put('last_game', {
+        'playerColor': _playerIsWhite ? 'w' : 'b',
+        'moves': _engine.moveHistory.map((m) => m.san).toList(),
+      });
+    } catch (e) {
+      debugPrint('Error saving game history: $e');
+    }
   }
 
   @override
@@ -430,7 +446,7 @@ class _PlayAIPageState extends State<PlayAIPage> {
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () => setState(() => _showAnalysis = true),
+                        onPressed: () => context.go('/review'),
                         icon: const Icon(Icons.analytics_rounded, size: 18),
                         label: Text('Analysis', style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 13)),
                         style: ElevatedButton.styleFrom(

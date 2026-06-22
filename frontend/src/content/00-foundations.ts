@@ -45,6 +45,16 @@ export const foundationsContent = {
           description: 'The four center squares (d4, d5, e4, e5) highlighted with pawns. Controlling these squares is a primary strategic goal.'
         }
       ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', commentary: 'Welcome to ChessOS! The board consists of 64 squares. White starts on ranks 1-2, Black on ranks 7-8.' },
+        { fen: '8/8/8/3PP3/3PP3/8/8/8 w - - 0 1', commentary: 'The center squares d4, d5, e4, e5 are the most critical. Controlling them determines the flow of the game.', highlights: [{ square: 'd4', color: 'rgba(16, 185, 129, 0.3)' }, { square: 'd5', color: 'rgba(16, 185, 129, 0.3)' }, { square: 'e4', color: 'rgba(16, 185, 129, 0.3)' }, { square: 'e5', color: 'rgba(16, 185, 129, 0.3)' }] }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', instruction: 'Occupy the center! Move your king\'s pawn forward two squares to e4.', expectedMove: 'e4', highlights: [{ square: 'e4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! 1.e4 controls the d5 square and opens diagonals for your queen and light-squared bishop.', incorrectFeedback: 'Move the pawn on e2 forward two squares to e4.', hints: ['Select the pawn on e2 and move it to e4'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', description: 'Open the game by claiming the center with your queen\'s pawn (d4).', solution: ['d4'], conceptTested: 'Opening center pawn push', maxAttempts: 3 }
+      ],
       exercises: [
         { type: 'quiz', question: 'What letter represents the leftmost file from White\'s perspective?', options: ['a', 'h', 'd', 'e'], answer: 0, explanation: 'Files are labeled a through h from left to right from White\'s perspective.' },
         { type: 'quiz', question: 'How many squares are on a chessboard?', options: ['32', '48', '64', '81'], answer: 2, explanation: 'The chessboard has 8×8 = 64 squares.' },
@@ -100,6 +110,22 @@ export const foundationsContent = {
         { fen: '8/8/8/8/4B3/8/8/8 w - - 0 1', title: 'Bishop Movement', description: 'The bishop moves diagonally. This light-squared bishop can never reach a dark square.' },
         { fen: '8/8/8/8/4N3/8/8/8 w - - 0 1', title: 'Knight Movement', description: 'The knight from e4 can reach 8 squares in an L-shape: d2, f2, c3, g3, c5, g5, d6, f6.' },
         { fen: '8/8/8/8/4P3/8/8/8 w - - 0 1', title: 'Pawn Movement', description: 'The pawn advances forward. From e4, this pawn can move to e5.' }
+      ],
+      demoSteps: [
+        { fen: '8/8/8/8/4N3/8/8/8 w - - 0 1', commentary: 'The knight stands on e4. It moves in an L-shape: two squares in one direction, then one square perpendicular.', highlights: [{ square: 'e4', color: 'rgba(16, 185, 129, 0.4)' }] },
+        { fen: '8/8/8/8/4N3/8/8/8 w - - 0 1', commentary: 'From e4, the knight can reach 8 squares: d2, f2, c3, g3, c5, g5, d6, f6. Notice it always lands on the opposite color.', highlights: [{ square: 'd2', color: 'rgba(245, 158, 11, 0.3)' }, { square: 'f2', color: 'rgba(245, 158, 11, 0.3)' }, { square: 'c3', color: 'rgba(245, 158, 11, 0.3)' }, { square: 'g3', color: 'rgba(245, 158, 11, 0.3)' }, { square: 'c5', color: 'rgba(245, 158, 11, 0.3)' }, { square: 'g5', color: 'rgba(245, 158, 11, 0.3)' }, { square: 'd6', color: 'rgba(245, 158, 11, 0.3)' }, { square: 'f6', color: 'rgba(245, 158, 11, 0.3)' }] },
+        { fen: '8/8/8/2N5/8/8/8/8 w - - 0 1', move: 'Nc5', commentary: 'The knight moves to c5. From the center, knights have maximum mobility. On the edge, they have fewer squares.' },
+        { fen: '8/8/8/8/8/8/8/7R w - - 0 1', commentary: 'Now let\'s look at the rook. It moves along straight lines — ranks (horizontal) and files (vertical).', highlights: [{ square: 'h1', color: 'rgba(16, 185, 129, 0.4)' }] },
+        { fen: '8/8/8/8/8/8/8/7R w - - 0 1', commentary: 'From h1, the rook controls the entire h-file (h1-h8) and the entire 1st rank (a1-h1). That\'s 14 squares.', arrows: [{ from: 'h1', to: 'h8', color: 'rgba(59, 130, 246, 0.6)' }, { from: 'h1', to: 'a1', color: 'rgba(59, 130, 246, 0.6)' }] },
+        { fen: '8/8/8/8/3B4/8/8/8 w - - 0 1', commentary: 'The bishop moves diagonally. This bishop is on a light square (d4) and can NEVER reach a dark square — it\'s confined to its color for the entire game.', highlights: [{ square: 'd4', color: 'rgba(139, 92, 246, 0.4)' }] }
+      ],
+      guidedSteps: [
+        { fen: '8/8/8/8/4N3/8/8/4K3 w - - 0 1', instruction: 'Move the knight to f6 — a strong outpost square.', expectedMove: 'Nf6', highlights: [{ square: 'f6', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Correct! Nf6 is a powerful central square for the knight, controlling 8 important squares.', incorrectFeedback: 'Try again. The knight needs to reach f6. Remember the L-shape: two squares in one direction, one square perpendicular.', hints: ['The knight moves in an L-shape', 'From e4, f6 is two up and one right'] },
+        { fen: '8/8/8/8/8/8/4P3/4K3 w - - 0 1', instruction: 'Advance the pawn two squares on its first move to e4 — controlling the center!', expectedMove: 'e4', highlights: [{ square: 'e4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! Pawns can move two squares forward on their first move. e4 is the most popular opening move in chess!', incorrectFeedback: 'The pawn on e2 can move one or two squares forward on its first move. Try pushing it to e4.', hints: ['Click the pawn on e2, then click e4'] },
+        { fen: '8/8/8/8/8/8/8/R3K3 w - - 0 1', instruction: 'Move the rook to the end of the first rank — slide it to a1 or h1.', expectedMove: 'Ra1', highlights: [], correctFeedback: 'The rook slides along the first rank. Rooks are powerful on open files and ranks.', incorrectFeedback: 'The rook moves along straight lines. Try moving it along the 1st rank.', hints: ['Rooks move horizontally or vertically'] }
+      ],
+      masteryPositions: [
+        { fen: '8/8/8/8/4N3/8/8/4K3 w - - 0 1', description: 'Demonstrate your understanding of knight movement. Move the knight to capture the opponent\'s pawn.', solution: ['Nd6'], conceptTested: 'Knight L-shaped movement', maxAttempts: 5 }
       ],
       exercises: [
         { type: 'quiz', question: 'Which piece can jump over other pieces?', options: ['Bishop', 'Rook', 'Knight', 'Queen'], answer: 2, explanation: 'The knight is the only piece that can leap over other pieces on the board.' },
@@ -164,6 +190,21 @@ export const foundationsContent = {
         { fen: 'rnb1kbnr/pppp1ppp/4p3/8/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 0 1', title: 'Checkmate (Scholar\'s Mate)', description: 'Black\'s queen on h4 delivers checkmate. The white king has no escape.' },
         { fen: '5k2/5P2/5K2/8/8/8/8/8 b - - 0 1', title: 'Stalemate', description: 'Black to move but has no legal moves, yet is not in check. This is a draw by stalemate.' }
       ],
+      demoSteps: [
+        { fen: 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1', commentary: 'Castling is a special move. The king moves TWO squares toward a rook, and the rook jumps over to the other side. Let\'s see kingside castling (O-O).', highlights: [{ square: 'e1', color: 'rgba(16, 185, 129, 0.4)' }, { square: 'h1', color: 'rgba(59, 130, 246, 0.4)' }] },
+        { fen: 'r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R4RK1 w kq - 0 1', move: 'O-O', commentary: 'After O-O: the king moved from e1 to g1, and the rook jumped from h1 to f1. The king is now safe behind the pawns!', arrows: [{ from: 'e1', to: 'g1', color: 'rgba(16, 185, 129, 0.6)' }, { from: 'h1', to: 'f1', color: 'rgba(59, 130, 246, 0.6)' }] },
+        { fen: '8/8/8/pP6/8/8/8/8 w - a6 0 1', commentary: 'En passant: Black just pushed a7 to a5, passing through a6. White\'s pawn on b5 can capture it AS IF it only moved one square.', highlights: [{ square: 'a5', color: 'rgba(239, 68, 68, 0.4)' }, { square: 'a6', color: 'rgba(16, 185, 129, 0.3)' }], arrows: [{ from: 'b5', to: 'a6', color: 'rgba(16, 185, 129, 0.6)' }] },
+        { fen: '8/8/P7/8/8/8/8/8 w - - 0 1', commentary: 'After bxa6 en passant, the white pawn now stands on a6. En passant must be done IMMEDIATELY — on the very next move, or the right is lost forever.' },
+        { fen: '4k3/4P3/8/8/8/8/8/4K3 w - - 0 1', commentary: 'Pawn promotion: When a pawn reaches the last rank, it MUST be promoted. Usually to a queen (the strongest piece), but sometimes a knight is better!', highlights: [{ square: 'e7', color: 'rgba(245, 158, 11, 0.4)' }], arrows: [{ from: 'e7', to: 'e8', color: 'rgba(245, 158, 11, 0.6)' }] }
+      ],
+      guidedSteps: [
+        { fen: 'r1bqkbnr/pppppppp/2n5/8/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 2', instruction: 'Castle kingside (O-O) to bring your king to safety and activate your rook!', expectedMove: 'O-O', highlights: [{ square: 'e1', color: 'rgba(16, 185, 129, 0.3)' }, { square: 'g1', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! Castling puts your king behind a wall of pawns and activates the rook. This should be done early in every game.', incorrectFeedback: 'Try castling kingside. Click the king on e1 and move it to g1 (two squares toward the rook).', hints: ['Move the king two squares toward the h1 rook', 'Click e1 then g1'] },
+        { fen: '8/8/8/pP6/8/8/8/4K3 w - a6 0 1', instruction: 'Capture en passant! The black pawn just moved a7-a5. Capture it by moving your b5 pawn to a6.', expectedMove: 'bxa6', highlights: [{ square: 'a6', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'You captured en passant! This special capture only works on the move immediately after the opponent\'s two-square pawn push.', incorrectFeedback: 'Capture en passant by moving your pawn from b5 to a6, taking the black pawn as if it only moved one square.', hints: ['Move the b5 pawn diagonally to a6'] },
+        { fen: '4k3/4P3/8/8/8/8/8/4K3 w - - 0 1', instruction: 'Promote the pawn! Push it to e8 and it becomes a queen.', expectedMove: 'e8=Q', highlights: [{ square: 'e8', color: 'rgba(245, 158, 11, 0.3)' }], correctFeedback: 'The pawn promotes to a queen! Promotion is one of the most powerful concepts in chess — always push passed pawns!', incorrectFeedback: 'Push the pawn forward from e7 to e8. It will automatically promote.', hints: ['The pawn on e7 can advance to e8'] }
+      ],
+      masteryPositions: [
+        { fen: 'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', description: 'Demonstrate good opening play: castle to safety!', solution: ['O-O'], conceptTested: 'Castling for king safety', maxAttempts: 3 }
+      ],
       exercises: [
         { type: 'quiz', question: 'Can you castle if your king is in check?', options: ['Yes', 'No'], answer: 1, explanation: 'Castling is not allowed when the king is in check.' },
         { type: 'quiz', question: 'What happens when a pawn reaches the last rank?', options: ['It\'s removed', 'It stays as a pawn', 'It must be promoted', 'The game ends'], answer: 2, explanation: 'A pawn reaching the last rank must be promoted to a queen, rook, bishop, or knight.' },
@@ -224,6 +265,17 @@ export const foundationsContent = {
         { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1', title: 'After 1. e4', description: 'The notation "1. e4" means White\'s first move is pawn to e4.' },
         { fen: 'rnbqkbnr/pppppppp/8/8/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2', title: 'After 1. e4 e5 2. Nf3', description: '"Nf3" means the knight moves to f3. No "N" means pawn.' }
       ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', commentary: 'Algebraic notation records every move. Moving the e-pawn two squares is written as "e4".', highlights: [{ square: 'e4', color: 'rgba(16, 185, 129, 0.4)' }] },
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1', move: 'e4', commentary: 'Now Black responds with "e5". Let\'s see it.', highlights: [{ square: 'e5', color: 'rgba(239, 68, 68, 0.4)' }] },
+        { fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2', commentary: '"Nf3" moves the Knight to f3. The capital letter denotes the piece (K, Q, R, B, N). Pawns have no letter.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', instruction: 'Play e5 for Black to mirror White\'s move.', expectedMove: 'e5', highlights: [{ square: 'e5', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! e5 is recorded. Both sides claim central space.', incorrectFeedback: 'Move the Black pawn on e7 to e5.', hints: ['Move the e7 pawn forward two squares to e5'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 3 3', description: 'Attack the e5 pawn and develop your knight to f3 (Nf3).', solution: ['Nf3'], conceptTested: 'Algebraic notation Nf3', maxAttempts: 3 }
+      ],
       exercises: [
         { type: 'quiz', question: 'What does "Nxe5" mean?', options: ['Knight to e5', 'Knight captures on e5', 'Knight from e5', 'New move e5'], answer: 1, explanation: 'The "x" symbol indicates a capture. Nxe5 means a knight captures the piece on e5.' },
         { type: 'quiz', question: 'What does "O-O" represent?', options: ['Queenside castling', 'Kingside castling', 'A draw', 'A null move'], answer: 1, explanation: 'O-O is kingside castling. O-O-O is queenside castling.' },
@@ -266,6 +318,21 @@ export const foundationsContent = {
         { fen: '4k3/8/4K3/8/8/8/8/7Q w - - 0 1', title: 'K+Q Checkmate Pattern', description: 'White plays Qe1 (or similar), restricting the king, then delivers mate.' },
         { fen: '4k3/8/8/8/8/8/8/R3K3 w - - 0 1', title: 'K+R vs K Setup', description: 'The rook creates a barrier while the king approaches. This checkmate requires patience.' },
         { fen: '6k1/5ppp/8/8/8/8/8/R3K3 w - - 0 1', title: 'Back-Rank Mate Threat', description: 'If the rook reaches the 8th rank (Ra8), it\'s checkmate because the pawns block the king\'s escape.' }
+      ],
+      demoSteps: [
+        { fen: '6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1', commentary: 'Back-rank mate is one of the most common patterns. The black king is trapped behind its own pawns on f7, g7, h7.', highlights: [{ square: 'g8', color: 'rgba(239, 68, 68, 0.3)' }], arrows: [{ from: 'f7', to: 'g8', color: 'rgba(239, 68, 68, 0.4)' }, { from: 'g7', to: 'g8', color: 'rgba(239, 68, 68, 0.4)' }, { from: 'h7', to: 'g8', color: 'rgba(239, 68, 68, 0.4)' }] },
+        { fen: '4R1k1/5ppp/8/8/8/8/8/6K1 w - - 0 1', move: 'Re8#', commentary: 'Re8 is CHECKMATE! The rook controls the entire 8th rank, and the king cannot escape because its own pawns block the way. This is the classic back-rank mate.' },
+        { fen: 'k7/8/1K6/8/8/8/8/7R w - - 0 1', commentary: 'King + Rook checkmate: The white king on b6 controls the escape squares a7, b7, c7. The rook just needs to deliver check from behind.', highlights: [{ square: 'b6', color: 'rgba(16, 185, 129, 0.3)' }], arrows: [{ from: 'b6', to: 'a7', color: 'rgba(16, 185, 129, 0.4)' }, { from: 'b6', to: 'b7', color: 'rgba(16, 185, 129, 0.4)' }] },
+        { fen: 'k7/8/1K6/8/8/8/8/R7 w - - 0 1', move: 'Ra1#', commentary: 'Ra1 is checkmate! The rook checks from a1, and the king on a8 has no escape — b8, a7, b7 are all controlled by the white king.' }
+      ],
+      guidedSteps: [
+        { fen: '6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1', instruction: 'Deliver back-rank checkmate! Slide the rook to the 8th rank.', expectedMove: 'Re8#', highlights: [{ square: 'e8', color: 'rgba(239, 68, 68, 0.3)' }], arrows: [{ from: 'e1', to: 'e8', color: 'rgba(16, 185, 129, 0.4)' }], correctFeedback: '🎉 Checkmate! The rook on e8 delivers check, and the king is trapped behind its own pawns. This is the classic back-rank mate pattern.', incorrectFeedback: 'Look at the 8th rank — it\'s completely open. If your rook goes there, the king has nowhere to run because f7, g7, h7 block its escape.', hints: ['The king is trapped behind its own pawns', 'Move the rook to the 8th rank'] },
+        { fen: 'k7/8/1K6/8/8/8/8/7R w - - 0 1', instruction: 'Deliver checkmate with the rook! The king supports from b6.', expectedMove: 'Ra1#', highlights: [], correctFeedback: '🎉 Ra1 is checkmate! The white king controls all escape squares (a7, b7, b8), and the rook checks along the a-file.', incorrectFeedback: 'Your king controls the squares around the black king. You need to give check with the rook from a distance.', hints: ['The rook needs to give check along the a-file', 'Move the rook to a1'] },
+        { fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4', instruction: 'Deliver Scholar\'s Mate! The f7 square is only defended by the king.', expectedMove: 'Qxf7#', highlights: [{ square: 'f7', color: 'rgba(239, 68, 68, 0.3)' }], arrows: [{ from: 'c4', to: 'f7', color: 'rgba(16, 185, 129, 0.4)' }], correctFeedback: '🎉 Qxf7# — Scholar\'s Mate! The queen captures on f7 with protection from the bishop on c4. The king has no escape.', incorrectFeedback: 'Look at f7 — it\'s only protected by the king. Your queen can capture there, and the bishop on c4 supports it.', hints: ['f7 is the weakest square in the opening', 'The bishop on c4 protects f7'] }
+      ],
+      masteryPositions: [
+        { fen: '6k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1', description: 'Find the back-rank mate. The black king is vulnerable!', solution: ['Ra8'], conceptTested: 'Back-rank mate pattern recognition', maxAttempts: 4 },
+        { fen: '5k2/4Qppp/8/8/8/8/5PPP/6K1 w - - 0 1', description: 'Deliver checkmate with the queen.', solution: ['Qe8#'], conceptTested: 'Queen checkmate delivery', maxAttempts: 3 }
       ],
       puzzles: [
         { id: 'mate1_01', fen: '6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1', solution: 'Re8#', theme: 'Back-Rank Mate', difficulty: 'beginner', explanation: 'The rook delivers checkmate on the 8th rank. The king is trapped behind its own pawns on f7, g7, h7.' },
@@ -313,6 +380,17 @@ export const foundationsContent = {
         { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', title: 'After 1. e4', description: '1. e4 controls the center and opens lines for the bishop and queen. The most popular opening move.' },
         { fen: 'r1bqkbnr/pppppppp/2n5/8/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 2 2', title: 'Good Development', description: 'After 1. e4 Nc6 2. Nf3 — White develops a knight to a natural square, controls the center, and prepares castling.' },
         { fen: 'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', title: 'Italian Game Setup', description: 'Both sides have developed knights and bishops, controlling the center. White should castle next (O-O).' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', commentary: 'Control the center: By opening with e4, White controls d5 and f5 and opens lines for development.', highlights: [{ square: 'd5', color: 'rgba(16, 185, 129, 0.4)' }, { square: 'f5', color: 'rgba(16, 185, 129, 0.4)' }] },
+        { fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', move: 'e4', commentary: 'Black copies with e5, defending the center and opening their own lines.', highlights: [{ square: 'd4', color: 'rgba(239, 68, 68, 0.4)' }, { square: 'f4', color: 'rgba(239, 68, 68, 0.4)' }] },
+        { fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2', move: 'Nf3', commentary: 'White develops Nf3, activating the knight and immediately attacking Black\'s e5 pawn.', highlights: [{ square: 'e5', color: 'rgba(239, 68, 68, 0.4)' }] }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', instruction: 'Start the game following opening principles: push e4 to control the center.', expectedMove: 'e4', highlights: [{ square: 'e4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! e4 is the most popular opening move, claiming center control.', incorrectFeedback: 'Push your e-pawn forward two squares to e4.', hints: ['Select e2 and move to e4'] }
+      ],
+      masteryPositions: [
+        { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 3 3', description: 'Attack Black\'s e5 pawn and develop your light-squared bishop to b5 (Bb5).', solution: ['Bb5'], conceptTested: 'Development with a threat (Bb5)', maxAttempts: 3 }
       ],
       exercises: [
         { type: 'quiz', question: 'Which opening move controls the center?', options: ['1. a4', '1. e4', '1. h3', '1. Na3'], answer: 1, explanation: '1. e4 places a pawn in the center, controlling d5 and f5, and opens lines for the queen and bishop.' },

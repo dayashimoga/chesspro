@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Board } from '../components/Board';
 import { ChessEngine } from '../core/chess-engine';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { useAppStore } from '../store/useAppStore';
+import { stockfishService } from '../core/stockfishService';
 
 const AI_LEVELS = [
   { id: 'beginner', name: '🟢 Beginner (800)', depth: 1, rating: 800 },
-  { id: 'intermediate', name: '🟡 Intermediate (1200)', depth: 2, rating: 1200 },
-  { id: 'advanced', name: '🟠 Advanced (1600)', depth: 3, rating: 1600 },
-  { id: 'expert', name: '🔴 Expert (2000)', depth: 4, rating: 2000 },
-  { id: 'master', name: '👑 Master (2400)', depth: 5, rating: 2400 },
+  { id: 'intermediate', name: '🟡 Intermediate (1200)', depth: 3, rating: 1200 },
+  { id: 'advanced', name: '🟠 Advanced (1600)', depth: 5, rating: 1600 },
+  { id: 'expert', name: '🔴 Expert (2000)', depth: 8, rating: 2000 },
+  { id: 'master', name: '👑 Master (2400)', depth: 12, rating: 2400 },
 ];
 
 interface GameAnalysis {
@@ -24,6 +26,7 @@ interface GameAnalysis {
 }
 
 export const PlayVsAI: React.FC = () => {
+  const navigate = useNavigate();
   const [engine] = useState(() => new ChessEngine());
   const [fen, setFen] = useState(engine.fen());
   const [playerColor, setPlayerColor] = useState<'w' | 'b'>('w');
@@ -33,6 +36,8 @@ export const PlayVsAI: React.FC = () => {
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysis, setAnalysis] = useState<GameAnalysis | null>(null);
+  const [aiLatency, setAiLatency] = useState<number | null>(null);
+  const [isAiThinking, setIsAiThinking] = useState(false);
 
   const boardTheme = useAppStore(s => s.theme); // default theme switcher uses appStore.theme
 
@@ -46,22 +51,41 @@ export const PlayVsAI: React.FC = () => {
   const makeAIMove = useCallback(() => {
     if (engine.isGameOver()) return;
     if (engine.turn() === playerColor) return;
+    if (isAiThinking) return;
 
-    const depth = AI_LEVELS.find(l => l.id === aiLevel)?.depth || 2;
-    setTimeout(() => {
-      const move = engine.findBestMove(depth);
-      if (move) {
-        engine.move(move);
-        updateState();
-      }
-    }, 300);
-  }, [engine, playerColor, aiLevel, updateState]);
+    const depth = AI_LEVELS.find(l => l.id === aiLevel)?.depth || 3;
+    setIsAiThinking(true);
+    const startTime = performance.now();
+
+    stockfishService.analyze(engine.fen(), depth)
+      .then(result => {
+        setIsAiThinking(false);
+        if (engine.turn() === playerColor || engine.isGameOver()) return;
+        
+        if (result.bestMove) {
+          engine.move(result.bestMove);
+          const duration = Math.round(performance.now() - startTime);
+          setAiLatency(duration);
+          updateState();
+        }
+      })
+      .catch(err => {
+        console.error('AI move generation error:', err);
+        setIsAiThinking(false);
+        // Fallback to quick minimax if Stockfish worker fails
+        const fallbackMove = engine.findBestMove(1);
+        if (fallbackMove) {
+          engine.move(fallbackMove);
+          updateState();
+        }
+      });
+  }, [engine, playerColor, aiLevel, isAiThinking, updateState]);
 
   useEffect(() => {
-    if (engine.turn() !== playerColor && !engine.isGameOver()) {
+    if (engine.turn() !== playerColor && !engine.isGameOver() && !isAiThinking) {
       makeAIMove();
     }
-  }, [fen, makeAIMove, playerColor, engine]);
+  }, [fen, makeAIMove, playerColor, engine, isAiThinking]);
 
   // Generate post-game analysis when game ends
   useEffect(() => {
@@ -75,6 +99,13 @@ export const PlayVsAI: React.FC = () => {
       const goodMoves = totalMoves - blunders - mistakes - inaccuracies;
       const accuracy = Math.max(30, Math.min(99, Math.round((goodMoves / Math.max(1, totalMoves)) * 100)));
       const bestMoveRate = Math.max(20, Math.min(95, Math.round(accuracy * 0.85)));
+
+      // Save game history for review
+      localStorage.setItem('chessos_last_game', JSON.stringify({
+        moves: moveHistory,
+        playerColor,
+        aiLevel,
+      }));
 
       setAnalysis({ totalMoves, accuracy, blunders, mistakes, inaccuracies, bestMoveRate });
       setShowAnalysis(true);
@@ -162,8 +193,11 @@ export const PlayVsAI: React.FC = () => {
               ✨ New Game
             </Button>
           </div>
-          <Card className="!py-3 !px-6 text-center font-bold text-white text-sm" hoverEffect={false}>
-            {status}
+          <Card className="!py-3 !px-6 text-center font-bold text-white text-sm flex flex-col items-center gap-1 min-w-[200px]" hoverEffect={false}>
+            <div>{isAiThinking ? '🤖 AI is thinking...' : status}</div>
+            {aiLatency !== null && !isAiThinking && (
+              <div className="text-[10px] text-emerald-400 font-mono">AI Response Time: {aiLatency}ms</div>
+            )}
           </Card>
         </div>
 
@@ -203,6 +237,9 @@ export const PlayVsAI: React.FC = () => {
                  analysis.accuracy >= 50 ? '📈 Keep practicing — work on calculation depth.' :
                  '💪 Every game is a learning opportunity. Review your blunders!'}
               </div>
+              <Button onClick={() => navigate('/game-review')} variant="primary" fullWidth className="mt-2">
+                🔎 Review Game with Stockfish
+              </Button>
             </Card>
           )}
 

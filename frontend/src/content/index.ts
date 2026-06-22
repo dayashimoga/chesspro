@@ -17,12 +17,51 @@ export interface LessonExercise {
   answer: number;
   explanation: string;
   solution?: string[];
+  fen?: string;
 }
 
 export interface LessonExample {
   fen: string;
   title: string;
   description: string;
+}
+
+// Interactive guided practice step — user must make a specific move
+export interface GuidedStep {
+  fen: string;
+  instruction: string;
+  expectedMove: string; // SAN notation
+  highlights?: Array<{ square: string; color: string }>;
+  arrows?: Array<{ from: string; to: string; color: string }>;
+  correctFeedback: string;
+  incorrectFeedback: string;
+  hints?: string[];
+}
+
+// Demo step — animated walkthrough with commentary
+export interface DemoStep {
+  fen: string;
+  move?: string; // SAN move to animate
+  commentary: string;
+  highlights?: Array<{ square: string; color: string }>;
+  arrows?: Array<{ from: string; to: string; color: string }>;
+}
+
+// Mastery position — user demonstrates concept via move sequence
+export interface MasteryPosition {
+  fen: string;
+  description: string;
+  solution: string[]; // Sequence of SAN moves
+  conceptTested: string;
+  maxAttempts: number;
+}
+
+// Opening tree node for interactive move trainers
+export interface OpeningTreeNode {
+  move: string;
+  fen: string;
+  comment?: string;
+  isMainLine?: boolean;
 }
 
 export interface LessonSubModule {
@@ -32,6 +71,14 @@ export interface LessonSubModule {
   theory: string;
   examples?: LessonExample[];
   exercises?: LessonExercise[];
+  // Interactive lesson fields
+  demoSteps?: DemoStep[];
+  guidedSteps?: GuidedStep[];
+  masteryPositions?: MasteryPosition[];
+  // Opening-specific
+  openingTree?: OpeningTreeNode[];
+  // Puzzle references
+  puzzles?: Array<{ id: string; fen: string; solution: string; theme: string; difficulty: string; explanation: string }>;
 }
 
 export interface Course {

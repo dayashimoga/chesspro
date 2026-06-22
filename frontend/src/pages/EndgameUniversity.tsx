@@ -4,6 +4,7 @@ import { useAppStore } from '../store/useAppStore';
 import endgameContent from '../content/03-endgames';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { Chess } from 'chess.js';
 
 type LabPhase = 'theory' | 'examples' | 'exercises' | 'assessment';
 
@@ -18,6 +19,10 @@ export const EndgameUniversity: React.FC = () => {
   const [totalAttempts, setTotalAttempts] = useState(0);
   const [completedModules, setCompletedModules] = useState<Set<string>>(new Set());
 
+  // Find-move state variables
+  const [exerciseFen, setExerciseFen] = useState('8/8/8/8/8/8/8/8 w - - 0 1');
+  const [exerciseFeedback, setExerciseFeedback] = useState<{ correct: boolean; text: string } | null>(null);
+
   const addXP = useAppStore(s => s.addXP);
   const currentModule = endgameContent.modules.find(m => m.id === activeModule) || endgameContent.modules[0];
   const currentExamples = currentModule?.examples || [];
@@ -29,7 +34,16 @@ export const EndgameUniversity: React.FC = () => {
     setExerciseIdx(0);
     setSelectedAnswer(null);
     setShowResult(false);
+    setExerciseFeedback(null);
   }, [activeModule]);
+
+  // Update exercise FEN when active exercise changes
+  useEffect(() => {
+    if (currentExercises[exerciseIdx]) {
+      setExerciseFen(currentExercises[exerciseIdx].fen || '8/8/8/8/8/8/8/8 w - - 0 1');
+      setExerciseFeedback(null);
+    }
+  }, [exerciseIdx, activeModule, phase]);
 
   const handleAnswer = (answerIdx: number) => {
     setSelectedAnswer(answerIdx);
@@ -47,9 +61,37 @@ export const EndgameUniversity: React.FC = () => {
       setExerciseIdx(exerciseIdx + 1);
       setSelectedAnswer(null);
       setShowResult(false);
+      setExerciseFeedback(null);
     } else {
       setCompletedModules(new Set([...completedModules, activeModule]));
       setPhase('assessment');
+    }
+  };
+
+  const handleExerciseMove = (from: string, to: string) => {
+    const ex = currentExercises[exerciseIdx];
+    if (!ex || ex.type !== 'find-move') return;
+    if (showResult) return; // already solved
+
+    const game = new Chess(exerciseFen);
+    try {
+      const move = game.move({ from, to, promotion: 'q' });
+      if (move) {
+        const expectedSolution = ex.solution?.[0];
+        if (expectedSolution && move.san === expectedSolution) {
+          setExerciseFen(game.fen());
+          setScore(prev => prev + 1);
+          setTotalAttempts(prev => prev + 1);
+          addXP(15);
+          setShowResult(true);
+          setExerciseFeedback({ correct: true, text: `Correct! ${ex.explanation || ''}` });
+        } else {
+          setTotalAttempts(prev => prev + 1);
+          setExerciseFeedback({ correct: false, text: 'Not the best move. Try another idea!' });
+        }
+      }
+    } catch {
+      setExerciseFeedback({ correct: false, text: 'Illegal move in this position.' });
     }
   };
 
@@ -234,15 +276,30 @@ export const EndgameUniversity: React.FC = () => {
                 </div>
               )}
 
+              {currentExercises[exerciseIdx]?.type === 'find-move' && (
+                <div className="flex flex-col gap-3 mb-4">
+                  <p className="text-xs text-slate-300 leading-relaxed font-semibold">
+                    Play White's best move on the board to solve this endgame challenge.
+                  </p>
+                  {!showResult && exerciseFeedback && (
+                    <div className={`p-3 rounded-xl border text-xs font-bold ${
+                      exerciseFeedback.correct ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'
+                    }`}>
+                      {exerciseFeedback.text}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {showResult && (
                 <div className="animate-fadeIn">
                   <div className={`p-3 rounded-xl border text-xs mb-3 ${
-                    selectedAnswer === currentExercises[exerciseIdx]?.answer
+                    currentExercises[exerciseIdx]?.type === 'find-move' || selectedAnswer === currentExercises[exerciseIdx]?.answer
                       ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                       : 'bg-red-500/10 border-red-500/30 text-red-400'
                   }`}>
                     <strong className="block mb-1">
-                      {selectedAnswer === currentExercises[exerciseIdx]?.answer ? '🟢 Correct!' : '🔴 Incorrect'}
+                      {(currentExercises[exerciseIdx]?.type === 'find-move' || selectedAnswer === currentExercises[exerciseIdx]?.answer) ? '🟢 Correct!' : '🔴 Incorrect'}
                     </strong>
                     {currentExercises[exerciseIdx]?.explanation}
                   </div>
@@ -260,9 +317,9 @@ export const EndgameUniversity: React.FC = () => {
             <div className="flex flex-col gap-4 items-center">
               <Card className="w-full flex flex-col items-center" hoverEffect={false}>
                 <Board
-                  fen={currentExercises[exerciseIdx]?.fen || currentExamples[0]?.fen || '8/8/8/8/8/8/8/8 w - - 0 1'}
+                  fen={exerciseFen}
                   interactive={currentExercises[exerciseIdx]?.type === 'find-move'}
-                  onMove={() => {}}
+                  onMove={handleExerciseMove}
                 />
               </Card>
             </div>

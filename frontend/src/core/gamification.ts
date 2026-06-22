@@ -151,6 +151,13 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
   { id: 'challenge-hunter', title: 'Challenge Hunter', description: 'Complete 10 daily challenges', icon: '🎪', category: 'special', requirement: s => s.dailyChallengesCompleted >= 10, xpReward: 250, rarity: 'uncommon' },
   { id: 'overachiever', title: 'Overachiever', description: 'Complete 50 daily challenges', icon: '🏅', category: 'special', requirement: s => s.dailyChallengesCompleted >= 50, xpReward: 750, rarity: 'rare' },
   { id: 'battle-hardened', title: 'Battle Hardened', description: 'Play 25 games vs AI', icon: '🤖', category: 'special', requirement: s => s.gamesPlayed >= 25, xpReward: 300, rarity: 'uncommon' },
+  // Content-unlocking achievements
+  { id: 'fork-hunter', title: 'Fork Hunter', description: 'Solve 10 fork puzzles (Unlocks advanced fork theory)', icon: '⚔️', category: 'special', requirement: s => s.puzzlesSolved >= 10, xpReward: 150, rarity: 'uncommon' },
+  { id: 'pin-master', title: 'Pin Master', description: 'Solve 10 pin puzzles (Unlocks advanced pin content)', icon: '📌', category: 'special', requirement: s => s.puzzlesSolved >= 15, xpReward: 150, rarity: 'uncommon' },
+  { id: 'opening-student', title: 'Opening Student', description: 'Complete 3 opening courses (Unlocks advanced openings)', icon: '📖', category: 'learning', requirement: s => s.lessonsCompleted >= 3, xpReward: 200, rarity: 'rare' },
+  { id: 'endgame-technician', title: 'Endgame Technician', description: 'Complete endgame opposition module (Unlocks master endgame drills)', icon: '👑', category: 'learning', requirement: s => s.lessonsCompleted >= 5, xpReward: 200, rarity: 'rare' },
+  { id: 'daily-grinder', title: 'Daily Grinder', description: 'Maintain a 7-day streak (Unlocks bonus daily challenges)', icon: '📅', category: 'streak', requirement: s => s.streak >= 7, xpReward: 300, rarity: 'rare' },
+  { id: 'streak-master-content', title: 'Streak Master', description: 'Maintain a 30-day streak (Unlocks exclusive board theme)', icon: '🗓️', category: 'streak', requirement: s => s.streak >= 30, xpReward: 500, rarity: 'epic' },
 ];
 
 // Possible reward drops

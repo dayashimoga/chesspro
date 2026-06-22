@@ -42,6 +42,19 @@ export const openingsContent = {
       exercises: [
         { type: 'quiz', question: 'What is the main target for White in the Italian Game?', options: ['d5', 'f7', 'e5', 'c6'], answer: 1, explanation: 'The bishop on c4 and potential Ng5 both target the f7 square, which is only defended by the king.' },
         { type: 'quiz', question: 'What does 4.c3 prepare in the Italian Game?', options: ['Castling', 'Nc3', 'd4', 'b4'], answer: 2, explanation: '4.c3 prepares the central advance d4, fighting for control of the center.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', commentary: 'The Italian Game begins with 1.e4, establishing a pawn in the center and opening paths for the queen and bishop.' },
+        { fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', commentary: 'Black mirrors with 1...e5. White plays 2.Nf3 to attack e5 and develop a knight actively.' },
+        { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3', commentary: 'After 2...Nc6 defending e5, White plays 3.Bc4. This Bishop placement targets the weak f7 square directly.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', instruction: 'Claim the center with 1.e4!', expectedMove: 'e4', highlights: [{ square: 'e4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! 1.e4 is the most popular opening move.', incorrectFeedback: 'Move the pawn on e2 to e4.', hints: ['Pawn on e2 to e4'] },
+        { fen: 'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', instruction: 'Develop your knight to f3 to attack the e5 pawn.', expectedMove: 'Nf3', highlights: [{ square: 'f3', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Great! 2.Nf3 develops with tempo by creating an immediate threat.', incorrectFeedback: 'Move the knight to f3.', hints: ['Knight on g1 to f3'] },
+        { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', instruction: 'Develop the light-squared bishop to c4, aiming at the weakest point on f7.', expectedMove: 'Bc4', highlights: [{ square: 'c4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Beautiful! The Italian bishop is now actively placed.', incorrectFeedback: 'Move the bishop to c4.', hints: ['Bishop on f1 to c4'] }
+      ],
+      masteryPositions: [
+        { fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', description: 'Attack the f7 square actively with Ng5.', solution: ['Ng5'], conceptTested: 'Fried Liver setup', maxAttempts: 3 }
       ]
     },
     {
@@ -73,6 +86,15 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'Why doesn\'t White capture Bxc6 immediately?', options: ['It\'s illegal', 'Maintaining the pin is stronger', 'The bishop is trapped', 'It loses tempo'], answer: 1, explanation: 'Maintaining the pin with 3.Bb5 creates lasting pressure. Capturing immediately gives Black the bishop pair and open b-file.' }
+      ],
+      demoSteps: [
+        { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', commentary: 'After 1.e4 e5 2.Nf3 Nc6, White places the bishop on b5, threatening to remove the defender of the e5 pawn.' }
+      ],
+      guidedSteps: [
+        { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', instruction: 'Develop your bishop to b5 to create structural pressure.', expectedMove: 'Bb5', highlights: [{ square: 'b5', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! You entered the Ruy Lopez.', incorrectFeedback: 'Move your bishop to b5.', hints: ['Bishop on f1 to b5'] }
+      ],
+      masteryPositions: [
+        { fen: 'r1bqkbnr/1ppp1ppp/p1n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4', description: 'Retreat the bishop to a4 to maintain the pin on the knight (Ba4).', solution: ['Ba4'], conceptTested: 'Bishop retreat in Morphy defense', maxAttempts: 3 }
       ]
     },
     {
@@ -104,6 +126,15 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'Is the Queen\'s Gambit a true gambit?', options: ['Yes, White permanently sacrifices a pawn', 'No, White can always recover the pawn'], answer: 1, explanation: 'The Queen\'s Gambit is not a true gambit. After 2...dxc4, White can recover the pawn with e3 and Bxc4.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2', commentary: 'White offers the c-pawn with 2.c4 to distract Black\'s d5 pawn from the center.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2', instruction: 'Play c4 to challenge Black\'s central pawn.', expectedMove: 'c4', highlights: [{ square: 'c4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! The c4 push defines the Queen\'s Gambit.', incorrectFeedback: 'Move the pawn on c2 to c4.', hints: ['c2 to c4'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkbnr/ppp1pppp/8/8/2pP4/4P3/PP3PPP/RNBQKBNR w KQkq - 0 3', description: 'Recover the gambited pawn by capturing on c4 (Bxc4).', solution: ['Bxc4'], conceptTested: 'Recovering the gambit pawn', maxAttempts: 3 }
       ]
     },
     {
@@ -138,6 +169,16 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'Why is 1...c5 the most popular reply to 1.e4?', options: ['It\'s the safest move', 'It creates asymmetry with winning chances for both sides', 'It controls e4', 'It develops a piece'], answer: 1, explanation: 'The Sicilian creates an asymmetric position. Statistically it gives Black the best winning chances while White retains advantage.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', commentary: 'As Black, playing 1...c5 creates an asymmetrical center, stopping White from getting an easy d4 push.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', instruction: 'As Black, launch the Sicilian Defense with c5!', expectedMove: 'c5', highlights: [{ square: 'c5', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! You entered the Sicilian.', incorrectFeedback: 'Move the c7 pawn to c5.', hints: ['c7 to c5'] },
+        { fen: 'rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2', instruction: 'Play d6 to prepare development and control e5.', expectedMove: 'd6', highlights: [{ square: 'd6', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Nice! This is the most common continuation.', incorrectFeedback: 'Move your d-pawn to d6.', hints: ['d7 to d6'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkbnr/pp2pppp/3p4/2p5/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3', description: 'Capture White\'s d4 pawn to open the c-file (cxd4).', solution: ['cxd4'], conceptTested: 'Exchange in Open Sicilian', maxAttempts: 3 }
       ]
     },
     {
@@ -176,6 +217,15 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'Why does the bishop go to f4 before e3?', options: ['e3 would block the bishop\'s path', 'f4 is a better square', 'It\'s a trap', 'To attack f7'], answer: 0, explanation: 'If White plays e3 first, the dark-squared bishop gets trapped behind the pawn chain. Bf4 must come before e3.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkb1r/ppp1pppp/5n2/3p4/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 2 3', commentary: 'In the London System, White develops the dark-squared bishop to f4 before locking it in with e3.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkb1r/ppp1pppp/5n2/3p4/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 2 3', instruction: 'Develop your dark-squared bishop to f4.', expectedMove: 'Bf4', highlights: [{ square: 'f4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! The bishop is active on f4.', incorrectFeedback: 'Move bishop to f4.', hints: ['Bishop on c1 to f4'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkb1r/ppp1pppp/5n2/3p4/3P1B2/5N2/PPP1PPPP/RN1QKB1R w KQkq - 3 3', description: 'Consolidate your center and open lines with e3.', solution: ['e3'], conceptTested: 'London pawn structure support', maxAttempts: 3 }
       ]
     },
     {
@@ -202,6 +252,16 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'What advantage does the Caro-Kann have over the French Defense?', options: ['It\'s more aggressive', 'The light-squared bishop isn\'t blocked', 'It wins more games', 'It avoids all theory'], answer: 1, explanation: 'In the French (1...e6), the light-squared bishop is stuck behind the e6-d5 pawn chain. The Caro-Kann avoids this problem.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', commentary: 'The Caro-Kann begins with 1...c6, preparing a solid d5 strike in the center.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', instruction: 'As Black, prepare the d5 push with c6.', expectedMove: 'c6', highlights: [{ square: 'c6', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! You entered the Caro-Kann.', incorrectFeedback: 'Move the c7 pawn to c6.', hints: ['c7 to c6'] },
+        { fen: 'rnbqkbnr/pp1ppppp/2p5/8/3PP3/8/PPP2PPP/RNBQKBNR b KQkq - 0 2', instruction: 'Play d5 to strike at the center.', expectedMove: 'd5', highlights: [{ square: 'd5', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Great! You have challenged White\'s center.', incorrectFeedback: 'Move your d-pawn to d5.', hints: ['d7 to d5'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkbnr/pp2pppp/2p5/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3', description: 'Develop the light-squared bishop outside the pawn structure to f5.', solution: ['Bf5'], conceptTested: 'Light-squared bishop development', maxAttempts: 3 }
       ]
     },
     {
@@ -220,6 +280,15 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'What is Black\'s main strategic problem in the French Defense?', options: ['Vulnerable king', 'Bad light-squared bishop', 'Lack of space on kingside'], answer: 1, explanation: 'The pawn on e6 blocks the light-squared bishop on c8, which becomes Black\'s "bad bishop" for the rest of the game.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', commentary: 'The French Defense starts with 1...e6, preparing ...d5 while maintaining a solid pawn chain.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1', instruction: 'As Black, prepare the d5 push with e6.', expectedMove: 'e6', highlights: [{ square: 'e6', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! You entered the French Defense.', incorrectFeedback: 'Move the e7 pawn to e6.', hints: ['e7 to e6'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkbnr/ppp2ppp/4p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3', description: 'Attack White\'s center with c5.', solution: ['c5'], conceptTested: 'French center counter-attack', maxAttempts: 3 }
       ]
     },
     {
@@ -238,6 +307,16 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'What is the standard middlegame plan for Black in the King\'s Indian Defense?', options: ['Queenside minority attack', 'Kingside pawn storm with f5-f4', 'Symmetrical trading'], answer: 1, explanation: 'Black usually castles kingside and launches a direct attack on White\'s king with ...f5-f4 and ...g5.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1', commentary: 'The King\'s Indian is hypermodern. Black starts with 1...Nf6 controlling the e4 and d5 squares.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1', instruction: 'As Black, develop your knight to f6.', expectedMove: 'Nf6', highlights: [{ square: 'f6', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Great! You have entered the King\'s Indian territory.', incorrectFeedback: 'Move the knight to f6.', hints: ['Knight on g8 to f6'] },
+        { fen: 'rnbqkb1r/pppppppp/5n2/8/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2', instruction: 'Prepare the bishop fianchetto with g6.', expectedMove: 'g6', highlights: [{ square: 'g6', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! Preparing to place the bishop on the long diagonal.', incorrectFeedback: 'Move your g-pawn to g6.', hints: ['g7 to g6'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqkb1r/pppppp1p/5np1/8/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq - 1 3', description: 'Complete the fianchetto by placing the bishop on g7 (Bg7).', solution: ['Bg7'], conceptTested: 'Bishop fianchetto completion', maxAttempts: 3 }
       ]
     },
     {
@@ -258,6 +337,15 @@ export const openingsContent = {
       ],
       exercises: [
         { type: 'quiz', question: 'What is the main strategic purpose of pinning White\'s c3-knight?', options: ['To win the knight immediately', 'To prevent White from playing e4 easily', 'To prepare queenside castling'], answer: 1, explanation: 'By pinning the knight, Black stops White from playing e4 easily, fighting for control of the center using pieces rather than pawns.' }
+      ],
+      demoSteps: [
+        { fen: 'rnbqkb1r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq - 1 3', commentary: 'After 3.Nc3, Black plays 3...Bb4, pinning the knight to the king and preventing an easy 4.e4 push.' }
+      ],
+      guidedSteps: [
+        { fen: 'rnbqkb1r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR b KQkq - 1 3', instruction: 'Pin the knight to the king with Bb4!', expectedMove: 'Bb4', highlights: [{ square: 'b4', color: 'rgba(16, 185, 129, 0.3)' }], correctFeedback: 'Excellent! You successfully pinned the knight.', incorrectFeedback: 'Move your bishop to b4.', hints: ['Bishop on f8 to b4'] }
+      ],
+      masteryPositions: [
+        { fen: 'rnbqk2r/pppp1ppp/4pn2/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQkq - 2 4', description: 'As White, play Qc2 to defend the pinned knight on c3 and prevent doubled pawns.', solution: ['Qc2'], conceptTested: 'Nimzo-Indian Rubenstein variation', maxAttempts: 3 }
       ]
     }
   ]

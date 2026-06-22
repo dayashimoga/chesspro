@@ -16,6 +16,7 @@ import TacticalUniversity from './pages/TacticalUniversity';
 import MiddlegameUniversity from './pages/MiddlegameUniversity';
 import DailyLearning from './pages/DailyLearning';
 import Achievements from './pages/Achievements';
+import GameReview from './pages/GameReview';
 import { AuthModal } from './components/AuthModal';
 import { ThemeToggle } from './components/ThemeToggle';
 import { BoardSettingsToggle } from './components/BoardSettingsToggle';
@@ -44,44 +45,19 @@ interface NavSection {
 
 const NAV_SECTIONS: NavSection[] = [
   {
-    title: 'Main',
+    title: 'Core',
     items: [
-      { path: '/', label: 'Dashboard', icon: '📊' },
+      { path: '/', label: 'Home', icon: '🏠' },
       { path: '/daily', label: 'Daily Plan', icon: '📅' },
       { path: '/play', label: 'Play vs AI', icon: '♟️' },
-      { path: '/review', label: 'Spaced Review', icon: '🔄' },
     ],
   },
   {
-    title: 'Chess University',
+    title: 'Learn & Train',
     items: [
-      { path: '/foundations', label: 'Foundations', icon: '🏫' },
-      { path: '/tactics', label: 'Tactics Lab', icon: '🧩' },
-      { path: '/calc-university', label: 'Calculation', icon: '🧠' },
-      { path: '/opening-university', label: 'Openings', icon: '🌳' },
-      { path: '/middlegame', label: 'Middlegame', icon: '⚔️' },
-      { path: '/endgame-university', label: 'Endgames', icon: '👑' },
-      { path: '/master-games', label: 'Master Games', icon: '🏆' },
-    ],
-  },
-  {
-    title: 'Training Tools',
-    items: [
-      { path: '/puzzles', label: 'Puzzle Trainer', icon: '🎯' },
-      { path: '/calculation', label: 'Visualization', icon: '👁️' },
-      { path: '/blindfold', label: 'Blindfold Lab', icon: '🙈' },
-      { path: '/endgames', label: 'Endgame Drills', icon: '♔' },
-      { path: '/tournament-prep', label: 'Tournament Prep', icon: '🏅' },
-      { path: '/analysis', label: 'Position Analysis', icon: '🔬' },
-      { path: '/import', label: 'Game Import', icon: '📋' },
-    ],
-  },
-  {
-    title: 'Coach & Study',
-    items: [
-      { path: '/aicoach', label: 'AI Chess Coach', icon: '🎙️' },
-      { path: '/lessons', label: 'Curriculum', icon: '📚' },
-      { path: '/games', label: 'Game Database', icon: '📂' },
+      { path: '/lessons', label: 'Curriculum Hub', icon: '📚' },
+      { path: '/puzzles', label: 'Practice Lab', icon: '🧩' },
+      { path: '/aicoach', label: 'AI Coach & Review', icon: '🎙️' },
       { path: '/achievements', label: 'Achievements', icon: '🏆' },
     ],
   },
@@ -228,6 +204,27 @@ const AppShell: React.FC = () => {
               ))}
             </div>
           ))}
+
+          {/* Quick Access Shortcuts */}
+          <div className="mt-2 mb-4 px-3">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">
+              Quick Shortcuts
+            </div>
+            <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+              <NavLink to="/tactics" className="p-2 rounded-lg bg-white/3 border border-white/5 text-slate-400 hover:text-white text-center hover:bg-white/5 transition-all">
+                🧩 Tactics
+              </NavLink>
+              <NavLink to="/opening-university" className="p-2 rounded-lg bg-white/3 border border-white/5 text-slate-400 hover:text-white text-center hover:bg-white/5 transition-all">
+                🌳 Openings
+              </NavLink>
+              <NavLink to="/endgame-university" className="p-2 rounded-lg bg-white/3 border border-white/5 text-slate-400 hover:text-white text-center hover:bg-white/5 transition-all">
+                👑 Endgames
+              </NavLink>
+              <NavLink to="/analysis" className="p-2 rounded-lg bg-white/3 border border-white/5 text-slate-400 hover:text-white text-center hover:bg-white/5 transition-all">
+                🔬 Analysis
+              </NavLink>
+            </div>
+          </div>
         </div>
 
         {/* User Card */}
@@ -297,7 +294,39 @@ const AppShell: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider hidden sm:inline">ChessOS</span>
               <span className="text-slate-600 hidden sm:inline">›</span>
-              <span className="text-white text-xs font-bold capitalize">{getCurrentPageName()}</span>
+              <span className="text-white text-xs font-bold capitalize mr-4">{getCurrentPageName()}</span>
+            </div>
+            
+            {/* Global Search Bar */}
+            <div className="relative hidden md:block">
+              <span className="absolute inset-y-0 left-3 flex items-center text-slate-500 text-xs">🔍</span>
+              <input
+                type="text"
+                placeholder="Search pages or tools..."
+                className="bg-white/5 border border-white/5 hover:border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-all w-52"
+                onChange={(e) => {
+                  const term = e.target.value.toLowerCase();
+                  const routes: Record<string, string> = {
+                    'lessons': '/lessons',
+                    'puzzle': '/puzzles',
+                    'play': '/play',
+                    'coach': '/aicoach',
+                    'daily': '/daily',
+                    'achievement': '/achievements',
+                    'open': '/opening-university',
+                    'end': '/endgame-university',
+                    'tact': '/tactics',
+                    'found': '/foundations',
+                    'calc': '/calc-university',
+                  };
+                  for (const key in routes) {
+                    if (term.includes(key)) {
+                      navigate(routes[key]);
+                      break;
+                    }
+                  }
+                }}
+              />
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
@@ -332,6 +361,7 @@ const AppShell: React.FC = () => {
               <Route path="/aicoach" element={<AICoachDashboard />} />
               <Route path="/play" element={<PlayVsAI />} />
               <Route path="/review" element={<SpacedReview />} />
+              <Route path="/game-review" element={<GameReview />} />
               <Route path="/foundations" element={<FoundationsUniversity />} />
               <Route path="/tactics" element={<TacticalUniversity />} />
               <Route path="/middlegame" element={<MiddlegameUniversity />} />

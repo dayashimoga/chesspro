@@ -28,6 +28,13 @@ export interface WeaknessProfile {
   confidence: number;
 }
 
+export interface MissionPosition {
+  fen: string;
+  solution: string[];
+  theme: string;
+  instruction: string;
+}
+
 export interface DailyPlanItem {
   type: 'lesson' | 'puzzle' | 'assessment' | 'review' | 'endgame' | 'opening' | 'masterGame' | 'calculation';
   title: string;
@@ -39,6 +46,7 @@ export interface DailyPlanItem {
   xpReward: number;
   route: string;
   icon: string;
+  missionData?: MissionPosition[];
 }
 
 export interface DailyPlan {
@@ -270,6 +278,11 @@ export class AdaptiveEngine {
         type: 'puzzle', title: 'Warm-Up Tactics', description: 'Quick tactical puzzles to sharpen your mind',
         duration: Math.min(3, remaining), category: 'mate_in_1', difficulty: 'beginner',
         targetSkill: 'tactical', xpReward: 10, route: '/puzzles', icon: '🧩',
+        missionData: [
+          { fen: '6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1', solution: ['Re8#'], theme: 'Back-Rank Mate', instruction: 'Find the checkmate in one move.' },
+          { fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4', solution: ['Qxf7#'], theme: "Scholar's Mate", instruction: 'Deliver checkmate!' },
+          { fen: 'k7/8/1K6/8/8/8/8/7R w - - 0 1', solution: ['Ra1#'], theme: 'K+R Checkmate', instruction: 'Find the checkmate with king and rook.' },
+        ],
       });
       remaining -= 3;
     }
@@ -339,11 +352,18 @@ export class AdaptiveEngine {
           type: 'lesson', title: 'Tactical Patterns', description: 'Study and practice key tactical motifs',
           duration: Math.min(5, dur), category: 'forks', targetSkill: 'tactical',
           xpReward: 15, route: '/tactics', icon: '⚔️',
+          missionData: [
+            { fen: 'r1bqkb1r/ppp2ppp/2n5/3np1N1/2B5/8/PPPP1PPP/RNBQK2R w KQkq - 0 6', solution: ['Nxf7'], theme: 'Fried Liver Fork', instruction: 'Play the tactical knight sacrifice on f7.' },
+            { fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/3PP3/2N2N2/PPP2PPP/R1BQKB1R b KQkq - 0 4', solution: ['Bb4'], theme: 'Pin Motif', instruction: 'Pin White\'s c3 knight with your bishop.' }
+          ]
         });
         if (dur > 5) items.push({
           type: 'puzzle', title: 'Tactical Puzzles', description: 'Solve tactical puzzles adapted to your level',
           duration: dur - 5, category: 'forks', targetSkill: 'tactical',
           xpReward: 15, route: '/puzzles', icon: '🧩',
+          missionData: [
+            { fen: '6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1', solution: ['Re8#'], theme: 'Back-Rank Mate', instruction: 'Find the checkmate in one move.' }
+          ]
         });
         break;
       case 'endgame':
@@ -351,6 +371,10 @@ export class AdaptiveEngine {
           type: 'endgame', title: 'Endgame Drill', description: 'Practice fundamental endgame techniques',
           duration: dur, category: 'endgames', targetSkill: 'endgame',
           xpReward: 20, route: '/endgame-university', icon: '👑',
+          missionData: [
+            { fen: '8/8/3k4/8/3K4/8/8/8 w - - 0 1', solution: ['Kd4'], theme: 'Opposition', instruction: 'White to move. Take king opposition.' },
+            { fen: '8/8/kP6/8/8/8/8/6K1 w - - 0 1', solution: ['b7'], theme: 'Pawn Push', instruction: 'White to move. Push your passed b-pawn to b7.' }
+          ]
         });
         break;
       case 'opening':
@@ -358,6 +382,10 @@ export class AdaptiveEngine {
           type: 'opening', title: 'Opening Study', description: 'Study and practice opening principles',
           duration: dur, category: 'openings', targetSkill: 'opening',
           xpReward: 15, route: '/opening-university', icon: '🌳',
+          missionData: [
+            { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', solution: ['Bb5'], theme: 'Ruy Lopez', instruction: 'Develop White\'s light-squared bishop to b5.' },
+            { fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3', solution: ['Bc4'], theme: 'Italian Game', instruction: 'Develop White\'s bishop to c4 targeting f7.' }
+          ]
         });
         break;
       case 'calculation':
@@ -365,6 +393,9 @@ export class AdaptiveEngine {
           type: 'calculation', title: 'Calculation Training', description: 'Deep visualization and variation practice',
           duration: dur, targetSkill: 'calculation',
           xpReward: 20, route: '/calc-university', icon: '🧠',
+          missionData: [
+            { fen: '3q2k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1', solution: ['Rxd8#'], theme: 'Checkmate Calculation', instruction: 'Calculate and execute the checkmate.' }
+          ]
         });
         break;
       case 'strategic':
@@ -373,6 +404,10 @@ export class AdaptiveEngine {
           type: 'lesson', title: 'Strategic Concepts', description: 'Study positional chess and planning',
           duration: dur, targetSkill: skill,
           xpReward: 15, route: '/middlegame', icon: '📈',
+          missionData: [
+            { fen: 'r1bqkb1r/pp3ppp/2n1pn2/2pp4/3P4/2N1PN2/PP2BPPP/R1BQ1RK1 b KQkq - 3 7', solution: ['c4'], theme: 'Space Gain', instruction: 'Black to move. Advance c-pawn to lock the queenside.' },
+            { fen: 'r1bq1rk1/pp2bppp/2n1pn2/2pp4/3P4/2N1PN2/PP2BPPP/R1BQ1RK1 w - - 4 8', solution: ['dxc5'], theme: 'Open File Creation', instruction: 'White to move. Open the d-file by capturing on c5.' }
+          ]
         });
         break;
       case 'visualization':
@@ -380,6 +415,9 @@ export class AdaptiveEngine {
           type: 'calculation', title: 'Blindfold Training', description: 'Train board visualization without seeing pieces',
           duration: dur, targetSkill: 'visualization',
           xpReward: 20, route: '/blindfold', icon: '🙈',
+          missionData: [
+            { fen: '8/8/8/8/4N3/8/8/8 w - - 0 1', solution: ['Nc5'], theme: 'Sight Knight Outpost', instruction: 'Visualize the knight hopping to c5.' }
+          ]
         });
         break;
       default:
@@ -387,6 +425,9 @@ export class AdaptiveEngine {
           type: 'puzzle', title: 'Mixed Practice', description: 'Varied puzzles covering multiple themes',
           duration: dur, targetSkill: 'tactical',
           xpReward: 15, route: '/puzzles', icon: '🎯',
+          missionData: [
+            { fen: '6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1', solution: ['Re8#'], theme: 'Back-Rank Mate', instruction: 'Deliver checkmate.' }
+          ]
         });
     }
     return items;

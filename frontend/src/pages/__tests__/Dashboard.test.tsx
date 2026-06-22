@@ -19,6 +19,7 @@ vi.mock('../../store/useAppStore', () => ({
 vi.mock('../../core/storage', () => ({
   Storage: {
     analyzeWeaknesses: () => ({ weaknesses: ['calculation'] }),
+    getProgress: () => ({ lastActiveLesson: 'foundations/rules', favorites: ['foundations/rules'] }),
   },
   SpacedRepetition: {
     getStats: () => ({ due: 3 }),
@@ -76,6 +77,7 @@ describe('Dashboard', () => {
       const state = {
         user: mockUser,
         completedLessons: ['foundations-rules', 'foundations-movement'],
+        favorites: ['foundations/rules'],
       };
       return selector(state);
     });

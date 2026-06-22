@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import '../widgets/content_renderer.dart';
 import '../core/data_repository.dart';
+import '../core/daily_coach_plan_service.dart';
 
 /// AI Coach Dashboard — Skill tracking, training plans, and personalized exercises
 class CoachDashboardPage extends StatefulWidget {
@@ -13,8 +15,7 @@ class CoachDashboardPage extends StatefulWidget {
 }
 
 class _CoachDashboardPageState extends State<CoachDashboardPage> {
-  // Simulated skill data (in production, sourced from UserBloc)
-  final Map<String, double> _skills = {
+  Map<String, double> _skills = {
     'Tactics': 0.65,
     'Strategy': 0.40,
     'Endgame': 0.35,
@@ -28,17 +29,123 @@ class _CoachDashboardPageState extends State<CoachDashboardPage> {
   double _puzzleAccuracy = 72.3;
   int _currentStreak = 3;
   int _rating = 1050;
+  List<Map<String, dynamic>> _dailyTasks = [];
 
-  List<_TrainingTask> get _dailyPlan {
-    final weakest = _skills.entries.reduce((a, b) => a.value < b.value ? a : b);
-    return [
-      _TrainingTask('🧩', 'Solve 10 ${weakest.key} Puzzles', 'Target your weakest area', false),
-      _TrainingTask('📖', 'Complete 1 ${weakest.key} Lesson', 'Build foundational knowledge', false),
-      _TrainingTask('♟️', 'Play 1 Game vs AI', 'Apply what you learned', false),
-      _TrainingTask('🔄', 'Review 5 Previous Mistakes', 'Learn from your errors', false),
-      _TrainingTask('🎯', 'Daily Puzzle Challenge', 'Test your skills', false),
-    ];
+  @override
+  void initState() {
+    super.initState();
+    _initPlanAndLoad();
   }
+
+  Future<void> _initPlanAndLoad() async {
+    await DailyCoachPlanService.generateDailyPlanIfNeeded();
+    _loadData();
+  }
+
+  void _loadData() {
+    try {
+      final box = Hive.box('progress');
+      setState(() {
+        _rating = box.get('rating', defaultValue: 1050) as int;
+        _puzzlesSolved = box.get('puzzles_solved', defaultValue: 47) as int;
+        _lessonsCompleted = box.get('lessons_completed', defaultValue: 12) as int;
+        _gamesPlayed = box.get('games_played', defaultValue: 8) as int;
+        _currentStreak = box.get('streak', defaultValue: 3) as int;
+        _puzzleAccuracy = box.get('puzzle_accuracy', defaultValue: 72.3) as double;
+
+        final skillsRaw = box.get('skills');
+        if (skillsRaw != null) {
+          _skills = Map<String, double>.from(skillsRaw as Map);
+        }
+
+        final tasksRaw = box.get(DailyCoachPlanService.keyPlan);
+        if (tasksRaw != null) {
+          _dailyTasks = List<Map<dynamic, dynamic>>.from(tasksRaw as List)
+              .map((t) => Map<String, dynamic>.from(t))
+              .toList();
+        }
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _toggleTask(int index) async {
+    try {
+      final box = Hive.box('progress');
+      final list = List<Map<dynamic, dynamic>>.from(box.get(DailyCoachPlanService.keyPlan) as List);
+      final task = Map<String, dynamic>.from(list[index]);
+
+      final oldCompleted = task['completed'] as bool;
+      task['completed'] = !oldCompleted;
+      list[index] = task;
+      await box.put(DailyCoachPlanService.keyPlan, list);
+
+      // Award or deduct XP
+      final currentXp = box.get('xp', defaultValue: 250) as int;
+      final xpDiff = task['xp'] as int? ?? 50;
+      await box.put('xp', max(0, currentXp + (oldCompleted ? -xpDiff : xpDiff)));
+
+      // If all completed, award bonus rating and ELO
+      final allCompleted = list.every((t) => t['completed'] == true);
+      if (allCompleted && !oldCompleted) {
+        final currentRating = box.get('rating', defaultValue: 1050) as int;
+        await box.put('rating', currentRating + 15);
+
+        // Also boost weakest skill slightly
+        final skills = Map<String, double>.from(box.get('skills', defaultValue: {
+          'Tactics': 0.65,
+          'Strategy': 0.40,
+          'Endgame': 0.35,
+          'Opening': 0.50,
+          'Calculation': 0.45,
+        }) as Map);
+        String weakest = 'Tactics';
+        double lowestVal = 1.0;
+        skills.forEach((k, v) {
+          if (v < lowestVal) {
+            lowestVal = v;
+            weakest = k;
+          }
+        });
+        skills[weakest] = min(1.0, (skills[weakest] ?? 0.0) + 0.05);
+        await box.put('skills', skills);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Text('🔥 ', style: TextStyle(fontSize: 16)),
+                Expanded(
+                  child: Text(
+                    'Daily training fully complete! Bonus +15 Rating & +5% $weakest skill!',
+                    style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF10B981),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              task['completed'] as bool
+                  ? 'Task completed! +$xpDiff XP'
+                  : 'Task unmarked.',
+              style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: task['completed'] as bool ? const Color(0xFF10B981) : Colors.grey[800],
+            duration: const Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+
+      _loadData();
+    } catch (_) {}
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -213,10 +320,21 @@ class _CoachDashboardPageState extends State<CoachDashboardPage> {
             // Daily Training Plan
             _SectionTitle('TODAY\'S TRAINING PLAN'),
             const SizedBox(height: 12),
-            ...List.generate(_dailyPlan.length, (i) {
-              final task = _dailyPlan[i];
-              return _TrainingTaskCard(task: task, index: i);
-            }),
+            if (_dailyTasks.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(
+                  child: CircularProgressIndicator(color: Color(0xFF10B981)),
+                ),
+              )
+            else
+              ...List.generate(_dailyTasks.length, (i) {
+                final task = _dailyTasks[i];
+                return GestureDetector(
+                  onTap: () => _toggleTask(i),
+                  child: _TrainingTaskCard(task: task, index: i),
+                );
+              }),
             const SizedBox(height: 24),
 
             // Weakness Report
@@ -376,34 +494,30 @@ class _SkillBar extends StatelessWidget {
   }
 }
 
-class _TrainingTask {
-  final String icon;
-  final String title;
-  final String subtitle;
-  final bool completed;
-
-  _TrainingTask(this.icon, this.title, this.subtitle, this.completed);
-}
-
 class _TrainingTaskCard extends StatelessWidget {
-  final _TrainingTask task;
+  final Map<String, dynamic> task;
   final int index;
 
   const _TrainingTaskCard({required this.task, required this.index});
 
   @override
   Widget build(BuildContext context) {
+    final bool completed = task['completed'] as bool? ?? false;
+    final String icon = task['icon'] as String? ?? '🧩';
+    final String title = task['title'] as String? ?? '';
+    final String subtitle = task['subtitle'] as String? ?? '';
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: task.completed
+          color: completed
               ? const Color(0xFF10B981).withOpacity(0.05)
               : const Color(0xFF111119),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: task.completed
+            color: completed
                 ? const Color(0xFF10B981).withOpacity(0.15)
                 : Colors.white.withOpacity(0.06),
           ),
@@ -414,11 +528,11 @@ class _TrainingTaskCard extends StatelessWidget {
               width: 36, height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: task.completed
+                color: completed
                     ? const Color(0xFF10B981).withOpacity(0.1)
                     : Colors.white.withOpacity(0.03),
               ),
-              child: Center(child: Text(task.icon, style: const TextStyle(fontSize: 16))),
+              child: Center(child: Text(icon, style: const TextStyle(fontSize: 16))),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -426,24 +540,24 @@ class _TrainingTaskCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    task.title,
+                    title,
                     style: GoogleFonts.inter(
                       fontSize: 13, fontWeight: FontWeight.w600,
-                      color: task.completed ? Colors.white.withOpacity(0.5) : Colors.white,
-                      decoration: task.completed ? TextDecoration.lineThrough : null,
+                      color: completed ? Colors.white.withOpacity(0.5) : Colors.white,
+                      decoration: completed ? TextDecoration.lineThrough : null,
                     ),
                   ),
                   Text(
-                    task.subtitle,
+                    subtitle,
                     style: GoogleFonts.inter(fontSize: 11, color: Colors.white.withOpacity(0.3)),
                   ),
                 ],
               ),
             ),
             Icon(
-              task.completed ? Icons.check_circle : Icons.circle_outlined,
+              completed ? Icons.check_circle : Icons.circle_outlined,
               size: 20,
-              color: task.completed ? const Color(0xFF10B981) : Colors.white.withOpacity(0.1),
+              color: completed ? const Color(0xFF10B981) : Colors.white.withOpacity(0.1),
             ),
           ],
         ),
