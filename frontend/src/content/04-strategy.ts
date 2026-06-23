@@ -184,25 +184,31 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of Space & Initiative in this position."
+          "fen": "r1bqk2r/pppp1ppp/2n2n2/4p3/2B1PP2/5N2/PPPP2PP/RNBQK2R b KQkq f3 0 4",
+          "commentary": "White has seized space in the center with e4 and f4, gaining a territorial advantage. Black's pieces are more cramped."
+        },
+        {
+          "fen": "r1bqk2r/pppp1ppp/2n2n2/4p3/2B1PP2/5N2/PPPP2PP/RNBQK2R b KQkq f3 0 4",
+          "move": "d5",
+          "commentary": "Black strikes back with d5! Challenging the center is the best response to a space advantage — don't let your opponent build up without a fight."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
-          "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "fen": "r1bqkb1r/pppppppp/2n2n2/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 2 3",
+          "instruction": "You have a strong pawn center. Seize more space by pushing e4-e5, gaining a tempo against the f6 knight.",
+          "expectedMove": "e5",
+          "correctFeedback": "Excellent! e5 attacks the knight and claims more territory. This is a classic space-gaining move.",
+          "incorrectFeedback": "Think about which pawn advance attacks Black's knight while gaining space. Push e5!",
+          "hints": ["Which central pawn can attack the f6 knight?", "e5 gains space and tempo"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "r1bqkb1r/pppppppp/2n2n2/8/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 2 3",
+          "description": "Seize a space advantage by making the best central advance.",
           "solution": [
-            "a3"
+            "e5"
           ],
           "conceptTested": "Space & Initiative",
           "maxAttempts": 3
@@ -312,25 +318,26 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of The Bishop Pair Advantage in this position."
+          "fen": "r1bq1rk1/ppp2ppp/2n2n2/3p4/2PP4/2N2NP1/PP2PPBP/R1BQ1RK1 b - - 0 6",
+          "commentary": "White has the two bishops in a semi-open position. The fianchettoed bishop on g2 rakes the long diagonal, and combined with the other bishop, they create a powerful crossfire."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
-          "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/2PP4/2N1PN2/PP2BPPP/R1BQ1RK1 w - - 0 7",
+          "instruction": "Open the position for your bishop pair! Capture on d5 to create open diagonals.",
+          "expectedMove": "cxd5",
+          "correctFeedback": "Correct! cxd5 opens the position, increasing the power of your two bishops.",
+          "incorrectFeedback": "To activate the bishop pair, you need to open the position. Try capturing on d5.",
+          "hints": ["The bishop pair thrives in open positions", "Capture the d5 pawn"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/2PP4/2N1PN2/PP2BPPP/R1BQ1RK1 w - - 0 7",
+          "description": "Open the position to maximize the bishop pair advantage.",
           "solution": [
-            "a3"
+            "cxd5"
           ],
           "conceptTested": "The Bishop Pair Advantage",
           "maxAttempts": 3
@@ -423,25 +430,26 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of The Art of Piece Exchanges in this position."
+          "fen": "r1bq1rk1/ppp2ppp/2np1n2/4p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 6",
+          "commentary": "White has more active pieces and a lead in development. The key strategic question: should White exchange pieces or maintain the tension? When ahead in activity, avoid unnecessary exchanges."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
-          "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "fen": "r1bqr1k1/ppp2ppp/2n2n2/3Np3/2B1P3/8/PPPP1PPP/R1BQ1RK1 w - - 0 8",
+          "instruction": "Your knight on d5 is dominating. Exchange your opponent's best defender by capturing on f6.",
+          "expectedMove": "Nxf6+",
+          "correctFeedback": "Perfect! Exchanging your opponent's active knight while giving check. This is the Capablanca method — remove the best defender.",
+          "incorrectFeedback": "Think about which exchange removes Black's most active piece. The f6 knight is their best piece.",
+          "hints": ["Exchange their best piece", "The knight on d5 can capture on f6 with check"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "r1bqr1k1/ppp2ppp/2n2n2/3Np3/2B1P3/8/PPPP1PPP/R1BQ1RK1 w - - 0 8",
+          "description": "Exchange your opponent's best piece to simplify favorably.",
           "solution": [
-            "a3"
+            "Nxf6+"
           ],
           "conceptTested": "The Art of Piece Exchanges",
           "maxAttempts": 3
@@ -469,23 +477,24 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of Restriction & Prophylactic Thinking in this position."
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/2PP4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+          "commentary": "Before advancing your own plans, ask: what does Black want? Black wants ...Nb4 to pressure c2. A prophylactic a3 prevents this."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/2PP4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+          "instruction": "Think prophylactically — what does Black want to play? Prevent ...Nb4 with a quiet but strong move.",
           "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "correctFeedback": "Excellent prophylaxis! a3 prevents ...Nb4, restricting Black's knight from invading. This is a Petrosian-style move.",
+          "incorrectFeedback": "Think about Black's plans. The c6 knight wants to jump to b4. How do you prevent that?",
+          "hints": ["Black's knight wants to go to b4", "A small pawn move can prevent a big threat"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/2PP4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+          "description": "Find the prophylactic move that prevents Black's best plan.",
           "solution": [
             "a3"
           ],
@@ -515,25 +524,26 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of Pawn Majorities & Breakthroughs in this position."
+          "fen": "4r1k1/5ppp/p7/1pP5/1P6/P4P2/5KPP/4R3 w - - 0 30",
+          "commentary": "White has a queenside pawn majority (a3, b4, c5 vs a6, b5). The key is to advance the c-pawn to create a passed pawn. Remember: push the pawn WITHOUT an opponent directly ahead first."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
-          "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "fen": "4r1k1/5ppp/p7/1pP5/1P6/P4P2/5KPP/4R3 w - - 0 30",
+          "instruction": "You have a queenside majority. Create a passed pawn by advancing the right pawn.",
+          "expectedMove": "c6",
+          "correctFeedback": "Correct! c6 creates a dangerous passed pawn. The b5 pawn cannot stop it, and the king is too far away.",
+          "incorrectFeedback": "Your queenside majority should create a passed pawn. Push the c-pawn — it has no pawn directly in front.",
+          "hints": ["Push the pawn with no opponent directly ahead", "c6 creates a passer"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "4r1k1/5ppp/p7/1pP5/1P6/P4P2/5KPP/4R3 w - - 0 30",
+          "description": "Use your pawn majority to create a passed pawn.",
           "solution": [
-            "a3"
+            "c6"
           ],
           "conceptTested": "Pawn Majorities & Breakthroughs",
           "maxAttempts": 3
@@ -561,25 +571,26 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of Blockade Strategy in this position."
+          "fen": "r2q1rk1/pp2bppp/2n1bn2/3pP3/8/2N1BN2/PPP2PPP/R2QKB1R w KQ - 0 9",
+          "commentary": "Black has a passed d5 pawn. White should blockade it immediately. A knight is the ideal blockader — place it on d4 where it stops the pawn and radiates power."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
-          "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "fen": "r2q1rk1/pp2bppp/2n1bn2/3pP3/8/2N1BN2/PPP2PPP/R2QKB1R w KQ - 0 9",
+          "instruction": "Black has a dangerous passed d5 pawn. Blockade it by placing a knight directly in front of it.",
+          "expectedMove": "Nd4",
+          "correctFeedback": "Perfect blockade! The knight on d4 stops the pawn permanently and becomes an incredibly powerful piece — exactly as Nimzowitsch taught.",
+          "incorrectFeedback": "Blockade means placing a piece IN FRONT of the passed pawn. The ideal blockader is a knight on d4.",
+          "hints": ["A knight is the best blockader", "Place it directly in front of the d5 pawn"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "r2q1rk1/pp2bppp/2n1bn2/3pP3/8/2N1BN2/PPP2PPP/R2QKB1R w KQ - 0 9",
+          "description": "Blockade the opponent's passed pawn with the ideal piece.",
           "solution": [
-            "a3"
+            "Nd4"
           ],
           "conceptTested": "Blockade Strategy",
           "maxAttempts": 3
@@ -607,25 +618,26 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of Good Knight vs Bad Bishop in this position."
+          "fen": "r1bq1rk1/pp2ppbp/2np2p1/8/3NP3/2N1BP2/PPP3PP/R2QKB1R w KQ - 0 8",
+          "commentary": "This is a closed Sicilian structure. Black's bishop on g7 is blocked by its own pawns on d6 and e7 — it's a 'bad bishop'. White's knight, however, dominates from d4."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
-          "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "fen": "r1bq1rk1/pp2ppbp/2np2p1/8/3NP3/2N1BP2/PPP3PP/R2QKB1R w KQ - 0 8",
+          "instruction": "Black's dark-squared bishop is bad (blocked by its own pawns). Strengthen your knight's dominance by playing Nd5, occupying the eternal outpost.",
+          "expectedMove": "Nd5",
+          "correctFeedback": "Masterful! Nd5 is a permanently strong outpost. The knight dominates from d5, while Black's bishop on g7 is a passive bystander.",
+          "incorrectFeedback": "Place your knight on the strongest central outpost. d5 cannot be attacked by any pawn!",
+          "hints": ["Which central square can't be attacked by pawns?", "Nd5 creates an unassailable outpost"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "r1bq1rk1/pp2ppbp/2np2p1/8/3NP3/2N1BP2/PPP3PP/R2QKB1R w KQ - 0 8",
+          "description": "Exploit the opponent's bad bishop by occupying the key outpost.",
           "solution": [
-            "a3"
+            "Nd5"
           ],
           "conceptTested": "Good Knight vs Bad Bishop",
           "maxAttempts": 3
@@ -730,25 +742,26 @@ export const strategyContent = {
       ],
       "demoSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "commentary": "Let's explore the key strategic principles of Positional Evaluation Checklist in this position."
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+          "commentary": "Evaluate this position: Material is equal. White has slightly better piece activity (developed bishop) and a central pawn on d4. Black has a solid structure but less space. White stands slightly better — a small advantage that must be nurtured patiently."
         }
       ],
       "guidedSteps": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "instruction": "To practice this concept, execute the logical move: a3.",
-          "expectedMove": "a3",
-          "correctFeedback": "Excellent! You played a3 correctly.",
-          "incorrectFeedback": "Try to make the move a3."
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+          "instruction": "Evaluate the position: both sides have equal material. Use positional understanding to improve your worst piece — develop the light-squared bishop.",
+          "expectedMove": "Bd3",
+          "correctFeedback": "Excellent evaluation! Bd3 develops the last minor piece to an active diagonal aiming at the kingside. Systematically improving piece activity is the key to exploiting small advantages.",
+          "incorrectFeedback": "Look at your pieces — which one is not yet developed? Bring it to an active square.",
+          "hints": ["Which piece is still on its starting square?", "The light-squared bishop needs a good diagonal"]
         }
       ],
       "masteryPositions": [
         {
-          "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-          "description": "Demonstrate your mastery by playing the continuation move in this position.",
+          "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2N1PN2/PP3PPP/R1BQ1RK1 w - - 0 8",
+          "description": "Apply positional evaluation: identify and improve your worst piece.",
           "solution": [
-            "a3"
+            "Bd3"
           ],
           "conceptTested": "Positional Evaluation Checklist",
           "maxAttempts": 3
@@ -757,5 +770,6 @@ export const strategyContent = {
     }
   ]
 };
+
 
 export default strategyContent;

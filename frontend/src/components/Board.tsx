@@ -302,7 +302,7 @@ export const Board: React.FC<BoardProps> = ({
 
         const timer = setTimeout(() => {
           setAnimatingPiece(null);
-        }, 200);
+        }, 300);
         prevFenRef.current = fen;
         return () => clearTimeout(timer);
       }
@@ -738,7 +738,7 @@ export const Board: React.FC<BoardProps> = ({
               >
                 <g
                   style={isAnimating ? {
-                    animation: 'pieceMove 0.20s cubic-bezier(0.25, 0.1, 0.25, 1) forwards',
+                    animation: 'pieceMove 0.30s cubic-bezier(0.22, 0.61, 0.36, 1) forwards',
                     ['--from-x' as any]: `${animatingPiece.fromX}px`,
                     ['--from-y' as any]: `${animatingPiece.fromY}px`,
                   } : undefined}

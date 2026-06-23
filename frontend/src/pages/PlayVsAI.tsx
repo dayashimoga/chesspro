@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Board } from '../components/Board';
 import { ChessEngine } from '../core/chess-engine';
@@ -8,13 +8,23 @@ import { Badge } from '../components/ui/Badge';
 import { useAppStore } from '../store/useAppStore';
 import { stockfishService } from '../core/stockfishService';
 
+// Time-based AI levels for instant responses
 const AI_LEVELS = [
-  { id: 'beginner', name: '🟢 Beginner (800)', depth: 1, rating: 800 },
-  { id: 'intermediate', name: '🟡 Intermediate (1200)', depth: 3, rating: 1200 },
-  { id: 'advanced', name: '🟠 Advanced (1600)', depth: 5, rating: 1600 },
-  { id: 'expert', name: '🔴 Expert (2000)', depth: 8, rating: 2000 },
-  { id: 'master', name: '👑 Master (2400)', depth: 12, rating: 2400 },
+  { id: 'beginner', name: '🟢 Beginner (800)', movetime: 50, rating: 800, targetMs: 100 },
+  { id: 'intermediate', name: '🟡 Intermediate (1200)', movetime: 150, rating: 1200, targetMs: 300 },
+  { id: 'advanced', name: '🟠 Advanced (1600)', movetime: 400, rating: 1600, targetMs: 800 },
+  { id: 'expert', name: '🔴 Expert (2000)', movetime: 800, rating: 2000, targetMs: 1500 },
+  { id: 'master', name: '👑 Master (2400)', movetime: 1200, rating: 2400, targetMs: 2000 },
 ];
+
+interface MoveEval {
+  fen: string;
+  move: string;
+  evalBefore: number; // centipawns from side-to-move perspective
+  bestMove: string | null;
+  bestEval: number;
+  classification: 'best' | 'good' | 'inaccuracy' | 'mistake' | 'blunder';
+}
 
 interface GameAnalysis {
   totalMoves: number;
@@ -23,6 +33,15 @@ interface GameAnalysis {
   mistakes: number;
   inaccuracies: number;
   bestMoveRate: number;
+  moveEvals: MoveEval[];
+}
+
+function classifyMove(evalLoss: number): MoveEval['classification'] {
+  if (evalLoss < 10) return 'best';
+  if (evalLoss < 30) return 'good';
+  if (evalLoss < 100) return 'inaccuracy';
+  if (evalLoss < 300) return 'mistake';
+  return 'blunder';
 }
 
 export const PlayVsAI: React.FC = () => {
@@ -38,8 +57,12 @@ export const PlayVsAI: React.FC = () => {
   const [analysis, setAnalysis] = useState<GameAnalysis | null>(null);
   const [aiLatency, setAiLatency] = useState<number | null>(null);
   const [isAiThinking, setIsAiThinking] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const boardTheme = useAppStore(s => s.theme); // default theme switcher uses appStore.theme
+  // Store position evals during game for real post-game analysis
+  const positionEvalsRef = useRef<Array<{ fen: string; move: string; isPlayerMove: boolean }>>([]);
+
+  const boardTheme = useAppStore(s => s.theme);
 
   const updateState = useCallback(() => {
     setFen(engine.fen());
@@ -53,21 +76,35 @@ export const PlayVsAI: React.FC = () => {
     if (engine.turn() === playerColor) return;
     if (isAiThinking) return;
 
-    const depth = AI_LEVELS.find(l => l.id === aiLevel)?.depth || 3;
+    const level = AI_LEVELS.find(l => l.id === aiLevel) || AI_LEVELS[1];
     setIsAiThinking(true);
     const startTime = performance.now();
 
-    stockfishService.analyze(engine.fen(), depth)
+    // Use time-based search for predictable response times
+    stockfishService.quickMove(engine.fen(), level.movetime)
       .then(result => {
-        setIsAiThinking(false);
-        if (engine.turn() === playerColor || engine.isGameOver()) return;
+        if (engine.turn() === playerColor || engine.isGameOver()) {
+          setIsAiThinking(false);
+          return;
+        }
         
         if (result.bestMove) {
+          // Record the position before AI moves
+          const fenBefore = engine.fen();
           engine.move(result.bestMove);
           const duration = Math.round(performance.now() - startTime);
           setAiLatency(duration);
+          
+          // Store eval for post-game analysis
+          positionEvalsRef.current.push({
+            fen: fenBefore,
+            move: result.bestMove,
+            isPlayerMove: false,
+          });
+          
           updateState();
         }
+        setIsAiThinking(false);
       })
       .catch(err => {
         console.error('AI move generation error:', err);
@@ -87,32 +124,111 @@ export const PlayVsAI: React.FC = () => {
     }
   }, [fen, makeAIMove, playerColor, engine, isAiThinking]);
 
-  // Generate post-game analysis when game ends
+  // Real post-game analysis using Stockfish
+  const analyzeGame = useCallback(async () => {
+    const moves = positionEvalsRef.current;
+    if (moves.length === 0) return;
+
+    setIsAnalyzing(true);
+    const moveEvals: MoveEval[] = [];
+
+    // Evaluate each player move by comparing their move's eval with the best move
+    const playerMoves = moves.filter(m => m.isPlayerMove);
+    
+    for (const pm of playerMoves) {
+      try {
+        // Get best move eval for this position
+        const bestResult = await stockfishService.quickEval(pm.fen);
+        const bestEval = bestResult.evalScore ?? 0;
+        const bestMove = bestResult.bestMove;
+
+        // Now get eval after player's actual move was played
+        // We need the position after the player's move
+        const { Chess } = await import('chess.js');
+        const game = new Chess(pm.fen);
+        const moveObj = game.move(pm.move);
+        if (!moveObj) continue;
+        
+        const afterMoveFen = game.fen();
+        const afterResult = await stockfishService.quickEval(afterMoveFen);
+        // afterResult eval is from the opponent's perspective, so negate it
+        const evalAfterMove = -(afterResult.evalScore ?? 0);
+
+        // Eval loss = best eval minus actual eval (from the moving side's perspective)
+        const evalLoss = Math.max(0, bestEval - evalAfterMove);
+        
+        moveEvals.push({
+          fen: pm.fen,
+          move: pm.move,
+          evalBefore: bestEval,
+          bestMove,
+          bestEval,
+          classification: classifyMove(evalLoss),
+        });
+      } catch {
+        // Skip positions that fail to evaluate
+      }
+    }
+
+    const blunders = moveEvals.filter(e => e.classification === 'blunder').length;
+    const mistakes = moveEvals.filter(e => e.classification === 'mistake').length;
+    const inaccuracies = moveEvals.filter(e => e.classification === 'inaccuracy').length;
+    const bestMoves = moveEvals.filter(e => e.classification === 'best').length;
+    const goodMoves = moveEvals.filter(e => e.classification === 'good').length;
+    const total = moveEvals.length || 1;
+
+    // Accuracy: weighted formula (best=100, good=80, inaccuracy=50, mistake=20, blunder=0)
+    const accuracySum = moveEvals.reduce((sum, e) => {
+      switch (e.classification) {
+        case 'best': return sum + 100;
+        case 'good': return sum + 80;
+        case 'inaccuracy': return sum + 50;
+        case 'mistake': return sum + 20;
+        case 'blunder': return sum + 0;
+        default: return sum + 50;
+      }
+    }, 0);
+    const accuracy = Math.round(accuracySum / total);
+    const bestMoveRate = Math.round(((bestMoves + goodMoves) / total) * 100);
+
+    const result: GameAnalysis = {
+      totalMoves: moveHistory.length,
+      accuracy,
+      blunders,
+      mistakes,
+      inaccuracies,
+      bestMoveRate,
+      moveEvals,
+    };
+
+    // Save game for review
+    localStorage.setItem('chessos_last_game', JSON.stringify({
+      moves: moveHistory,
+      playerColor,
+      aiLevel,
+      moveEvals,
+    }));
+
+    setAnalysis(result);
+    setShowAnalysis(true);
+    setIsAnalyzing(false);
+  }, [moveHistory, playerColor, aiLevel]);
+
+  // Trigger analysis when game ends
   useEffect(() => {
-    if (engine.isGameOver() && moveHistory.length > 0) {
-      const totalMoves = moveHistory.length;
-      const levelData = AI_LEVELS.find(l => l.id === aiLevel);
-      const difficultyFactor = (levelData?.depth || 2) / 5;
-      const blunders = Math.max(0, Math.floor(Math.random() * 3 * difficultyFactor));
-      const mistakes = Math.max(0, Math.floor(Math.random() * 4 * difficultyFactor));
-      const inaccuracies = Math.max(0, Math.floor(Math.random() * 6 * difficultyFactor));
-      const goodMoves = totalMoves - blunders - mistakes - inaccuracies;
-      const accuracy = Math.max(30, Math.min(99, Math.round((goodMoves / Math.max(1, totalMoves)) * 100)));
-      const bestMoveRate = Math.max(20, Math.min(95, Math.round(accuracy * 0.85)));
-
-      // Save game history for review
-      localStorage.setItem('chessos_last_game', JSON.stringify({
-        moves: moveHistory,
-        playerColor,
-        aiLevel,
-      }));
-
-      setAnalysis({ totalMoves, accuracy, blunders, mistakes, inaccuracies, bestMoveRate });
-      setShowAnalysis(true);
+    if (engine.isGameOver() && moveHistory.length > 0 && !showAnalysis && !isAnalyzing) {
+      analyzeGame();
     }
   }, [status]);
 
   const handleMove = (from: string, to: string, san: string) => {
+    // Record the position before player moves
+    positionEvalsRef.current.push({
+      fen: engine.fen(),
+      move: san,
+      isPlayerMove: true,
+    });
+    
     updateState();
     if (!engine.isGameOver() && engine.turn() !== playerColor) {
       makeAIMove();
@@ -125,6 +241,8 @@ export const PlayVsAI: React.FC = () => {
     setMoveHistory([]);
     setShowAnalysis(false);
     setAnalysis(null);
+    setIsAnalyzing(false);
+    positionEvalsRef.current = [];
     if (playerColor === 'b') {
       makeAIMove();
     }
@@ -133,6 +251,8 @@ export const PlayVsAI: React.FC = () => {
   const handleUndo = () => {
     engine.undo();
     engine.undo();
+    // Remove last 2 evals
+    positionEvalsRef.current = positionEvalsRef.current.slice(0, -2);
     updateState();
   };
 
@@ -143,6 +263,8 @@ export const PlayVsAI: React.FC = () => {
     setMoveHistory([]);
     setShowAnalysis(false);
     setAnalysis(null);
+    setIsAnalyzing(false);
+    positionEvalsRef.current = [];
     if (color === 'b') {
       setTimeout(() => makeAIMove(), 300);
     }
@@ -157,18 +279,12 @@ export const PlayVsAI: React.FC = () => {
     });
   }
 
-  const getAccuracyBadgeVariant = (acc: number) => {
-    if (acc >= 90) return 'emerald';
-    if (acc >= 70) return 'amber';
-    return 'red';
-  };
-
   return (
     <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto py-2 animate-fadeIn text-slate-200">
       <div>
         <span className="text-xs font-bold uppercase tracking-wider text-emerald-500">Arena</span>
         <h2 className="text-2xl font-black text-white">Play vs <span className="text-emerald-400">Chess AI</span></h2>
-        <p className="text-sm text-slate-400 mt-1">Challenge the engine at various difficulty levels. Post-game analysis after every match.</p>
+        <p className="text-sm text-slate-400 mt-1">Challenge the engine at various difficulty levels. Real Stockfish analysis after every game.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
@@ -194,9 +310,16 @@ export const PlayVsAI: React.FC = () => {
             </Button>
           </div>
           <Card className="!py-3 !px-6 text-center font-bold text-white text-sm flex flex-col items-center gap-1 min-w-[200px]" hoverEffect={false}>
-            <div>{isAiThinking ? '🤖 AI is thinking...' : status}</div>
+            <div className="flex items-center gap-2">
+              {isAiThinking && (
+                <span className="ai-thinking-dot" />
+              )}
+              <span>{isAiThinking ? '🤖 AI is thinking...' : isAnalyzing ? '🔬 Analyzing game...' : status}</span>
+            </div>
             {aiLatency !== null && !isAiThinking && (
-              <div className="text-[10px] text-emerald-400 font-mono">AI Response Time: {aiLatency}ms</div>
+              <div className={`text-[10px] font-mono font-bold ${aiLatency < 200 ? 'text-emerald-400' : aiLatency < 500 ? 'text-amber-400' : 'text-orange-400'}`}>
+                AI Response: {aiLatency}ms
+              </div>
             )}
           </Card>
         </div>
@@ -206,10 +329,12 @@ export const PlayVsAI: React.FC = () => {
           {/* Post-Game Analysis */}
           {showAnalysis && analysis && (
             <Card className="flex flex-col gap-4 border-l-4 !border-l-emerald-500" hoverEffect={false}>
-              <h3 className="font-bold text-white text-sm">📊 Post-Game Analysis</h3>
+              <h3 className="font-bold text-white text-sm">📊 Stockfish Post-Game Analysis</h3>
               <div className="grid grid-cols-2 gap-3 shadow-inner">
                 <div className="bg-white/5 rounded-xl p-3.5 text-center border border-white/5">
-                  <div className="text-2xl font-black text-emerald-400">{analysis.accuracy}%</div>
+                  <div className={`text-2xl font-black ${analysis.accuracy >= 85 ? 'text-emerald-400' : analysis.accuracy >= 65 ? 'text-amber-400' : 'text-red-400'}`}>
+                    {analysis.accuracy}%
+                  </div>
                   <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Accuracy</div>
                 </div>
                 <div className="bg-white/5 rounded-xl p-3.5 text-center border border-white/5">
@@ -243,6 +368,15 @@ export const PlayVsAI: React.FC = () => {
             </Card>
           )}
 
+          {/* Analyzing indicator */}
+          {isAnalyzing && (
+            <Card className="flex flex-col items-center gap-3 py-6" hoverEffect={false}>
+              <div className="ai-thinking-ring" />
+              <h4 className="text-sm font-bold text-white">Analyzing with Stockfish...</h4>
+              <p className="text-[10px] text-slate-500 text-center">Evaluating each position to calculate real accuracy</p>
+            </Card>
+          )}
+
           {/* Settings */}
           <Card hoverEffect={false} className="flex flex-col gap-3">
             <h3 className="font-bold text-white text-sm">⚙️ Game Setup</h3>
@@ -258,6 +392,9 @@ export const PlayVsAI: React.FC = () => {
                   <option key={l.id} value={l.id}>{l.name}</option>
                 ))}
               </select>
+              <div className="text-[9px] text-slate-600 mt-1 font-mono">
+                Target response: &lt;{AI_LEVELS.find(l => l.id === aiLevel)?.targetMs}ms
+              </div>
             </div>
             <div>
               <label className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mb-1.5">Play as</label>

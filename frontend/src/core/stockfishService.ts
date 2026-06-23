@@ -10,6 +10,38 @@ export interface PVLine {
 export interface AnalysisResult {
   bestMove: string | null;
   lines: PVLine[];
+  evalScore?: number; // centipawns from white's perspective
+}
+
+// LRU Cache for position evaluations
+class PositionCache {
+  private cache = new Map<string, AnalysisResult>();
+  private maxSize: number;
+
+  constructor(maxSize = 500) {
+    this.maxSize = maxSize;
+  }
+
+  get(key: string): AnalysisResult | undefined {
+    const val = this.cache.get(key);
+    if (val) {
+      // Move to end (most recently used)
+      this.cache.delete(key);
+      this.cache.set(key, val);
+    }
+    return val;
+  }
+
+  set(key: string, value: AnalysisResult): void {
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.maxSize) {
+      // Remove oldest (first entry)
+      const firstKey = this.cache.keys().next().value;
+      if (firstKey !== undefined) this.cache.delete(firstKey);
+    }
+    this.cache.set(key, value);
+  }
 }
 
 class StockfishService {
@@ -20,12 +52,16 @@ class StockfishService {
   private currentLines: PVLine[] = [];
   private bestMoveFound: string | null = null;
   private onInfoCallback: ((lines: PVLine[]) => void) | null = null;
+  private cache = new PositionCache(500);
+  private initPromise: Promise<void> | null = null;
+  private isWarmedUp = false;
 
   public init(): Promise<void> {
-    if (this.worker) return Promise.resolve();
+    if (this.initPromise) return this.initPromise;
+    if (this.status === 'ready') return Promise.resolve();
     this.status = 'loading';
 
-    return new Promise<void>((resolve, reject) => {
+    this.initPromise = new Promise<void>((resolve, reject) => {
       try {
         const blobCode = `
           self.onmessage = function(e) {
@@ -59,7 +95,12 @@ class StockfishService {
           if (line === 'worker_ready') {
             this.status = 'ready';
             this.send('uci');
-            this.send('setoption name MultiPV value 5');
+            // Use fewer MultiPV lines for faster response
+            this.send('setoption name MultiPV value 1');
+            // Limit hash to be fast
+            this.send('setoption name Hash value 16');
+            // Warm up the engine
+            this.warmUp();
             resolve();
           } else if (line.startsWith('worker_error')) {
             this.status = 'error';
@@ -81,10 +122,21 @@ class StockfishService {
         reject(err as Error);
       }
     });
+
+    return this.initPromise;
+  }
+
+  // Warm up engine with a quick search from starting position
+  private warmUp(): void {
+    if (this.isWarmedUp) return;
+    this.send('isready');
+    this.send('position startpos');
+    this.send('go movetime 1');
+    this.isWarmedUp = true;
   }
 
   public send(cmd: string): void {
-    if (this.worker && this.status === 'ready') {
+    if (this.worker && (this.status === 'ready' || this.status === 'loading')) {
       this.worker.postMessage(cmd);
     }
   }
@@ -94,6 +146,45 @@ class StockfishService {
     this.resolveAnalysis();
   }
 
+  /**
+   * Quick move for AI play — uses movetime instead of depth for predictable response times.
+   * @param fen Current position
+   * @param movetime Time in ms for the engine to think
+   * @returns Promise with the best move result
+   */
+  public quickMove(fen: string, movetime: number): Promise<AnalysisResult> {
+    // Check cache first
+    const cacheKey = `${fen}:mt${movetime}`;
+    const cached = this.cache.get(cacheKey);
+    if (cached) {
+      return Promise.resolve(cached);
+    }
+
+    return this.init().then(() => {
+      this.send('stop');
+      this.currentLines = [];
+      this.bestMoveFound = null;
+      this.onInfoCallback = null;
+
+      return new Promise<AnalysisResult>((resolve, reject) => {
+        this.analysisResolve = (result) => {
+          // Cache the result
+          this.cache.set(cacheKey, result);
+          resolve(result);
+        };
+        this.analysisReject = reject;
+
+        this.send('isready');
+        this.send(`position fen ${fen}`);
+        this.send(`go movetime ${movetime}`);
+      });
+    });
+  }
+
+  /**
+   * Full analysis with MultiPV — for position analysis and game review.
+   * Uses depth-based search with streaming info callback.
+   */
   public analyze(fen: string, depth = 15, onInfo: ((lines: PVLine[]) => void) | null = null): Promise<AnalysisResult> {
     this.onInfoCallback = onInfo;
     this.currentLines = [];
@@ -101,9 +192,15 @@ class StockfishService {
 
     return this.init().then(() => {
       this.send('stop');
+      // Enable MultiPV for full analysis
+      this.send('setoption name MultiPV value 5');
 
       return new Promise<AnalysisResult>((resolve, reject) => {
-        this.analysisResolve = resolve;
+        this.analysisResolve = (result) => {
+          // Reset to single PV for quick moves
+          this.send('setoption name MultiPV value 1');
+          resolve(result);
+        };
         this.analysisReject = reject;
 
         this.send(`position fen ${fen}`);
@@ -112,12 +209,42 @@ class StockfishService {
     });
   }
 
+  /**
+   * Quick eval — get a fast evaluation of a position (for game review).
+   * Uses movetime 100ms for speed.
+   */
+  public quickEval(fen: string): Promise<AnalysisResult> {
+    const cacheKey = `eval:${fen}`;
+    const cached = this.cache.get(cacheKey);
+    if (cached) return Promise.resolve(cached);
+
+    return this.init().then(() => {
+      this.send('stop');
+      this.currentLines = [];
+      this.bestMoveFound = null;
+      this.onInfoCallback = null;
+
+      return new Promise<AnalysisResult>((resolve, reject) => {
+        this.analysisResolve = (result) => {
+          this.cache.set(cacheKey, result);
+          resolve(result);
+        };
+        this.analysisReject = reject;
+
+        this.send(`position fen ${fen}`);
+        this.send(`go movetime 100`);
+      });
+    });
+  }
+
   private resolveAnalysis(): void {
     if (this.analysisResolve) {
       const sortedLines = [...this.currentLines].sort((a, b) => b.score - a.score);
+      const evalScore = sortedLines.length > 0 ? sortedLines[0].score : 0;
       this.analysisResolve({
         bestMove: this.bestMoveFound,
-        lines: sortedLines
+        lines: sortedLines,
+        evalScore,
       });
     }
     this.analysisResolve = null;

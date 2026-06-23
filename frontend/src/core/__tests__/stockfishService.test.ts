@@ -14,6 +14,8 @@ describe('StockfishService', () => {
     (stockfishService as any).currentLines = [];
     (stockfishService as any).bestMoveFound = null;
     (stockfishService as any).onInfoCallback = null;
+    (stockfishService as any).initPromise = null;
+    (stockfishService as any).isWarmedUp = false;
 
     // Create a mock worker instance that we can control
     mockWorkerInstance = {
@@ -39,7 +41,11 @@ describe('StockfishService', () => {
     it('should initialize and request UCI interface', async () => {
       await stockfishService.init();
       expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith('uci');
-      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith('setoption name MultiPV value 5');
+      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith('setoption name MultiPV value 1');
+      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith('setoption name Hash value 16');
+      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith('isready');
+      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith('position startpos');
+      expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith('go movetime 1');
       expect((stockfishService as any).status).toBe('ready');
     });
 
